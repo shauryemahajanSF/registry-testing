@@ -75,53 +75,42 @@ jobs:
             echo "SUCCESS - sha256 matches for $zip_path"
           done < changed_zips.txt
 
-      - name: Step 2 - Verify ZIP top-level directories are allowed
+      - name: Step 2 - Unzip and verify root children are allowed
         shell: bash
         run: |
           set -euo pipefail
+          allowed=("impex" "app-configuration" "storefront-next" "cartridges")
 
-          allowed_dirs=("impex" "app-configuration" "storefront-next" "cartridges")
-
-          # If step 1 found no zips, it exited 0 and step 2 still runs unless we guard.
-          # So guard here too.
-          if [[ ! -s changed_zips.txt ]]; then
-            echo "No .zip files changed in this PR. Nothing to verify."
-            exit 0
-          fi
+          [[ -s changed_zips.txt ]] || exit 0
 
           while IFS= read -r zip_path; do
-            if [[ ! -f "$zip_path" ]]; then
-              echo "Skipping (not present in PR head): $zip_path"
-              continue
-            fi
+            [[ -f "$zip_path" ]] || continue
 
-            # List entries, take the first path segment for entries that have '/'
-            mapfile -t top_dirs < <(
-              unzip -Z1 "$zip_path" \
-                | awk -F'/' 'NF>1 {print $1}' \
-                | sed '/^$/d' \
-                | sort -u
-            )
+            tmpdir="$(mktemp -d)"
+            unzip -q "$zip_path" -d "$tmpdir"
 
-            if [[ ${#top_dirs[@]} -eq 0 ]]; then
-              echo "::error file=$zip_path::ZIP contains no top-level directories. Allowed: ${allowed_dirs[*]}"
+            # Root should be exactly one directory (the wrapper folder)
+            mapfile -t roots < <(find "$tmpdir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | grep -v '^__MACOSX$' | sort -u)
+            if [[ ${#roots[@]} -ne 1 ]]; then
+              echo "::error file=$zip_path::Expected exactly 1 root directory after unzip, found ${#roots[@]}: ${roots[*]}"
+              rm -rf "$tmpdir"
               exit 1
             fi
+            root="$tmpdir/${roots[0]}"
 
-            echo "ZIP: $zip_path"
-            echo "Top-level dirs found:"
-            printf ' - %s\n' "${top_dirs[@]}"
-
-            for td in "${top_dirs[@]}"; do
+            # Check immediate child directories of root are allowed
+            mapfile -t children < <(find "$root" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | grep -v '^__MACOSX$' | sort -u)
+            for c in "${children[@]}"; do
               ok=false
-              for ad in "${allowed_dirs[@]}"; do
-                if [[ "$td" == "$ad" ]]; then ok=true; break; fi
+              for a in "${allowed[@]}"; do
+                [[ "$c" == "$a" ]] && ok=true && break
               done
               if [[ "$ok" == "false" ]]; then
-                echo "::error file=$zip_path::Disallowed top-level directory \"$td\". Allowed: ${allowed_dirs[*]}"
+                echo "::error file=$zip_path::Disallowed directory under root: \"$c\". Allowed: ${allowed[*]}"
+                rm -rf "$tmpdir"
                 exit 1
               fi
             done
 
-            echo "SUCESS - structure ok for $zip_path"
+            rm -rf "$tmpdir"
           done < changed_zips.txt
