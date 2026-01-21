@@ -1,0 +1,127 @@
+name: Verify ZIPs - Checksum + CAP Structure
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+
+jobs:
+  verify-zips:
+    runs-on: ubuntu-latest
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+    steps:
+      - name: Checkout PR HEAD
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Step 1 - Verify sha256 in manifest.json for changed ZIPs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Collect changed ZIPs into a file that the next step can reuse
+          : > changed_zips.txt
+
+          while IFS= read -r -d '' f; do
+            [[ "$f" == *.zip ]] && printf '%s\n' "$f" >> changed_zips.txt
+          done < <(git diff --name-only -z "$BASE_SHA" "$HEAD_SHA")
+
+          if [[ ! -s changed_zips.txt ]]; then
+            echo "No .zip files changed in this PR. Nothing to verify."
+            exit 0
+          fi
+
+          echo "Changed ZIP files:"
+          sed 's/^/ - /' changed_zips.txt
+
+          while IFS= read -r zip_path; do
+            # If deleted in PR head, skip (change if you want deletions to fail)
+            if [[ ! -f "$zip_path" ]]; then
+              echo "Skipping (not present in PR head): $zip_path"
+              continue
+            fi
+
+            dir="$(dirname "$zip_path")"
+            manifest_path="$dir/manifest.json"
+
+            if [[ ! -f "$manifest_path" ]]; then
+              echo "::error file=$manifest_path::manifest.json not found next to ZIP ($zip_path)"
+              exit 1
+            fi
+
+            # Compute checksum of the ZIP
+            computed="$(sha256sum "$zip_path" | awk '{print $1}' | tr '[:upper:]' '[:lower:]')"
+
+            # Read sha256 from manifest.json
+            manifest_sha="$(jq -r '.sha256 // empty' "$manifest_path" | tr '[:upper:]' '[:lower:]')"
+
+            if [[ -z "$manifest_sha" || "$manifest_sha" == "null" ]]; then
+              echo "::error file=$manifest_path::Missing or empty \"sha256\" field in manifest.json"
+              exit 1
+            fi
+
+            echo "ZIP:      $zip_path"
+            echo "Computed: $computed"
+            echo "Manifest: $manifest_sha"
+
+            if [[ "$computed" != "$manifest_sha" ]]; then
+              echo "::error file=$manifest_path::sha256 mismatch for $zip_path (computed=$computed, manifest=$manifest_sha)"
+              exit 1
+            fi
+
+            echo "SUCCESS - sha256 matches for $zip_path"
+          done < changed_zips.txt
+
+      - name: Step 2 - Verify ZIP top-level directories are allowed
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          allowed_dirs=("impex" "app-configuration" "storefront-next" "cartridges")
+
+          # If step 1 found no zips, it exited 0 and step 2 still runs unless we guard.
+          # So guard here too.
+          if [[ ! -s changed_zips.txt ]]; then
+            echo "No .zip files changed in this PR. Nothing to verify."
+            exit 0
+          fi
+
+          while IFS= read -r zip_path; do
+            if [[ ! -f "$zip_path" ]]; then
+              echo "Skipping (not present in PR head): $zip_path"
+              continue
+            fi
+
+            # List entries, take the first path segment for entries that have '/'
+            mapfile -t top_dirs < <(
+              unzip -Z1 "$zip_path" \
+                | awk -F'/' 'NF>1 {print $1}' \
+                | sed '/^$/d' \
+                | sort -u
+            )
+
+            if [[ ${#top_dirs[@]} -eq 0 ]]; then
+              echo "::error file=$zip_path::ZIP contains no top-level directories. Allowed: ${allowed_dirs[*]}"
+              exit 1
+            fi
+
+            echo "ZIP: $zip_path"
+            echo "Top-level dirs found:"
+            printf ' - %s\n' "${top_dirs[@]}"
+
+            for td in "${top_dirs[@]}"; do
+              ok=false
+              for ad in "${allowed_dirs[@]}"; do
+                if [[ "$td" == "$ad" ]]; then ok=true; break; fi
+              done
+              if [[ "$ok" == "false" ]]; then
+                echo "::error file=$zip_path::Disallowed top-level directory \"$td\". Allowed: ${allowed_dirs[*]}"
+                exit 1
+              fi
+            done
+
+            echo "SUCESS - structure ok for $zip_path"
+          done < changed_zips.txt
