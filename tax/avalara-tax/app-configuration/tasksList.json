@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Enable Avalara Utility",
+    "description": "Activate the core Avalara tax calculation service for your storefront.",
+    "link": "/setup/apps/avalara/utility-config"
+  },
+  {
+    "name": "Import Metadata",
+    "description": "Download and import the latest tax codes and product classifications from Avalara.",
+    "link": "/setup/apps/avalara/metadata-import"
+  },
+  {
+    "name": "Assign Roles",
+    "description": "Grant appropriate user roles (e.g., Tax Administrator) access to the Avalara configuration panel.",
+    "link": "/setup/users/role-assignment"
+  },
+  {
+    "name": "Configure Tax",
+    "description": "Define jurisdiction settings, company codes, and default tax behaviors for your regions.",
+    "link": "https://www.avalara.com/taxrates/en/calculator.html"
+  },
+  {
+    "name": "Activate Connection",
+    "description": "Finalize and test the connection between your Commerce store and the external Avalara service.",
+    "link": "/setup/apps/avalara/connection-test"
+  }
+]
