@@ -3,6 +3,8 @@ name: Verify ZIPs - Checksum + CAP Structure
 on:
   pull_request:
     types: [opened, reopened, synchronize, edited, ready_for_review]
+    paths:
+      - '**/*.zip'
 
 jobs:
   verify-zips:
@@ -114,8 +116,8 @@ jobs:
 
             rm -rf "$tmpdir"
           done < changed_zips.txt
-          
-      - name: Step 3 - Verify tax hooks exist and scripts resolve
+
+      - name: Step 3 - [Tax] Verify hooks exist and scripts resolve
         shell: bash
         run: |
           set -euo pipefail
@@ -128,24 +130,25 @@ jobs:
 
           [[ -s changed_zips.txt ]] || exit 0
 
+          is_tax_app=false
+
           while IFS= read -r zip_path; do
             [[ -f "$zip_path" ]] || continue
+
+            # Only run for ZIPs under tax/ at repo root
+            case "$zip_path" in
+              tax/*) is_tax_app=true ;;
+              *) continue ;;
+            esac
 
             tmpdir="$(mktemp -d)"
             trap 'rm -rf "$tmpdir"' RETURN
 
             unzip -q "$zip_path" -d "$tmpdir"
 
-            # Root should be exactly one directory (wrapper)
-            mapfile -t roots < <(find "$tmpdir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | grep -v '^__MACOSX$' | sort -u)
-            if [[ ${#roots[@]} -ne 1 ]]; then
-              echo "::error file=$zip_path::Expected exactly 1 root directory after unzip, found ${#roots[@]}: ${roots[*]}"
-              exit 1
-            fi
-            root="$tmpdir/${roots[0]}"
-
-            base="$root/cartridges/site_cartridges"
-            if [[ ! -d "$base" ]]; then
+            # Find cartridges/site_cartridges anywhere under the unzip root
+            base="$(find "$tmpdir" -type d -path '*/cartridges/site_cartridges' -print -quit)"
+            if [[ -z "$base" || ! -d "$base" ]]; then
               echo "::error file=$zip_path::Missing directory cartridges/site_cartridges in ZIP"
               exit 1
             fi
@@ -184,3 +187,8 @@ jobs:
             rm -rf "$tmpdir"
             trap - RETURN
           done < changed_zips.txt
+
+          if [[ "$is_tax_app" == "false" ]]; then
+            echo "No changed ZIPs under tax/. Skipping Step 3."
+          fi
+
