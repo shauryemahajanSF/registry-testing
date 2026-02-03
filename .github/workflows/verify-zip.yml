@@ -114,3 +114,73 @@ jobs:
 
             rm -rf "$tmpdir"
           done < changed_zips.txt
+          
+      - name: Step 3 - Verify tax hooks exist and scripts resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_hooks=(
+            "dw.apps.checkout.tax.calculate"
+            "dw.apps.checkout.tax.commit"
+            "dw.apps.checkout.tax.cancel"
+          )
+
+          [[ -s changed_zips.txt ]] || exit 0
+
+          while IFS= read -r zip_path; do
+            [[ -f "$zip_path" ]] || continue
+
+            tmpdir="$(mktemp -d)"
+            trap 'rm -rf "$tmpdir"' RETURN
+
+            unzip -q "$zip_path" -d "$tmpdir"
+
+            # Root should be exactly one directory (wrapper)
+            mapfile -t roots < <(find "$tmpdir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | grep -v '^__MACOSX$' | sort -u)
+            if [[ ${#roots[@]} -ne 1 ]]; then
+              echo "::error file=$zip_path::Expected exactly 1 root directory after unzip, found ${#roots[@]}: ${roots[*]}"
+              exit 1
+            fi
+            root="$tmpdir/${roots[0]}"
+
+            base="$root/cartridges/site_cartridges"
+            if [[ ! -d "$base" ]]; then
+              echo "::error file=$zip_path::Missing directory cartridges/site_cartridges in ZIP"
+              exit 1
+            fi
+
+            hooks_file="$(find "$base" -type f -name hooks.json -print -quit)"
+            if [[ -z "$hooks_file" ]]; then
+              echo "::error file=$zip_path::hooks.json not found under cartridges/site_cartridges"
+              exit 1
+            fi
+
+            hooks_dir="$(dirname "$hooks_file")"
+            echo "ZIP: $zip_path"
+            echo "hooks.json: $hooks_file"
+
+            # Validate required hooks are present, and each has a script that exists
+            for hook in "${required_hooks[@]}"; do
+              script="$(jq -r --arg name "$hook" '.hooks[]? | select(.name == $name) | .script // empty' "$hooks_file" | head -n 1)"
+
+              if [[ -z "$script" || "$script" == "null" ]]; then
+                echo "::error file=$hooks_file::Missing hook or script for \"$hook\""
+                exit 1
+              fi
+
+              # script is relative to hooks.json location (strip leading ./)
+              rel="${script#./}"
+              target="$hooks_dir/$rel"
+
+              if [[ ! -f "$target" ]]; then
+                echo "::error file=$hooks_file::Script for \"$hook\" points to missing file: $script (resolved: $target)"
+                exit 1
+              fi
+            done
+
+            echo "SUCCESS - required tax hooks and scripts verified for $zip_path"
+
+            rm -rf "$tmpdir"
+            trap - RETURN
+          done < changed_zips.txt
