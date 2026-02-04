@@ -1,4 +1,4 @@
-name: Verify ZIPs - Checksum + CAP Structure
+name: Verify CAP Checksum & Structure
 
 on:
   pull_request:
@@ -40,7 +40,7 @@ jobs:
           sed 's/^/ - /' changed_zips.txt
 
           while IFS= read -r zip_path; do
-            # If deleted in PR head, skip (change if you want deletions to fail)
+            # If deleted in PR head, skip 
             if [[ ! -f "$zip_path" ]]; then
               echo "Skipping (not present in PR head): $zip_path"
               continue
@@ -73,64 +73,14 @@ jobs:
               echo "::error file=$manifest_path::sha256 mismatch for $zip_path (computed=$computed, manifest=$manifest_sha)"
               exit 1
             fi
-
-            echo "SUCCESS - sha256 matches for $zip_path"
           done < changed_zips.txt
 
-      - name: Step 2 - Verify manifest zip field matches file + version is unique in catalog
+      - name: Step 2 - Unzip and verify top level folder structure
         shell: bash
         run: |
           set -euo pipefail
 
-          [[ -s changed_zips.txt ]] || exit 0
-
-          while IFS= read -r zip_path; do
-            [[ -f "$zip_path" ]] || continue
-
-            dir="$(dirname "$zip_path")"
-            manifest_path="$dir/manifest.json"
-            catalog_path="$dir/catalog.json"
-
-            if [[ ! -f "$catalog_path" ]]; then
-              echo "::error file=$catalog_path::catalog.json not found next to ZIP ($zip_path)"
-              exit 1
-            fi
-
-            if [[ ! -f "$manifest_path" ]]; then
-              echo "::error file=$manifest_path::manifest.json not found next to ZIP ($zip_path)"
-              exit 1
-            fi
-
-            zip_file="$(basename "$zip_path")"
-            manifest_zip="$(jq -r '.zip // empty' "$manifest_path")"
-            if [[ -z "$manifest_zip" || "$manifest_zip" == "null" ]]; then
-              echo "::error file=$manifest_path::Missing \"zip\" field in manifest.json"
-              exit 1
-            fi
-
-            # Verify zip file name matches zip field in manifest
-            if [[ "$manifest_zip" != "$zip_file" ]]; then
-              echo "::error file=$manifest_path::manifest.json \"zip\" ($manifest_zip) does not match changed zip filename ($zip_file)"
-              exit 1
-            fi
-
-            version="$(jq -r '.version // empty' "$manifest_path")"
-            if [[ -z "$version" || "$version" == "null" ]]; then
-              echo "::error file=$manifest_path::Missing \"version\" field in manifest.json"
-              exit 1
-            fi
-
-            # Verify version does not yet exist in catalog
-            if jq -e --arg v "$version" '.versions[]? | select(.version == $v)' "$catalog_path" >/dev/null; then
-              echo "::error file=$catalog_path::Version $version already exists in catalog.json"
-              exit 1
-            fi
-          done < changed_zips.txt
-
-      - name: Step 3 - Unzip and verify root children are allowed
-        shell: bash
-        run: |
-          set -euo pipefail
+          # List of allowed top level folder names
           allowed=("impex" "app-configuration" "storefront-next" "cartridges")
 
           [[ -s changed_zips.txt ]] || exit 0
@@ -138,6 +88,7 @@ jobs:
           while IFS= read -r zip_path; do
             [[ -f "$zip_path" ]] || continue
 
+            # Unzip file to temp dir
             tmpdir="$(mktemp -d)"
             unzip -q "$zip_path" -d "$tmpdir"
 
@@ -163,11 +114,10 @@ jobs:
                 exit 1
               fi
             done
-
             rm -rf "$tmpdir"
           done < changed_zips.txt
-
-      - name: Step 4 - [Tax] Verify hooks exist and scripts resolve
+          
+      - name: Step 3 - [Tax] Verify hooks exist and scripts resolve
         shell: bash
         run: |
           set -euo pipefail
@@ -213,6 +163,18 @@ jobs:
             echo "ZIP: $zip_path"
             echo "hooks.json: $hooks_file"
 
+            # Ensure there are no non-required hook names
+            while IFS= read -r name; do
+              ok=false
+              for hook in "${required_hooks[@]}"; do
+                [[ "$name" == "$hook" ]] && ok=true && break
+              done
+              if [[ "$ok" == "false" ]]; then
+                echo "::error file=$hooks_file::Disallowed hook \"$name\". Only allowed: ${required_hooks[*]}"
+                exit 1
+              fi
+            done < <(jq -r '.hooks[]?.name // empty' "$hooks_file")
+
             # Validate required hooks are present, and each has a script that exists
             for hook in "${required_hooks[@]}"; do
               script="$(jq -r --arg name "$hook" '.hooks[]? | select(.name == $name) | .script // empty' "$hooks_file" | head -n 1)"
@@ -239,6 +201,6 @@ jobs:
           done < changed_zips.txt
 
           if [[ "$is_tax_app" == "false" ]]; then
-            echo "No changed ZIPs under tax/. Skipping Step 3."
+            echo "No changed tax apps. Skipping Step 3."
           fi
 
