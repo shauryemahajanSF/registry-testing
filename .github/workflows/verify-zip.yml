@@ -75,7 +75,57 @@ jobs:
             fi
           done < changed_zips.txt
 
-      - name: Step 2 - Unzip and verify top level folder structure
+      - name: Step 2 - Verify manifest zip name matches + version is new vs catalog.json
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          [[ -s changed_zips.txt ]] || exit 0
+
+          while IFS= read -r zip_path; do
+            [[ -f "$zip_path" ]] || continue
+
+            dir="$(dirname "$zip_path")"
+            manifest_path="$dir/manifest.json"
+            catalog_path="$dir/catalog.json"
+
+            if [[ ! -f "$catalog_path" ]]; then
+              echo "::error file=$catalog_path::catalog.json not found next to ZIP ($zip_path)"
+              exit 1
+            fi
+
+            if [[ ! -f "$manifest_path" ]]; then
+              echo "::error file=$manifest_path::manifest.json not found next to ZIP ($zip_path)"
+              exit 1
+            fi
+
+            zip_file="$(basename "$zip_path")"
+            manifest_zip="$(jq -r '.zip // empty' "$manifest_path")"
+            if [[ -z "$manifest_zip" || "$manifest_zip" == "null" ]]; then
+              echo "::error file=$manifest_path::Missing \"zip\" field in manifest.json"
+              exit 1
+            fi
+
+            version="$(jq -r '.version // empty' "$manifest_path")"
+            if [[ -z "$version" || "$version" == "null" ]]; then
+              echo "::error file=$manifest_path::Missing \"version\" field in manifest.json"
+              exit 1
+            fi
+
+            # Verify zip field in manifest matches file name
+            if [[ "$manifest_zip" != "$zip_file" ]]; then
+              echo "::error file=$manifest_path::manifest.json \"zip\" ($manifest_zip) does not match changed zip filename ($zip_file)"
+              exit 1
+            fi
+
+            # Verify new version in manifest is unique
+            if jq -e --arg v "$version" '.versions[]? | select(.version == $v)' "$catalog_path" >/dev/null; then
+              echo "::error file=$catalog_path::Version $version already exists in catalog.json"
+              exit 1
+            fi
+          done < changed_zips.txt
+
+      - name: Step 3 - Unzip and verify top level folder structure
         shell: bash
         run: |
           set -euo pipefail
@@ -117,7 +167,7 @@ jobs:
             rm -rf "$tmpdir"
           done < changed_zips.txt
           
-      - name: Step 3 - [Tax] Verify hooks exist and scripts resolve
+      - name: Step 4 - [Tax] Verify hooks exist and scripts resolve
         shell: bash
         run: |
           set -euo pipefail
