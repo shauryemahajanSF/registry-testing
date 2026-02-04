@@ -1,11 +1,11 @@
 {
   "latest": {
-    "version": "0.1.2",
+    "version": "0.1.4",
     "tag": "avalara-tax-v0.1.2"
   },
   "versions": [
     {
-      "version": "0.1.2",
+      "version": "0.1.4",
       "tag": "avalara-tax-v0.1.2"
     }
   ]
