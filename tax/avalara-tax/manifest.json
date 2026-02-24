@@ -3,7 +3,7 @@
   "displayName": "Avalara Tax",
   "domain": "tax",
   "description": "Sample Avalara tax app used for testing",
-  "version": "0.1.6",
-  "zip": "avalara-tax-v0.1.6.zip",
-  "sha256": "5dc9dcc3904539d219d7e13e2706e0c0d638af2d645c93815a5cc75a8a65c77a"
+  "version": "0.1.7",
+  "zip": "avalara-tax-v0.1.7.zip",
+  "sha256": "9e32789e165a8f69728c8baa025ad2a56b5da77185ead1abdf62a7f3ff9e0d8b"
 }
