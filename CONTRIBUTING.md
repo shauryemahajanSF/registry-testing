@@ -76,7 +76,7 @@ The manifest **must** include the following fields:
 - `description`
 - `version`
 - `zip`
-- `sha256`
+- `sha256` — the SHA-256 hash of the zip file
 
 > **Note:** For new versions of an existing app, you must at minimum update the `version`, `zip`, and `sha256` fields.
 
