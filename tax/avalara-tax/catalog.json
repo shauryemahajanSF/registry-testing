@@ -27,6 +27,10 @@
     {
       "version": "0.1.7",
       "tag": "avalara-tax-v0.1.7"
+    },
+        {
+      "version": "0.1.8",
+      "tag": "avalara-tax-v0.1.8"
     }
   ]
 }
