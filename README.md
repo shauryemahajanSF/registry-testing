@@ -184,6 +184,6 @@ This repository may contain forward-looking statements that involve risks, uncer
 ---
 
 <p align="center">
-  &copy; Copyright 2025 Salesforce, Inc. All rights reserved. Various trademarks held by their respective owners.<br>
+  &copy; Copyright 2026 Salesforce, Inc. All rights reserved. Various trademarks held by their respective owners.<br>
   Built for ISV developers by the Commerce Apps team at Salesforce Commerce Cloud.
 </p>
