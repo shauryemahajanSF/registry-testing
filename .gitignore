@@ -56,3 +56,8 @@ $RECYCLE.BIN/
 
 # Keep the .gitignore file itself!
 !.gitignore
+
+# ==========================================
+# Local Reference Docs (not for PRs)
+# ==========================================
+docs/
