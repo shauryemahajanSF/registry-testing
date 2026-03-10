@@ -40,7 +40,78 @@ Combined frontend components and backend adapters working together.
 
 ## Scaffolding: UI Target Project
 
-Generate the following structure when the developer wants a frontend-only Commerce App:
+Commerce Apps typically span multiple pages and multiple UI Targets. A single app might render a tax badge after payment, a line item in the order summary, and an informational banner on the PDP — all from the same extension.
+
+### Step 1: Target Selection (Multi-Select)
+
+Ask the developer which UI Targets they need. Most apps target more than one. Present targets grouped by page and let them select multiple:
+
+**Checkout targets:**
+- `checkout.expressPayments` (wrapper) — replaces ExpressPayments
+- `checkout.contactInfo` (wrapper) — replaces ContactInfo
+- `checkout.shippingAddress` (wrapper) — replaces ShippingAddress
+- `checkout.shippingOptions` (wrapper) — replaces ShippingOptions
+- `checkout.payment` (wrapper) — replaces Payment
+- `checkout.payment.paymentMethods` (wrapper) — replaces payment method selector
+- `checkout.payment.billingAddress` (wrapper) — replaces billing address form
+- `checkout.placeOrder` (wrapper) — replaces place order button
+- `checkout.orderSummary` (wrapper) — replaces OrderSummary card
+- `checkout.myCart` (wrapper) — replaces MyCart accordion
+- Position targets: `checkout.page.before/after`, `checkout.payment.before/after`, etc.
+
+**Order Summary targets:**
+- `orderSummary.subtotal` / `.shipping` / `.tax` / `.total` / `.promoCode` (wrapper) — replace line item display
+- Position targets: `orderSummary.*.before/after`
+
+**PDP targets:**
+- `pdp.after.addToCart` (wrapper) — replaces BuyNowPayLater
+
+**Header / Footer targets:**
+- `header.before.cart` (position)
+- `footer.customersupport.start/end`, `footer.account.start/end`, `footer.ourcompany.start/end` (position)
+
+Refer to the `ui-targets` skill for the full list with descriptions.
+
+### Step 2: OOTB Component Inclusion
+
+For **wrapper targets**, the storefront has a default (OOTB) component that renders when no extension replaces it. When the developer selects a wrapper target, include the OOTB component as a starting point they can customize.
+
+| Wrapper Target | OOTB Component | ShadCN Primitives It Uses |
+|---------------|----------------|--------------------------|
+| `checkout.expressPayments` | ExpressPayments | Button |
+| `checkout.contactInfo` | ContactInfo | Input, NativeSelect, Button, Form |
+| `checkout.shippingAddress` | ShippingAddress | Button, Form |
+| `checkout.shippingOptions` | ShippingOptions | RadioGroup, RadioGroupItem, Label, Button |
+| `checkout.payment` | Payment | RadioGroup, Checkbox, Separator, Form |
+| `checkout.payment.paymentMethods` | PaymentMethods | RadioGroup, RadioGroupItem, Label, Separator |
+| `checkout.payment.billingAddress` | BillingAddress | Checkbox, Form |
+| `checkout.placeOrder` | PlaceOrderButton | Button |
+| `checkout.orderSummary` | OrderSummary | Card, CardHeader, CardTitle, CardContent |
+| `checkout.myCart` | MyCart | Accordion, AccordionItem, AccordionTrigger, AccordionContent |
+| `orderSummary.promoCode` | PromoCodeForm | Separator |
+| `pdp.after.addToCart` | BuyNowPayLater | (custom) |
+
+For **position targets** (`.before`, `.after`, `.start`, `.end`), there is no OOTB component — the developer starts with an empty component since they are adding new content.
+
+### Step 3: ShadCN Dependency Resolution
+
+Based on the selected targets and their OOTB components, automatically include the required ShadCN UI primitives in `src/components/ui/`. Collect the union of all ShadCN components needed:
+
+| If developer selects... | Include these in `src/components/ui/` |
+|------------------------|--------------------------------------|
+| Any checkout section | `button`, `form`, `input`, `label` |
+| `checkout.payment` or `checkout.payment.paymentMethods` | + `radio-group`, `checkbox`, `separator` |
+| `checkout.shippingOptions` | + `radio-group` |
+| `checkout.orderSummary` | + `card` |
+| `checkout.myCart` | + `accordion` |
+| `checkout.contactInfo` | + `native-select` |
+| `orderSummary.promoCode` | + `separator` |
+
+Also include `@/lib/utils.ts` (the `cn()` helper) which every ShadCN component depends on.
+
+The developer can also request additional ShadCN components beyond what the targets require. The full set of 29 available components is listed in the `storefront-components` skill.
+
+### Step 4: Generate Project Structure
 
 ```
 my-commerce-app/
@@ -57,18 +128,29 @@ my-commerce-app/
 │   ├── main.ts
 │   └── preview.tsx
 ├── src/
+│   ├── components/
+│   │   └── ui/                          # ShadCN primitives (auto-selected)
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── ...                      # Based on target dependency resolution
+│   │       └── separator.tsx
+│   ├── lib/
+│   │   └── utils.ts                     # cn() helper (always included)
 │   └── extensions/
 │       └── <extension-name>/
-│           ├── target-config.json
+│           ├── target-config.json       # Multi-target registration
 │           ├── components/
-│           │   └── <component-name>/
+│           │   ├── <component-1>/       # One per target (or more)
+│           │   │   ├── index.tsx
+│           │   │   └── stories/
+│           │   │       └── index.stories.tsx
+│           │   └── <component-2>/
 │           │       ├── index.tsx
 │           │       └── stories/
 │           │           └── index.stories.tsx
 │           ├── locales/
 │           │   └── en-GB.json
 │           └── tests/
-│               └── <component-name>.test.tsx
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
@@ -77,23 +159,65 @@ my-commerce-app/
 
 ### Key Files to Generate
 
-**target-config.json** — Registers components to UI Target extension points:
+**target-config.json** — Multi-target registration:
+
+An app targeting three UI Targets across two pages:
 
 ```json
 {
   "components": [
     {
-      "targetId": "<target-id>",
-      "path": "extensions/<extension-name>/components/<component-name>/index.tsx",
+      "targetId": "checkout.payment.after",
+      "path": "extensions/my-tax-app/components/tax-badge/index.tsx",
+      "order": 0
+    },
+    {
+      "targetId": "orderSummary.tax",
+      "path": "extensions/my-tax-app/components/tax-line-item/index.tsx",
+      "order": 0
+    },
+    {
+      "targetId": "pdp.after.addToCart",
+      "path": "extensions/my-tax-app/components/tax-estimate/index.tsx",
       "order": 0
     }
   ]
 }
 ```
 
-Ask the developer which UI Target they want to use. Refer to the `ui-targets` skill for the complete list of available targets.
+Generate one component directory per target entry. If the target is a wrapper, seed the component with the OOTB component's structure and ShadCN imports. If the target is a position, seed with an empty component shell.
 
-**Component (index.tsx)** — Starter component following all conventions:
+**Component for a wrapper target (starts with OOTB structure):**
+
+```tsx
+/*
+ * Copyright (c) 2025 Salesforce, Inc.
+ * Licensed under the Apache License, Version 2.0
+ */
+
+'use client';
+
+import { type ReactElement } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+// This component replaces the platform's default for this target.
+// The OOTB component uses Card, CardHeader, CardTitle, CardContent.
+// Customize as needed while maintaining the same semantic structure.
+export default function MyOrderSummary(): ReactElement {
+  return (
+    <Card data-slot="my-order-summary">
+      <CardHeader>
+        <CardTitle>Order Summary</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Your custom order summary content */}
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+**Component for a position target (starts empty):**
 
 ```tsx
 /*
@@ -105,16 +229,18 @@ Ask the developer which UI Target they want to use. Refer to the `ui-targets` sk
 
 import { type ReactElement } from 'react';
 
-export default function MyComponent(): ReactElement {
+// This component adds content at the target position.
+// It does not replace any existing component.
+export default function TaxBadge(): ReactElement {
   return (
-    <div data-slot="my-component">
-      {/* Component content */}
+    <div data-slot="tax-badge">
+      {/* Your content here */}
     </div>
   );
 }
 ```
 
-**Storybook story (stories/index.stories.tsx)** — Starter story:
+**Storybook story (stories/index.stories.tsx):**
 
 ```tsx
 /*
@@ -149,18 +275,27 @@ export const Mobile: Story = {
 };
 ```
 
-**Translations (locales/en-GB.json)** — Starter translations file:
+**Translations (locales/en-GB.json):**
+
+Generate keys for all components:
 
 ```json
 {
-  "extensionName": {
-    "title": "My Component",
-    "description": "Description text"
+  "myTaxApp": {
+    "taxBadge": {
+      "title": "Tax Badge"
+    },
+    "taxLineItem": {
+      "title": "Tax Line Item"
+    },
+    "taxEstimate": {
+      "title": "Tax Estimate"
+    }
   }
 }
 ```
 
-**package.json** — Project dependencies:
+**package.json** — Include Radix dependencies for selected ShadCN components:
 
 ```json
 {
@@ -203,6 +338,8 @@ export const Mobile: Story = {
   }
 }
 ```
+
+Add Radix dependencies based on selected ShadCN components. For example, if `accordion` is included, add `@radix-ui/react-accordion`. If `radio-group` is included, add `@radix-ui/react-radio-group`. Check the ShadCN component source files for exact Radix dependencies.
 
 ## Scaffolding: API Adapter Project
 
@@ -350,7 +487,7 @@ exports.calculate = function (lineItemCtnr) {
 
 ## Scaffolding: Full App Project
 
-Generate both the frontend and backend structures combined:
+A Full App combines multi-target frontend components with backend adapters. The frontend follows the same multi-target + OOTB component flow described above. The backend follows the API Adapter structure.
 
 ```
 my-commerce-app/
@@ -367,11 +504,19 @@ my-commerce-app/
 │   ├── main.ts
 │   └── preview.tsx
 ├── src/
+│   ├── components/
+│   │   └── ui/                          # ShadCN primitives (auto-selected)
+│   ├── lib/
+│   │   └── utils.ts                     # cn() helper
 │   └── extensions/
 │       └── <extension-name>/
-│           ├── target-config.json
+│           ├── target-config.json       # Multi-target registration
 │           ├── components/
-│           │   └── <component-name>/
+│           │   ├── <component-1>/       # One or more per target
+│           │   │   ├── index.tsx
+│           │   │   └── stories/
+│           │   │       └── index.stories.tsx
+│           │   └── <component-2>/
 │           │       ├── index.tsx
 │           │       └── stories/
 │           │           └── index.stories.tsx
@@ -398,7 +543,7 @@ my-commerce-app/
 └── README.md
 ```
 
-This combines both structures. The frontend and backend components can reference each other conceptually but run in different environments (browser vs Commerce Cloud server).
+The frontend and backend components can reference each other conceptually but run in different environments (browser vs Commerce Cloud server). For example, a tax app's backend adapter (`dw.apps.checkout.tax.calculate`) computes tax amounts on the server, and its frontend components display those amounts in `orderSummary.tax` and `checkout.payment.after` on the client.
 
 ## Naming Conventions
 
@@ -426,8 +571,9 @@ Before scaffolding, gather these inputs:
 1. **App name** — What is the name of the Commerce App? (kebab-case)
 2. **Project type** — UI Target only, API Adapter only, or Full App?
 3. **Domain** — What commerce domain does this app extend? (tax, shipping, payment, fraud, product, cart, etc.)
-4. **UI Target** (if frontend) — Which UI Target extension point? Refer to `ui-targets` skill for options.
-5. **Hook domain** (if backend) — Which hook interfaces? Refer to `api-adapters` skill for available hooks.
+4. **UI Targets** (if frontend) — Which UI Target extension points does the app need? **Select all that apply** — most apps target multiple slots across multiple pages. Present the target list grouped by page (checkout, order summary, PDP, header, footer). For each selected wrapper target, the OOTB component and its ShadCN dependencies will be included automatically.
+5. **Additional ShadCN components** (if frontend) — Beyond the ShadCN primitives that come with the selected targets, does the developer need any additional components? Show the full list of 29 from the `storefront-components` skill.
+6. **Hook domain** (if backend) — Which hook interfaces? Refer to `api-adapters` skill for available hooks.
 
 ## After Scaffolding
 
