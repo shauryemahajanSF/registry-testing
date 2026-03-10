@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2026, Salesforce, Inc.
+  All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+
+  Avalara AvaTax site preferences.
+  Creates custom site preferences for API configuration in Business Manager.
+-->
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+
+            <attribute-definition attribute-id="AvaTax_Enabled">
+                <display-name xml:lang="x-default">Enable Avalara Tax</display-name>
+                <description xml:lang="x-default">Toggle Avalara AvaTax integration on or off</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="AvaTax_AccountId">
+                <display-name xml:lang="x-default">Avalara Account ID</display-name>
+                <description xml:lang="x-default">Your Avalara AvaTax account number</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="AvaTax_LicenseKey">
+                <display-name xml:lang="x-default">Avalara License Key</display-name>
+                <description xml:lang="x-default">Your Avalara AvaTax license key (stored securely)</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="AvaTax_CompanyCode">
+                <display-name xml:lang="x-default">Avalara Company Code</display-name>
+                <description xml:lang="x-default">Company code configured in your Avalara account</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="AvaTax_Environment">
+                <display-name xml:lang="x-default">Avalara Environment</display-name>
+                <description xml:lang="x-default">Sandbox for testing, Production for live transactions</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <default-value>sandbox</default-value>
+                <value-definitions>
+                    <value-definition>
+                        <value>sandbox</value>
+                        <display-value xml:lang="x-default">Sandbox</display-value>
+                    </value-definition>
+                    <value-definition>
+                        <value>production</value>
+                        <display-value xml:lang="x-default">Production</display-value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+
+        </custom-attribute-definitions>
+
+        <group-definitions>
+            <attribute-group group-id="AvaTax">
+                <display-name xml:lang="x-default">Avalara AvaTax</display-name>
+                <attribute attribute-id="AvaTax_Enabled"/>
+                <attribute attribute-id="AvaTax_AccountId"/>
+                <attribute attribute-id="AvaTax_LicenseKey"/>
+                <attribute attribute-id="AvaTax_CompanyCode"/>
+                <attribute attribute-id="AvaTax_Environment"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+</metadata>

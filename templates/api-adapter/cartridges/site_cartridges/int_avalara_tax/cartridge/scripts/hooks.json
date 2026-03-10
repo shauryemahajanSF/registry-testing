@@ -1,0 +1,16 @@
+{
+  "hooks": [
+    {
+      "name": "dw.apps.checkout.tax.calculate",
+      "script": "./hooks/taxCalculation"
+    },
+    {
+      "name": "dw.apps.checkout.tax.commit",
+      "script": "./hooks/taxCommit"
+    },
+    {
+      "name": "dw.apps.checkout.tax.cancel",
+      "script": "./hooks/taxCancel"
+    }
+  ]
+}

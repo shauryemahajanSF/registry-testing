@@ -1,0 +1,14 @@
+{
+  "components": [
+    {
+      "targetId": "checkout.shippingAddress",
+      "path": "extensions/address-verification/components/address-form/index.tsx",
+      "order": 0
+    },
+    {
+      "targetId": "sfdc.account.addresses.shippingAddress",
+      "path": "extensions/address-verification/components/address-form/index.tsx",
+      "order": 0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "hooks": [
+    {
+      "name": "dw.ocapi.shop.custom.address-verification.suggest.get",
+      "script": "./hooks/addressSuggest"
+    },
+    {
+      "name": "dw.ocapi.shop.custom.address-verification.verify.post",
+      "script": "./hooks/addressVerify"
+    }
+  ]
+}

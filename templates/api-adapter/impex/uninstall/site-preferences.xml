@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2026, Salesforce, Inc.
+  All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+
+  Removes Avalara AvaTax site preferences.
+  Import via Business Manager to clean up after uninstallation.
+-->
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="AvaTax_Enabled" mode="delete"/>
+            <attribute-definition attribute-id="AvaTax_AccountId" mode="delete"/>
+            <attribute-definition attribute-id="AvaTax_LicenseKey" mode="delete"/>
+            <attribute-definition attribute-id="AvaTax_CompanyCode" mode="delete"/>
+            <attribute-definition attribute-id="AvaTax_Environment" mode="delete"/>
+        </custom-attribute-definitions>
+    </type-extension>
+
+</metadata>
