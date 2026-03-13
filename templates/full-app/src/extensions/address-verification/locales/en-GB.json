@@ -1,0 +1,20 @@
+{
+  "addressVerification": {
+    "heading": "Shipping Address",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "addressLine1": "Address line 1",
+    "addressLine1Placeholder": "Start typing to search…",
+    "addressLine2": "Address line 2 (optional)",
+    "city": "City",
+    "state": "State / Province",
+    "postalCode": "Postal code",
+    "country": "Country",
+    "suggestionLabel": "Verified suggestions",
+    "noSuggestions": "No matching addresses found",
+    "verifying": "Verifying address…",
+    "verified": "Address verified",
+    "unverified": "Could not verify — please check your address",
+    "manualEntry": "Enter address manually"
+  }
+}

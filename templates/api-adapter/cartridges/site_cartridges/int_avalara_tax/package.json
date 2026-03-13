@@ -1,0 +1,6 @@
+{
+  "name": "int_avalara_tax",
+  "version": "1.0.0",
+  "description": "Avalara AvaTax integration cartridge for Commerce Apps",
+  "hooks": "./cartridge/scripts/hooks.json"
+}

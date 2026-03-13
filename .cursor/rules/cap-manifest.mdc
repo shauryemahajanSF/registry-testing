@@ -1,0 +1,70 @@
+---
+description: Validates CAP packaging and manifest conventions for Commerce App submissions
+globs: ["**/manifest.json", "**/catalog.json", "**/*.zip"]
+---
+
+# CAP Manifest and Packaging Rules
+
+## manifest.json — Required Fields
+
+Every manifest.json must contain all of these fields:
+
+```json
+{
+  "name": "app-name",           // kebab-case, unique in registry
+  "displayName": "App Name",    // human-readable
+  "domain": "tax",              // tax, shipping, payment, fraud, etc.
+  "description": "...",         // short description
+  "version": "1.0.0",          // semantic version (MAJOR.MINOR.PATCH)
+  "zip": "app-name-v1.0.0.zip", // must match [name]-v[version].zip
+  "sha256": "..."               // SHA256 hash of the ZIP file
+}
+```
+
+## Version Naming
+
+- Semantic versioning: `MAJOR.MINOR.PATCH`
+- ZIP filename: `[name]-v[version].zip` (e.g., `avalara-tax-v0.2.2.zip`)
+- The `version` field must match the version in the ZIP filename
+- The `name` field must match the name prefix in the ZIP filename
+- Each version must have a unique ZIP filename — never reuse filenames
+
+## SHA256 Integrity
+
+- The `sha256` field must be the SHA256 hash of the actual ZIP file
+- Generate with: `shasum -a 256 [filename].zip` (macOS) or `sha256sum [filename].zip` (Linux)
+- Always regenerate after any change to the ZIP contents
+
+## catalog.json
+
+- New apps must include `catalog.json` with INIT values:
+  ```json
+  { "latest": { "version": "INIT", "tag": "INIT" }, "versions": [] }
+  ```
+- Do NOT modify catalog.json for version updates — CI automation handles this
+- CI creates Git tags matching the ZIP filename without `.zip`
+
+## ZIP Contents
+
+- Top-level directory should include app name and version
+- Must exclude: `.DS_Store`, `__MACOSX/`, `Thumbs.db`, `.git/`, `.env`, `node_modules/`
+- Must include `README.md` with installation instructions
+- Backend apps must include both `impex/install/` and `impex/uninstall/`
+- Backend cartridges must have `package.json` pointing to `hooks.json`
+- Frontend extensions must have `target-config.json` and Storybook stories
+- All source files must include the Apache 2.0 copyright header
+
+## Registry Directory Structure
+
+- Apps are organized by domain: `tax/[app-name]/`, `shipping/[app-name]/`
+- Each app directory contains: ZIP, manifest.json, catalog.json
+- Domain directory names are lowercase
+
+## Submission Validation
+
+Before submitting a PR, verify:
+- `sha256` matches: run `shasum -a 256` on the ZIP and compare
+- `version` is consistent between manifest.json and ZIP filename
+- `name` is consistent between manifest.json and ZIP filename
+- No internal Salesforce release numbers in README or documentation
+- No hardcoded credentials anywhere in the package

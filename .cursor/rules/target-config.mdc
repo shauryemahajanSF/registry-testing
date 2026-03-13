@@ -1,0 +1,73 @@
+---
+description: Validates target-config.json for Commerce App UI Target registration
+globs: ["**/target-config.json"]
+---
+
+# Target Config Rules
+
+## Required Structure
+
+- Must be valid JSON with a `components` array
+- Each entry requires: `targetId` (string), `path` (string), `order` (number)
+- Optional: `contextProviders` array with `path` (string) and `order` (number)
+
+## Target IDs — Must Be a Known Target
+
+Valid checkout targets:
+- `checkout.page.before`, `checkout.page.after`
+- `checkout.mainContent.before`, `checkout.mainContent.after`
+- `checkout.expressPayments.header.before`, `checkout.expressPayments.before`, `checkout.expressPayments`, `checkout.expressPayments.after`
+- `checkout.contactInfo.header.before`, `checkout.contactInfo.before`, `checkout.contactInfo`, `checkout.contactInfo.after`
+- `checkout.shippingAddress.header.before`, `checkout.shippingAddress.before`, `checkout.shippingAddress`, `checkout.shippingAddress.after`
+- `checkout.shippingAddress.autocomplete`
+- `checkout.shippingOptions.header.before`, `checkout.shippingOptions.before`, `checkout.shippingOptions`, `checkout.shippingOptions.after`
+- `checkout.payment.header.before`, `checkout.payment.before`, `checkout.payment`, `checkout.payment.after`
+- `checkout.payment.paymentMethods.before`, `checkout.payment.paymentMethods`, `checkout.payment.paymentMethods.after`
+- `checkout.payment.billingAddress.before`, `checkout.payment.billingAddress`, `checkout.payment.billingAddress.after`
+- `checkout.payment.billingAddress.autocomplete`
+- `checkout.createAccount.before`, `checkout.createAccount`, `checkout.createAccount.after`
+- `checkout.placeOrder.before`, `checkout.placeOrder`, `checkout.placeOrder.after`
+- `checkout.sidebar.before`, `checkout.sidebar.after`
+- `checkout.orderSummary.before`, `checkout.orderSummary`, `checkout.orderSummary.after`
+- `checkout.myCart.before`, `checkout.myCart`, `checkout.myCart.after`
+- `checkout.myCart.header.before`
+
+Valid order summary targets:
+- `orderSummary.subtotal.before`, `orderSummary.subtotal`, `orderSummary.subtotal.after`
+- `orderSummary.adjustments.before`, `orderSummary.adjustments`, `orderSummary.adjustments.after`
+- `orderSummary.shipping.before`, `orderSummary.shipping`, `orderSummary.shipping.after`
+- `orderSummary.tax.before`, `orderSummary.tax`, `orderSummary.tax.after`
+- `orderSummary.total.before`, `orderSummary.total`, `orderSummary.total.after`
+- `orderSummary.promoCode.before`, `orderSummary.promoCode`, `orderSummary.promoCode.after`
+
+Valid PDP targets:
+- `pdp.after.addToCart`
+
+Valid header/footer targets:
+- `header.before.cart`
+- `footer.customersupport.start`, `footer.customersupport.end`
+- `footer.account.start`, `footer.account.end`
+- `footer.ourcompany.start`, `footer.ourcompany.end`
+
+Valid my cart targets:
+- `myCart.header.before`
+
+Do NOT invent target IDs — only use targets from this list. The `sfdc.*` namespace is planned but not yet available.
+
+## Path Validation
+
+- Paths are relative to `src/` directory
+- Must point to a `.tsx` file that exists in the project
+- Component at the path must use `export default`
+
+## Order Field
+
+- Must be a number (typically 0)
+- Lower numbers render first when multiple components target the same slot
+- Always include `order` even for single-component targets
+
+## Context Providers
+
+- Only add `contextProviders` if the extension needs shared state across multiple components
+- Provider must be a `'use client'` component that accepts and renders `children`
+- Lower `order` values wrap closer to the root (outer provider)

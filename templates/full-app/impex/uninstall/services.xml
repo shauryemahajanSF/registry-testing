@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2026, Salesforce, Inc.
+  All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+
+  Removes address verification service definitions.
+-->
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+    <service service-id="addressverification.suggest" service-type="HTTP" mode="delete"/>
+    <service service-id="addressverification.verify" service-type="HTTP" mode="delete"/>
+    <service-profile service-profile-id="addressverification.profile" mode="delete"/>
+    <service-credential service-credential-id="addressverification.credentials" mode="delete"/>
+</services>

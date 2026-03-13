@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2026, Salesforce, Inc.
+  All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+
+  Avalara AvaTax service definitions.
+  Import via Business Manager > Administration > Operations > Import & Export.
+-->
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+
+    <!-- Credentials: Avalara API credentials (merchant configures after install) -->
+    <service-credential service-credential-id="avalara.tax.credentials">
+        <url>https://sandbox-rest.avatax.com/api/v2</url>
+        <!-- Merchant replaces with production URL: https://rest.avatax.com/api/v2 -->
+    </service-credential>
+
+    <!-- Profile: timeout and rate limit settings -->
+    <service-profile service-profile-id="avalara.tax.profile">
+        <timeout-millis>5000</timeout-millis>
+        <rate-limit-enabled>false</rate-limit-enabled>
+    </service-profile>
+
+    <!-- Service: tax calculation -->
+    <service service-id="avalara.tax.calculate" service-type="HTTP">
+        <display-name>Avalara Tax Calculation</display-name>
+        <service-credential>avalara.tax.credentials</service-credential>
+        <service-profile>avalara.tax.profile</service-profile>
+    </service>
+
+    <!-- Service: tax commit (finalize after order placement) -->
+    <service service-id="avalara.tax.commit" service-type="HTTP">
+        <display-name>Avalara Tax Commit</display-name>
+        <service-credential>avalara.tax.credentials</service-credential>
+        <service-profile>avalara.tax.profile</service-profile>
+    </service>
+
+    <!-- Service: tax void (cancel on order cancellation) -->
+    <service service-id="avalara.tax.void" service-type="HTTP">
+        <display-name>Avalara Tax Void</display-name>
+        <service-credential>avalara.tax.credentials</service-credential>
+        <service-profile>avalara.tax.profile</service-profile>
+    </service>
+
+</services>
