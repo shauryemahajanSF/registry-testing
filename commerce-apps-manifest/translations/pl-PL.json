@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "Salesforce podatek ryczałtowy",
+        "description": "Podstawowe obliczanie podatku zapewniane przez Salesforce"
+    },
+    "avalara-tax": {
+        "name": "Podatek Avalara",
+        "description": "Zautomatyzowane rozwiązanie zgodności podatkowej Avalara"
+    },
+    "custom-tax": {
+        "name": "Podatek niestandardowy",
+        "description": "Zbuduj własną niestandardową integrację podatkową"
+    },
+    "basic-shipping": {
+        "name": "Wysyłka podstawowa",
+        "description": "Podstawowa wysyłka zapewniana przez Salesforce"
+    },
+    "custom-shipping": {
+        "name": "Wysyłka niestandardowa",
+        "description": "Zbuduj własną niestandardową integrację wysyłki"
+    },
+    "custom-payment": {
+        "name": "Płatność niestandardowa",
+        "description": "Zbuduj własną niestandardową integrację płatności"
+    }
+}

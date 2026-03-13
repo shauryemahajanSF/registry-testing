@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "Salesforce Flat Tax",
+        "description": "Basic tax calculation provided by Salesforce"
+    },
+    "avalara-tax": {
+        "name": "Avalara Tax",
+        "description": "Automated tax compliance solution by Avalara"
+    },
+    "custom-tax": {
+        "name": "Custom Tax",
+        "description": "Build your own custom tax integration"
+    },
+    "basic-shipping": {
+        "name": "Basic Shipping",
+        "description": "Basic shipping provided by Salesforce"
+    },
+    "custom-shipping": {
+        "name": "Custom Shipping",
+        "description": "Build your own custom shipping integration"
+    },
+    "custom-payment": {
+        "name": "Custom Payment",
+        "description": "Build your own custom payment integration"
+    }
+}

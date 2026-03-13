@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "Salesforce 固定稅",
+        "description": "Salesforce 提供的基本稅務計算"
+    },
+    "avalara-tax": {
+        "name": "Avalara 稅務",
+        "description": "Avalara 提供的自動化稅務合規解決方案"
+    },
+    "custom-tax": {
+        "name": "自訂稅務",
+        "description": "建立您自己的自訂稅務整合"
+    },
+    "basic-shipping": {
+        "name": "基本配送",
+        "description": "Salesforce 提供的基本配送"
+    },
+    "custom-shipping": {
+        "name": "自訂配送",
+        "description": "建立您自己的自訂配送整合"
+    },
+    "custom-payment": {
+        "name": "自訂付款",
+        "description": "建立您自己的自訂付款整合"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "Imposto fixo Salesforce",
+        "description": "Cálculo básico de impostos fornecido pela Salesforce"
+    },
+    "avalara-tax": {
+        "name": "Imposto Avalara",
+        "description": "Solução automatizada de conformidade fiscal da Avalara"
+    },
+    "custom-tax": {
+        "name": "Imposto personalizado",
+        "description": "Crie sua própria integração fiscal personalizada"
+    },
+    "basic-shipping": {
+        "name": "Envio básico",
+        "description": "Envio básico fornecido pela Salesforce"
+    },
+    "custom-shipping": {
+        "name": "Envio personalizado",
+        "description": "Crie sua própria integração de envio personalizada"
+    },
+    "custom-payment": {
+        "name": "Pagamento personalizado",
+        "description": "Crie sua própria integração de pagamento personalizada"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "Salesforce 정액세",
+        "description": "Salesforce에서 제공하는 기본 세금 계산"
+    },
+    "avalara-tax": {
+        "name": "Avalara 세금",
+        "description": "Avalara의 자동화된 세금 준수 솔루션"
+    },
+    "custom-tax": {
+        "name": "맞춤 세금",
+        "description": "나만의 맞춤 세금 통합 구축"
+    },
+    "basic-shipping": {
+        "name": "기본 배송",
+        "description": "Salesforce에서 제공하는 기본 배송"
+    },
+    "custom-shipping": {
+        "name": "맞춤 배송",
+        "description": "나만의 맞춤 배송 통합 구축"
+    },
+    "custom-payment": {
+        "name": "맞춤 결제",
+        "description": "나만의 맞춤 결제 통합 구축"
+    }
+}

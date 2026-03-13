@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "Salesforce Pauschalsteuer",
+        "description": "Grundlegende Steuerberechnung von Salesforce"
+    },
+    "avalara-tax": {
+        "name": "Avalara Steuer",
+        "description": "Automatisierte Steuer-Compliance-Lösung von Avalara"
+    },
+    "custom-tax": {
+        "name": "Benutzerdefinierte Steuer",
+        "description": "Erstellen Sie Ihre eigene benutzerdefinierte Steuerintegration"
+    },
+    "basic-shipping": {
+        "name": "Standardversand",
+        "description": "Standardversand bereitgestellt von Salesforce"
+    },
+    "custom-shipping": {
+        "name": "Benutzerdefinierter Versand",
+        "description": "Erstellen Sie Ihre eigene benutzerdefinierte Versandintegration"
+    },
+    "custom-payment": {
+        "name": "Benutzerdefinierte Zahlung",
+        "description": "Erstellen Sie Ihre eigene benutzerdefinierte Zahlungsintegration"
+    }
+}

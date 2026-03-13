@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "Salesforce 定額税",
+        "description": "Salesforceが提供する基本的な税計算"
+    },
+    "avalara-tax": {
+        "name": "Avalara 税務",
+        "description": "Avalaraによる自動税務コンプライアンスソリューション"
+    },
+    "custom-tax": {
+        "name": "カスタム税",
+        "description": "独自のカスタム税務統合を構築"
+    },
+    "basic-shipping": {
+        "name": "基本配送",
+        "description": "Salesforceが提供する基本配送"
+    },
+    "custom-shipping": {
+        "name": "カスタム配送",
+        "description": "独自のカスタム配送統合を構築"
+    },
+    "custom-payment": {
+        "name": "カスタム決済",
+        "description": "独自のカスタム決済統合を構築"
+    }
+}
