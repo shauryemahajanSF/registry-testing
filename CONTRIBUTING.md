@@ -66,6 +66,8 @@ Get-ChildItem -Path ".\folder_name" -Recurse -File | Where-Object {
 
 Each PR must include a `manifest.json` file containing the metadata for the app version.
 
+> **Important:** This is the **per-app** manifest that lives next to your ZIP in your app’s folder (for example `tax/<app-name>/manifest.json`). It is **not** the top-level registry catalog at `commerce-apps-manifest/manifest.json`, which is maintained separately and lists apps in the registry.
+
 #### Required Fields
 
 The manifest **must** include the following fields:
@@ -79,6 +81,18 @@ The manifest **must** include the following fields:
 - `sha256`
 
 > **Note:** For new versions of an existing app, you must at minimum update the `version`, `zip`, and `sha256` fields.
+
+#### Computing `sha256`
+
+The `sha256` value in `manifest.json` must match the ZIP you are submitting. On **macOS**, you can generate it with:
+
+```bash
+sha256 /path/to/zip
+```
+
+Copy the hex digest from the output into the `sha256` field (without the filename suffix if your shell prints one).
+
+On **Linux**, the equivalent is usually `sha256sum /path/to/zip`.
 
 #### Example `manifest.json`
 
