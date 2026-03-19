@@ -1,0 +1,26 @@
+{
+    "salesforce-flat-tax": {
+        "name": "ضريبة Salesforce الثابتة",
+        "description": "حساب الضريبة الأساسي المقدم من Salesforce"
+    },
+    "avalara-tax": {
+        "name": "ضريبة Avalara",
+        "description": "حل الامتثال الضريبي الآلي من Avalara"
+    },
+    "custom-tax": {
+        "name": "ضريبة مخصصة",
+        "description": "قم ببناء تكامل ضريبي مخصص خاص بك"
+    },
+    "basic-shipping": {
+        "name": "الشحن الأساسي",
+        "description": "الشحن الأساسي المقدم من Salesforce"
+    },
+    "custom-shipping": {
+        "name": "شحن مخصص",
+        "description": "قم ببناء تكامل شحن مخصص خاص بك"
+    },
+    "custom-payment": {
+        "name": "دفع مخصص",
+        "description": "قم ببناء تكامل دفع مخصص خاص بك"
+    }
+}
