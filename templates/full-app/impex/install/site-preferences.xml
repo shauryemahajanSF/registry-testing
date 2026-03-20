@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2026, Salesforce, Inc.
+  All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+
+  Address verification site preferences.
+  Creates configuration preferences in Business Manager.
+-->
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+
+            <attribute-definition attribute-id="AddressVerification_Enabled">
+                <display-name xml:lang="x-default">Enable Address Verification</display-name>
+                <description xml:lang="x-default">Toggle address verification and autocomplete on or off</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="AddressVerification_ApiKey">
+                <display-name xml:lang="x-default">API Key</display-name>
+                <description xml:lang="x-default">API key for your address verification provider (Loqate, Experian, etc.)</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="AddressVerification_Provider">
+                <display-name xml:lang="x-default">Provider</display-name>
+                <description xml:lang="x-default">Which address verification provider to use</description>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <default-value>loqate</default-value>
+                <value-definitions>
+                    <value-definition>
+                        <value>loqate</value>
+                        <display-value xml:lang="x-default">Loqate</display-value>
+                    </value-definition>
+                    <value-definition>
+                        <value>experian</value>
+                        <display-value xml:lang="x-default">Experian</display-value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+
+            <attribute-definition attribute-id="AddressVerification_Countries">
+                <display-name xml:lang="x-default">Supported Countries</display-name>
+                <description xml:lang="x-default">Comma-separated ISO country codes to enable verification for (e.g., US,CA,GB)</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <default-value>US</default-value>
+            </attribute-definition>
+
+        </custom-attribute-definitions>
+
+        <group-definitions>
+            <attribute-group group-id="AddressVerification">
+                <display-name xml:lang="x-default">Address Verification</display-name>
+                <attribute attribute-id="AddressVerification_Enabled"/>
+                <attribute attribute-id="AddressVerification_ApiKey"/>
+                <attribute attribute-id="AddressVerification_Provider"/>
+                <attribute attribute-id="AddressVerification_Countries"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+</metadata>

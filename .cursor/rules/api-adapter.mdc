@@ -1,0 +1,62 @@
+---
+description: Enforces Script API patterns for Commerce App backend adapters
+globs: ["cartridges/**/*.js", "cartridges/**/*.json"]
+---
+
+# API Adapter Rules
+
+## Hook Registration
+
+- `hooks.json` must be at `cartridge/scripts/hooks.json`
+- `package.json` must contain `"hooks": "./cartridge/scripts/hooks.json"`
+- Hook names follow `dw.apps.{domain}.{subdomain}.{action}` pattern
+- Each hook maps to a script file in `cartridge/scripts/hooks/`
+
+## Hook Implementation
+
+- Use `'use strict';` at the top of every file
+- Export the hook function matching the action name: `exports.calculate`, `exports.commit`, `exports.cancel`
+- Always return `dw.system.Status` (`new Status(Status.OK)` or `new Status(Status.ERROR)`)
+- Never return `undefined` from a hook
+- Wrap all basket/order modifications in `Transaction.wrap(function() { ... })`
+- Call `lineItemCtnr.updateTotals()` before reading basket data
+
+## Error Handling
+
+- Never block checkout on API failures — fall back gracefully (e.g., zero tax)
+- Return `Status.OK` with fallback behavior on API errors, `Status.ERROR` only for true system failures
+- Log errors with `Logger.getLogger(category, scope)`
+- Catch all exceptions with try/catch at the top level
+
+## Script API Usage
+
+- Import modules with `require('dw/...')`: Status, Transaction, Logger, Site, HTTPClient, Money, StringUtils
+- Use `~/cartridge/scripts/...` for cartridge-relative imports
+- Use `require()` not `importPackage()` (legacy)
+- No npm packages — only `dw/*` Script API modules and your own cartridge code
+
+## Configuration
+
+- Read config from Site Preferences: `Site.getCurrent().getCustomPreferenceValue('MyApp_Key')`
+- Never hardcode API credentials, URLs, or secrets in script files
+- Define all configurable values as Site Custom Preferences via IMPEX
+- Store API credentials in IMPEX service definitions
+
+## Data Handling
+
+- Use `dw/value/Money` for all currency values: `new Money(amount, currencyCode)`
+- Check for null before accessing `shipment.getShippingAddress()` — may not exist early in checkout
+- Use iterators correctly: `collection.iterator()` then `while (iter.hasNext()) { var item = iter.next(); }`
+
+## Cartridge Naming
+
+- Integration cartridges: `int_` prefix (e.g., `int_avatax`)
+- Business Manager cartridges: `bm_` prefix (e.g., `bm_avatax`)
+- Maximum 50 characters for cartridge directory name
+
+## IMPEX
+
+- Provide both `impex/install/` and `impex/uninstall/` directories
+- Define custom attributes on Basket, Order, or SitePreferences as needed
+- Group site preferences under an attribute group for Business Manager display
+- Include service credentials, profiles, and definitions in `services.xml`

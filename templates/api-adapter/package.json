@@ -1,0 +1,6 @@
+{
+  "name": "avalara-tax",
+  "version": "1.0.0",
+  "description": "Commerce App: Avalara AvaTax integration for tax calculation",
+  "private": true
+}

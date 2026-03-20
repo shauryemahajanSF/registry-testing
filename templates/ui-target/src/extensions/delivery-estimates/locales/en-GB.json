@@ -1,0 +1,12 @@
+{
+  "deliveryEstimate": {
+    "heading": "Delivery Estimate",
+    "postalCodeLabel": "Enter your postal code",
+    "postalCodePlaceholder": "e.g. 90210",
+    "checkButton": "Check",
+    "estimatePrefix": "Estimated delivery by",
+    "noEstimate": "Enter your postal code to see delivery options",
+    "loading": "Checking delivery options…",
+    "error": "Unable to estimate delivery. Please try again."
+  }
+}

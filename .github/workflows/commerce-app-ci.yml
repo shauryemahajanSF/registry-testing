@@ -1,0 +1,280 @@
+# Commerce App CI — validates CAP submissions on pull request and
+# creates Git tags + updates catalog.json on merge to main.
+#
+# Triggers on changes to domain directories (tax/, shipping/, payment/, etc.)
+# that contain manifest.json, catalog.json, and ZIP files.
+
+name: Commerce App CI
+
+on:
+  pull_request:
+    paths:
+      - "**/manifest.json"
+      - "**/catalog.json"
+      - "**/*.zip"
+  push:
+    branches: [main]
+    paths:
+      - "**/manifest.json"
+      - "**/catalog.json"
+      - "**/*.zip"
+
+jobs:
+  # ──────────────────────────────────────────────
+  # Detect which app directories were changed
+  # ──────────────────────────────────────────────
+  detect-apps:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.find.outputs.apps }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find changed app directories
+        id: find
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+          fi
+
+          # Find directories containing a manifest.json among changed files
+          APPS=$(git diff --name-only "$BASE" HEAD \
+            | grep -E '^[^.][^/]+/[^/]+/' \
+            | while read -r f; do
+                DIR=$(echo "$f" | cut -d/ -f1,2)
+                if [ -f "$DIR/manifest.json" ]; then
+                  echo "$DIR"
+                fi
+              done \
+            | sort -u \
+            | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          echo "apps=$APPS" >> "$GITHUB_OUTPUT"
+          echo "Detected app directories: $APPS"
+
+  # ──────────────────────────────────────────────
+  # Validate each changed Commerce App Package
+  # ──────────────────────────────────────────────
+  validate:
+    needs: detect-apps
+    if: github.event_name == 'pull_request' && needs.detect-apps.outputs.apps != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.detect-apps.outputs.apps) }}
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate manifest.json fields
+        working-directory: ${{ matrix.app }}
+        run: |
+          echo "::group::Checking required manifest fields"
+
+          REQUIRED_FIELDS=("name" "displayName" "domain" "description" "version" "zip" "sha256")
+          ERRORS=0
+
+          for field in "${REQUIRED_FIELDS[@]}"; do
+            VALUE=$(jq -r --arg f "$field" '.[$f] // empty' manifest.json)
+            if [ -z "$VALUE" ]; then
+              echo "::error::manifest.json is missing required field: $field"
+              ERRORS=$((ERRORS + 1))
+            else
+              echo "✓ $field: $VALUE"
+            fi
+          done
+
+          if [ "$ERRORS" -gt 0 ]; then
+            exit 1
+          fi
+          echo "::endgroup::"
+
+      - name: Validate naming consistency
+        working-directory: ${{ matrix.app }}
+        run: |
+          echo "::group::Checking name and version consistency"
+
+          NAME=$(jq -r '.name' manifest.json)
+          VERSION=$(jq -r '.version' manifest.json)
+          ZIP=$(jq -r '.zip' manifest.json)
+          EXPECTED_ZIP="${NAME}-v${VERSION}.zip"
+
+          if [ "$ZIP" != "$EXPECTED_ZIP" ]; then
+            echo "::error::ZIP filename mismatch: manifest says '$ZIP' but expected '$EXPECTED_ZIP' based on name '$NAME' and version '$VERSION'"
+            exit 1
+          fi
+          echo "✓ ZIP filename matches: $ZIP"
+
+          # Verify the ZIP file actually exists
+          if [ ! -f "$ZIP" ]; then
+            echo "::error::ZIP file not found: $ZIP"
+            exit 1
+          fi
+          echo "✓ ZIP file exists: $ZIP"
+          echo "::endgroup::"
+
+      - name: Validate SHA256 integrity
+        working-directory: ${{ matrix.app }}
+        run: |
+          echo "::group::Checking SHA256 hash"
+
+          ZIP=$(jq -r '.zip' manifest.json)
+          EXPECTED_HASH=$(jq -r '.sha256' manifest.json)
+          ACTUAL_HASH=$(sha256sum "$ZIP" | awk '{print $1}')
+
+          if [ "$EXPECTED_HASH" != "$ACTUAL_HASH" ]; then
+            echo "::error::SHA256 mismatch for $ZIP"
+            echo "  Expected: $EXPECTED_HASH"
+            echo "  Actual:   $ACTUAL_HASH"
+            exit 1
+          fi
+          echo "✓ SHA256 verified: $ACTUAL_HASH"
+          echo "::endgroup::"
+
+      - name: Validate catalog.json
+        working-directory: ${{ matrix.app }}
+        run: |
+          echo "::group::Checking catalog.json"
+
+          if [ ! -f "catalog.json" ]; then
+            echo "::error::catalog.json is missing — required for all apps"
+            exit 1
+          fi
+
+          LATEST_VERSION=$(jq -r '.latest.version' catalog.json)
+          LATEST_TAG=$(jq -r '.latest.tag' catalog.json)
+
+          # New apps must have INIT placeholders
+          if [ "$LATEST_VERSION" = "INIT" ] && [ "$LATEST_TAG" = "INIT" ]; then
+            echo "✓ New app — catalog.json has INIT placeholders (CI will populate on merge)"
+          elif [ "$LATEST_VERSION" != "INIT" ]; then
+            echo "✓ Existing app — catalog.json has version $LATEST_VERSION"
+          else
+            echo "::error::catalog.json is in an inconsistent state (version=$LATEST_VERSION, tag=$LATEST_TAG)"
+            exit 1
+          fi
+          echo "::endgroup::"
+
+      - name: Check ZIP contents for excluded files
+        working-directory: ${{ matrix.app }}
+        run: |
+          echo "::group::Scanning ZIP for excluded files"
+
+          ZIP=$(jq -r '.zip' manifest.json)
+          EXCLUDED_PATTERNS=(".DS_Store" "__MACOSX" "Thumbs.db" ".git/" ".env" "node_modules/")
+          ERRORS=0
+
+          for pattern in "${EXCLUDED_PATTERNS[@]}"; do
+            if unzip -l "$ZIP" | grep -q "$pattern"; then
+              echo "::error::ZIP contains excluded file/directory: $pattern"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          if [ "$ERRORS" -gt 0 ]; then
+            exit 1
+          fi
+          echo "✓ No excluded files found in ZIP"
+          echo "::endgroup::"
+
+      - name: Scan for hardcoded credentials
+        working-directory: ${{ matrix.app }}
+        run: |
+          echo "::group::Scanning for hardcoded credentials"
+
+          ZIP=$(jq -r '.zip' manifest.json)
+          TMPDIR=$(mktemp -d)
+          unzip -q "$ZIP" -d "$TMPDIR"
+
+          # Patterns that suggest hardcoded secrets
+          PATTERNS=(
+            "api[_-]?key\s*[:=]\s*['\"][A-Za-z0-9]"
+            "api[_-]?secret\s*[:=]\s*['\"][A-Za-z0-9]"
+            "password\s*[:=]\s*['\"][^'\"]{8,}"
+            "Bearer\s+[A-Za-z0-9\-._~+/]+=*"
+          )
+          ERRORS=0
+
+          for pattern in "${PATTERNS[@]}"; do
+            MATCHES=$(grep -r -l -i -E "$pattern" "$TMPDIR" 2>/dev/null || true)
+            if [ -n "$MATCHES" ]; then
+              echo "::warning::Potential hardcoded credential found matching pattern: $pattern"
+              echo "$MATCHES" | sed "s|$TMPDIR/||g" | while read -r f; do
+                echo "  → $f"
+              done
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+
+          rm -rf "$TMPDIR"
+
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::error::Found $ERRORS potential hardcoded credential(s) — review the warnings above"
+            exit 1
+          fi
+          echo "✓ No hardcoded credentials detected"
+          echo "::endgroup::"
+
+  # ──────────────────────────────────────────────
+  # Tag and update catalog on merge to main
+  # ──────────────────────────────────────────────
+  tag-and-catalog:
+    needs: detect-apps
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.detect-apps.outputs.apps != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.detect-apps.outputs.apps) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Git tag
+        working-directory: ${{ matrix.app }}
+        run: |
+          ZIP=$(jq -r '.zip' manifest.json)
+          TAG="${ZIP%.zip}"
+
+          echo "Creating tag: $TAG"
+          git tag "$TAG"
+          git push origin "$TAG"
+
+      - name: Update catalog.json
+        working-directory: ${{ matrix.app }}
+        run: |
+          NAME=$(jq -r '.name' manifest.json)
+          VERSION=$(jq -r '.version' manifest.json)
+          ZIP=$(jq -r '.zip' manifest.json)
+          TAG="${ZIP%.zip}"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # Update latest and append to versions array
+          jq --arg version "$VERSION" \
+             --arg tag "$TAG" \
+             --arg timestamp "$TIMESTAMP" \
+             '.latest = { version: $version, tag: $tag } |
+              .versions += [{ version: $version, tag: $tag, publishedAt: $timestamp }]' \
+             catalog.json > catalog.tmp.json
+          mv catalog.tmp.json catalog.json
+
+          echo "Updated catalog.json:"
+          cat catalog.json
+
+      - name: Commit catalog update
+        working-directory: ${{ matrix.app }}
+        run: |
+          NAME=$(jq -r '.name' manifest.json)
+          VERSION=$(jq -r '.version' manifest.json)
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add catalog.json
+          git commit -m "chore: update $NAME catalog to v$VERSION [skip ci]"
+          git push
