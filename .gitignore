@@ -54,5 +54,9 @@ $RECYCLE.BIN/
 # Ignore all hidden files/folders by default
 .*
 
+# But keep GitHub automation files tracked
+!.github/
+!.github/**
+
 # Keep the .gitignore file itself!
 !.gitignore
