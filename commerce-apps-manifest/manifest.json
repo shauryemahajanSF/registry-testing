@@ -19,8 +19,8 @@
             "domain": "tax",
             "type": "app",
             "provider": "thirdParty",
-            "version": "0.2.6",
-            "zip": "avalara-tax-v0.2.6.zip",
+            "version": "0.2.7",
+            "zip": "avalara-tax-v0.2.7.zip",
             "sha256": "db9f69832272c882f5274c0490bfaa5c73d92ea8e2e441e2d6759797b9ad0e1d"
         },
         {
