@@ -155,10 +155,10 @@ jobs:
               fi
             done
 
-            # Ensure app-configuration/taskList.json exists in the ZIP payload
-            required_task_list="$root/app-configuration/taskList.json"
+            # Ensure app-configuration/tasksList.json exists in the ZIP payload
+            required_task_list="$root/app-configuration/tasksList.json"
             if [[ ! -f "$required_task_list" ]]; then
-              echo "::error file=$zip_path::Missing required file app-configuration/taskList.json"
+              echo "::error file=$zip_path::Missing required file app-configuration/tasksList.json"
               rm -rf "$tmpdir"
               exit 1
             fi
