@@ -1,15 +1,15 @@
 {
     "salesforce-flat-tax": {
         "name": "Taxe forfaitaire Salesforce",
-        "description": "Calcul de taxe de base fourni par Salesforce"
+        "description": "Configurez un calcul de taxe forfaitaire."
     },
     "avalara-tax": {
-        "name": "Taxe Avalara",
-        "description": "Solution automatisée de conformité fiscale par Avalara"
+        "name": "Avalara",
+        "description": "Automatisez votre conformité fiscale avec Avalara."
     },
     "custom-tax": {
         "name": "Taxe personnalisée",
-        "description": "Créez votre propre intégration fiscale personnalisée"
+        "description": "Configurez un calcul de taxe personnalisé en fournissant vos propres API."
     },
     "basic-shipping": {
         "name": "Livraison de base",
