@@ -1,0 +1,34 @@
+{
+  "tasks": [
+    {
+      "id": "configure-credentials",
+      "title": "Configure Avalara API Credentials",
+      "description": "In Business Manager, go to Merchant Tools > Site Preferences > Custom Preferences > Avalara AvaTax. Enter your Account ID, License Key, and Company Code.",
+      "required": true
+    },
+    {
+      "id": "set-environment",
+      "title": "Select Avalara Environment",
+      "description": "Set the Environment to 'Sandbox' for testing or 'Production' for live transactions.",
+      "required": true
+    },
+    {
+      "id": "enable-integration",
+      "title": "Enable Avalara Tax",
+      "description": "Toggle 'Enable Avalara Tax' to true to activate the integration.",
+      "required": true
+    },
+    {
+      "id": "verify-cartridge-path",
+      "title": "Verify Cartridge Path",
+      "description": "Ensure 'int_avalara_tax' is included in the cartridge path for your site (Business Manager > Administration > Sites > Manage Sites > [site] > Settings).",
+      "required": true
+    },
+    {
+      "id": "test-calculation",
+      "title": "Test Tax Calculation",
+      "description": "Add a product to the cart, proceed to checkout, enter a shipping address, and verify that tax is calculated correctly.",
+      "required": false
+    }
+  ]
+}

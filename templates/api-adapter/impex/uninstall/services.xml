@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2026, Salesforce, Inc.
+  All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+
+  Removes Avalara AvaTax service definitions.
+  Import via Business Manager to clean up after uninstallation.
+-->
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+    <service service-id="avalara.tax.calculate" service-type="HTTP" mode="delete"/>
+    <service service-id="avalara.tax.commit" service-type="HTTP" mode="delete"/>
+    <service service-id="avalara.tax.void" service-type="HTTP" mode="delete"/>
+    <service-profile service-profile-id="avalara.tax.profile" mode="delete"/>
+    <service-credential service-credential-id="avalara.tax.credentials" mode="delete"/>
+</services>

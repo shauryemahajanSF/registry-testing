@@ -1,0 +1,45 @@
+{
+  "name": "Commerce Apps Development",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "postCreateCommand": "npm install",
+
+  "forwardPorts": [
+    5173,
+    6006
+  ],
+  "portsAttributes": {
+    "5173": { "label": "Vite Dev Server", "onAutoForward": "notify" },
+    "6006": { "label": "Storybook", "onAutoForward": "notify" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "tailwindCSS.experimental.configFile": null,
+        "files.associations": {
+          "*.css": "tailwindcss"
+        }
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "storybook.storybook-vscode",
+        "vitest.explorer",
+        "ms-playwright.playwright"
+      ]
+    }
+  }
+}

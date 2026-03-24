@@ -1,0 +1,46 @@
+{
+  "tasks": [
+    {
+      "id": "configure-api-key",
+      "title": "Configure Address Verification API Key",
+      "description": "In Business Manager, go to Merchant Tools > Site Preferences > Custom Preferences > Address Verification. Enter the API key from your address verification provider (Loqate, Experian, etc.).",
+      "required": true
+    },
+    {
+      "id": "select-provider",
+      "title": "Select Address Verification Provider",
+      "description": "Choose your address verification provider (Loqate or Experian) in the Provider preference.",
+      "required": true
+    },
+    {
+      "id": "configure-countries",
+      "title": "Set Supported Countries",
+      "description": "Enter the ISO country codes for which address verification should be active (e.g., US,CA,GB).",
+      "required": true
+    },
+    {
+      "id": "update-service-url",
+      "title": "Update Service Endpoint URL",
+      "description": "In Business Manager, go to Administration > Operations > Services. Update the 'addressverification.credentials' URL to match your provider's API endpoint.",
+      "required": true
+    },
+    {
+      "id": "verify-cartridge-path",
+      "title": "Verify Cartridge Path",
+      "description": "Ensure 'int_address_verification' is included in the cartridge path for your site.",
+      "required": true
+    },
+    {
+      "id": "enable-integration",
+      "title": "Enable Address Verification",
+      "description": "Toggle 'Enable Address Verification' to true to activate autocomplete and verification.",
+      "required": true
+    },
+    {
+      "id": "test-checkout",
+      "title": "Test in Checkout",
+      "description": "Go through the checkout flow and verify that address autocomplete suggestions appear when typing in the shipping address field.",
+      "required": false
+    }
+  ]
+}

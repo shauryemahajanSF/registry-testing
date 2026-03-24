@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2026, Salesforce, Inc.
+  All rights reserved.
+  SPDX-License-Identifier: Apache-2.0
+
+  Removes address verification site preferences.
+-->
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="AddressVerification_Enabled" mode="delete"/>
+            <attribute-definition attribute-id="AddressVerification_ApiKey" mode="delete"/>
+            <attribute-definition attribute-id="AddressVerification_Provider" mode="delete"/>
+            <attribute-definition attribute-id="AddressVerification_Countries" mode="delete"/>
+        </custom-attribute-definitions>
+    </type-extension>
+
+</metadata>

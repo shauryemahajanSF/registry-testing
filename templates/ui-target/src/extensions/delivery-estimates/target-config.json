@@ -1,0 +1,9 @@
+{
+  "components": [
+    {
+      "targetId": "sfdc.pdp.deliveryestimates.getestimatefrompostal",
+      "path": "extensions/delivery-estimates/components/delivery-estimate/index.tsx",
+      "order": 0
+    }
+  ]
+}

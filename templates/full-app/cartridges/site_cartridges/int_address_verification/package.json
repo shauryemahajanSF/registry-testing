@@ -1,0 +1,6 @@
+{
+  "name": "int_address_verification",
+  "version": "1.0.0",
+  "description": "Address verification integration cartridge for Commerce Apps",
+  "hooks": "./cartridge/scripts/hooks.json"
+}

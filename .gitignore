@@ -60,3 +60,14 @@ $RECYCLE.BIN/
 
 # Keep the .gitignore file itself!
 !.gitignore
+
+# Keep tool config directories
+!.claude/
+!.cursor/
+!.devcontainer/
+!.github/
+
+# ==========================================
+# Local Reference Docs (not for PRs)
+# ==========================================
+docs/

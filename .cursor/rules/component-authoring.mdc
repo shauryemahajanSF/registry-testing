@@ -1,0 +1,71 @@
+---
+description: Enforces Storefront Next component conventions for Commerce App extensions
+globs: ["src/extensions/**/*.tsx", "src/extensions/**/*.ts"]
+---
+
+# Component Authoring Rules
+
+## Design Tokens — Never Hardcode Values
+
+- Use semantic Tailwind classes: `bg-primary`, `text-foreground`, `border`, `rounded-lg`
+- Never use Tailwind's color palette: `bg-blue-500`, `text-gray-900`
+- Never use inline styles with color values: `style={{ color: '#000' }}`
+- Never use `@apply` — use utility classes directly in JSX
+- Use token pairs for contrast: `bg-primary` + `text-primary-foreground`
+
+## Component Structure
+
+- Use `'use client'` for any component with hooks, event handlers, or browser APIs
+- Export components as `export default function ComponentName(): ReactElement`
+- Use `useId()` for form label associations, never hardcoded IDs
+- Use `cn()` from `@/lib/utils` for conditional class merging
+- Include `data-slot` attribute on wrapper elements for testability
+- Include the Apache 2.0 copyright header
+
+## ShadCN UI
+
+- Import from `@/components/ui/<component>`
+- Use `React.ComponentProps<>` for typing, not custom interfaces
+- Use CVA (`class-variance-authority`) for component variants
+- Use `Slot` from `@radix-ui/react-slot` for polymorphic `asChild` pattern
+
+## File Naming
+
+- Kebab-case directories: `my-component/`
+- `index.tsx` for main component files
+- Stories in `stories/index.stories.tsx` subdirectory
+
+## Storybook
+
+- Import from `'@storybook/react-vite'` (not `'@storybook/react'`)
+- Import test utils from `'storybook/test'` (not `'@storybook/testing-library'`)
+- Import actions from `'storybook/actions'` (not `'@storybook/addon-actions'`)
+- Use `waitForStorybookReady(canvasElement)` before assertions in play functions
+- Use `globals: { viewport: 'mobile2' }` for mobile stories
+- Include `tags: ['autodocs', 'interaction']`
+
+## Accessibility (WCAG 2.1 AA)
+
+- Use `<button>` for actions, `<a>` for navigation — never `<div onClick>`
+- Every `<input>` must have an associated `<label>` with matching `htmlFor`/`id`
+- Use `aria-label`, `aria-describedby`, `aria-expanded` where appropriate
+- Focus styles: `focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`
+- All interactive elements must be keyboard navigable (Tab, Enter, Space)
+
+## Internationalization
+
+- Use `useTranslation('extensionName')` for all user-facing strings
+- Translation files go in `extensions/<name>/locales/en-GB.json`
+- Never hardcode user-visible text in JSX
+
+## TypeScript
+
+- No `any` type — explicitly type all props and data
+- Use strict mode
+- Use `ReactElement` as return type annotation
+
+## What Does Not Exist
+
+- No `tailwind.config.ts` — Tailwind v4 uses `@theme inline` in `app.css`
+- No `PluginProviders` — providers are injected via Storybook global decorator
+- No `target-config.json.snippet` — the file is `target-config.json`
