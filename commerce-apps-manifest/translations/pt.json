@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "Envio básico",
-        "description": "Envio básico fornecido pela Salesforce"
+        "description": "Configure um cálculo de envio básico."
     },
     "custom-shipping": {
         "name": "Envio personalizado",
-        "description": "Crie sua própria integração de envio personalizada"
+        "description": "Configure um cálculo de envio personalizado fornecendo suas próprias APIs."
     },
     "custom-payment": {
         "name": "Pagamento personalizado",
-        "description": "Crie sua própria integração de pagamento personalizada"
+        "description": "Configure uma integração de pagamento personalizada fornecendo suas próprias APIs."
     }
 }

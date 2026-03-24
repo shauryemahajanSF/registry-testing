@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "Basic Shipping",
-        "description": "Basic shipping provided by Salesforce"
+        "description": "Configure a basic shipping calculation."
     },
     "custom-shipping": {
         "name": "Custom Shipping",
-        "description": "Build your own custom shipping integration"
+        "description": "Configure a custom shipping calculation by providing your own APIs."
     },
     "custom-payment": {
         "name": "Custom Payment",
-        "description": "Build your own custom payment integration"
+        "description": "Configure a custom payment integration by providing your own APIs."
     }
 }

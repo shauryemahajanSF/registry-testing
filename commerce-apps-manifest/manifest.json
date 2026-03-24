@@ -37,7 +37,7 @@
         {
             "id": "basic-shipping",
             "name": "Basic Shipping",
-            "description": "Basic shipping provided by Salesforce",
+            "description": "Configure a basic shipping calculation.",
             "iconName": "salesforce.svg",
             "domain": "shipping",
             "type": "feature",
@@ -47,7 +47,7 @@
         {
             "id": "custom-shipping",
             "name": "Custom Shipping",
-            "description": "Build your own custom shipping integration",
+            "description": "Configure a custom shipping calculation by providing your own APIs.",
             "iconName": "custom.svg",
             "domain": "shipping",
             "type": "custom",
@@ -58,7 +58,7 @@
         {
             "id": "custom-payment",
             "name": "Custom Payment",
-            "description": "Build your own custom payment integration",
+            "description": "Configure a custom payment integration by providing your own APIs.",
             "iconName": "custom.svg",
             "domain": "payment",
             "type": "custom",

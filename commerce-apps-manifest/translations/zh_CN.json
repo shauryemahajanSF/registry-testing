@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "基本配送",
-        "description": "Salesforce 提供的基本配送"
+        "description": "配置基本配送计算。"
     },
     "custom-shipping": {
         "name": "自定义配送",
-        "description": "构建您自己的自定义配送集成"
+        "description": "通过提供您自己的 API 来配置自定义配送计算。"
     },
     "custom-payment": {
         "name": "自定义支付",
-        "description": "构建您自己的自定义支付集成"
+        "description": "通过提供您自己的 API 来配置自定义支付集成。"
     }
 }

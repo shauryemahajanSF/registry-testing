@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "Standardversand",
-        "description": "Standardversand bereitgestellt von Salesforce"
+        "description": "Konfigurieren Sie eine grundlegende Versandberechnung."
     },
     "custom-shipping": {
         "name": "Benutzerdefinierter Versand",
-        "description": "Erstellen Sie Ihre eigene benutzerdefinierte Versandintegration"
+        "description": "Konfigurieren Sie eine benutzerdefinierte Versandberechnung mit Ihren eigenen APIs."
     },
     "custom-payment": {
         "name": "Benutzerdefinierte Zahlung",
-        "description": "Erstellen Sie Ihre eigene benutzerdefinierte Zahlungsintegration"
+        "description": "Konfigurieren Sie eine benutzerdefinierte Zahlungsintegration mit Ihren eigenen APIs."
     }
 }

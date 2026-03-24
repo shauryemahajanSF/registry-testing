@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "Wysyłka podstawowa",
-        "description": "Podstawowa wysyłka zapewniana przez Salesforce"
+        "description": "Skonfiguruj podstawowe obliczanie kosztów wysyłki."
     },
     "custom-shipping": {
         "name": "Wysyłka niestandardowa",
-        "description": "Zbuduj własną niestandardową integrację wysyłki"
+        "description": "Skonfiguruj niestandardowe obliczanie kosztów wysyłki, podając własne interfejsy API."
     },
     "custom-payment": {
         "name": "Płatność niestandardowa",
-        "description": "Zbuduj własną niestandardową integrację płatności"
+        "description": "Skonfiguruj niestandardową integrację płatności, podając własne interfejsy API."
     }
 }

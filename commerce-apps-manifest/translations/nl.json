@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "Basisverzending",
-        "description": "Basisverzending geleverd door Salesforce"
+        "description": "Configureer een basisverzendberekening."
     },
     "custom-shipping": {
         "name": "Aangepaste verzending",
-        "description": "Bouw uw eigen aangepaste verzendintegratie"
+        "description": "Configureer een aangepaste verzendberekening met uw eigen API's."
     },
     "custom-payment": {
         "name": "Aangepaste betaling",
-        "description": "Bouw uw eigen aangepaste betalingsintegratie"
+        "description": "Configureer een aangepaste betalingsintegratie met uw eigen API's."
     }
 }
