@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "기본 배송",
-        "description": "Salesforce에서 제공하는 기본 배송"
+        "description": "기본 배송 계산을 구성합니다."
     },
     "custom-shipping": {
         "name": "맞춤 배송",
-        "description": "나만의 맞춤 배송 통합 구축"
+        "description": "자체 API를 제공하여 맞춤 배송 계산을 구성합니다."
     },
     "custom-payment": {
         "name": "맞춤 결제",
-        "description": "나만의 맞춤 결제 통합 구축"
+        "description": "자체 API를 제공하여 맞춤 결제 통합을 구성합니다."
     }
 }

@@ -13,14 +13,14 @@
     },
     "basic-shipping": {
         "name": "الشحن الأساسي",
-        "description": "الشحن الأساسي المقدم من Salesforce"
+        "description": "تكوين حساب شحن أساسي."
     },
     "custom-shipping": {
         "name": "شحن مخصص",
-        "description": "قم ببناء تكامل شحن مخصص خاص بك"
+        "description": "تكوين حساب شحن مخصص من خلال توفير واجهات API الخاصة بك."
     },
     "custom-payment": {
         "name": "دفع مخصص",
-        "description": "قم ببناء تكامل دفع مخصص خاص بك"
+        "description": "تكوين تكامل دفع مخصص من خلال توفير واجهات API الخاصة بك."
     }
 }
