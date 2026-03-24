@@ -1,15 +1,15 @@
 {
     "salesforce-flat-tax": {
         "name": "Salesforce 정액세",
-        "description": "Salesforce에서 제공하는 기본 세금 계산"
+        "description": "정액세 계산을 구성합니다."
     },
     "avalara-tax": {
-        "name": "Avalara 세금",
-        "description": "Avalara의 자동화된 세금 준수 솔루션"
+        "name": "Avalara",
+        "description": "Avalara로 판매세 규정 준수를 자동화합니다."
     },
     "custom-tax": {
         "name": "맞춤 세금",
-        "description": "나만의 맞춤 세금 통합 구축"
+        "description": "자체 API를 제공하여 맞춤 세금 계산을 구성합니다."
     },
     "basic-shipping": {
         "name": "기본 배송",

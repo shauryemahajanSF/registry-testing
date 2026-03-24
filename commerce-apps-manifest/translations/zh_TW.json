@@ -1,15 +1,15 @@
 {
     "salesforce-flat-tax": {
         "name": "Salesforce 固定稅",
-        "description": "Salesforce 提供的基本稅務計算"
+        "description": "設定固定稅計算。"
     },
     "avalara-tax": {
-        "name": "Avalara 稅務",
-        "description": "Avalara 提供的自動化稅務合規解決方案"
+        "name": "Avalara",
+        "description": "使用 Avalara 自動執行銷售稅合規。"
     },
     "custom-tax": {
         "name": "自訂稅務",
-        "description": "建立您自己的自訂稅務整合"
+        "description": "透過提供您自己的 API 來設定自訂稅務計算。"
     },
     "basic-shipping": {
         "name": "基本配送",

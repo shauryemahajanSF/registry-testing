@@ -1,15 +1,15 @@
 {
     "salesforce-flat-tax": {
         "name": "Salesforce podatek ryczałtowy",
-        "description": "Podstawowe obliczanie podatku zapewniane przez Salesforce"
+        "description": "Skonfiguruj obliczanie podatku ryczałtowego."
     },
     "avalara-tax": {
-        "name": "Podatek Avalara",
-        "description": "Zautomatyzowane rozwiązanie zgodności podatkowej Avalara"
+        "name": "Avalara",
+        "description": "Zautomatyzuj zgodność z podatkiem od sprzedaży dzięki Avalara."
     },
     "custom-tax": {
         "name": "Podatek niestandardowy",
-        "description": "Zbuduj własną niestandardową integrację podatkową"
+        "description": "Skonfiguruj niestandardowe obliczanie podatku, podając własne interfejsy API."
     },
     "basic-shipping": {
         "name": "Wysyłka podstawowa",

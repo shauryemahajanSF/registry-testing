@@ -1,15 +1,15 @@
 {
     "salesforce-flat-tax": {
         "name": "Salesforce vast belastingtarief",
-        "description": "Basisbelastingberekening geleverd door Salesforce"
+        "description": "Configureer een vaste belastingberekening."
     },
     "avalara-tax": {
-        "name": "Avalara belasting",
-        "description": "Geautomatiseerde belastingoplossing van Avalara"
+        "name": "Avalara",
+        "description": "Automatiseer uw btw-naleving met Avalara."
     },
     "custom-tax": {
         "name": "Aangepaste belasting",
-        "description": "Bouw uw eigen aangepaste belastingintegratie"
+        "description": "Configureer een aangepaste belastingberekening met uw eigen API's."
     },
     "basic-shipping": {
         "name": "Basisverzending",

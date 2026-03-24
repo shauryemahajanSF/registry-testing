@@ -1,15 +1,15 @@
 {
     "salesforce-flat-tax": {
         "name": "ضريبة Salesforce الثابتة",
-        "description": "حساب الضريبة الأساسي المقدم من Salesforce"
+        "description": "تكوين حساب ضريبة ثابتة."
     },
     "avalara-tax": {
-        "name": "ضريبة Avalara",
-        "description": "حل الامتثال الضريبي الآلي من Avalara"
+        "name": "Avalara",
+        "description": "أتمتة الامتثال لضريبة المبيعات مع Avalara."
     },
     "custom-tax": {
         "name": "ضريبة مخصصة",
-        "description": "قم ببناء تكامل ضريبي مخصص خاص بك"
+        "description": "تكوين حساب ضريبة مخصص من خلال توفير واجهات API الخاصة بك."
     },
     "basic-shipping": {
         "name": "الشحن الأساسي",

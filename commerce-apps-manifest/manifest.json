@@ -4,7 +4,7 @@
         {
             "id": "salesforce-flat-tax",
             "name": "Salesforce Flat Tax",
-            "description": "Basic tax calculation provided by Salesforce",
+            "description": "Configure a flat tax calculation.",
             "iconName": "salesforce.svg",
             "domain": "tax",
             "type": "feature",
@@ -13,8 +13,8 @@
         },
         {
             "id": "avalara-tax",
-            "name": "Avalara Tax",
-            "description": "Automated tax compliance solution by Avalara",
+            "name": "Avalara",
+            "description": "Automate your sales tax compliance with Avalara.",
             "iconName": "avalara.png",
             "domain": "tax",
             "type": "app",
@@ -26,7 +26,7 @@
         {
             "id": "custom-tax",
             "name": "Custom Tax",
-            "description": "Build your own custom tax integration",
+            "description": "Configure a custom tax calculation by providing your own APIs.",
             "iconName": "custom.svg",
             "domain": "tax",
             "type": "custom",
