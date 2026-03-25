@@ -60,3 +60,21 @@ $RECYCLE.BIN/
 
 # Keep the .gitignore file itself!
 !.gitignore
+
+# Keep Claude Code and Cursor directories
+!.claude/
+!.claude/**
+!.cursor/
+!.cursor/**
+
+# But exclude local settings files
+.claude/settings.local.json
+.cursor/settings.local.json
+
+# ==========================================
+# Commerce Apps - Extracted Directories
+# ==========================================
+# Do NOT commit extracted app directories
+# Only commit ZIP files, manifest.json, and catalog.json
+**/commerce-*-app-v*/
+**/commerce-*-app-*/

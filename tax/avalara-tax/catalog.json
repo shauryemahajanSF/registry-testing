@@ -6,47 +6,58 @@
   "versions": [
     {
       "version": "0.1.2",
-      "tag": "avalara-tax-v0.1.2"
+      "tag": "avalara-tax-v0.1.2",
+      "deprecated": true
     },
     {
       "version": "0.1.3",
-      "tag": "avalara-tax-v0.1.3"
+      "tag": "avalara-tax-v0.1.3",
+      "deprecated": true
     },
     {
       "version": "0.1.4",
-      "tag": "avalara-tax-v0.1.4"
+      "tag": "avalara-tax-v0.1.4",
+      "deprecated": true
     },
     {
       "version": "0.1.5",
-      "tag": "avalara-tax-v0.1.5"
+      "tag": "avalara-tax-v0.1.5",
+      "deprecated": true
     },
     {
       "version": "0.1.6",
-      "tag": "avalara-tax-v0.1.6"
+      "tag": "avalara-tax-v0.1.6",
+      "deprecated": true
     },
     {
       "version": "0.1.7",
-      "tag": "avalara-tax-v0.1.7"
+      "tag": "avalara-tax-v0.1.7",
+      "deprecated": true
     },
     {
       "version": "0.2.0",
-      "tag": "avalara-tax-v0.2.0"
+      "tag": "avalara-tax-v0.2.0",
+      "deprecated": true
     },
     {
       "version": "0.2.1",
-      "tag": "avalara-tax-v0.2.1"
+      "tag": "avalara-tax-v0.2.1",
+      "deprecated": true
     },
     {
       "version": "0.2.2",
-      "tag": "avalara-tax-v0.2.2"
+      "tag": "avalara-tax-v0.2.2",
+      "deprecated": true
     },
     {
       "version": "0.2.3",
-      "tag": "avalara-tax-v0.2.3"
+      "tag": "avalara-tax-v0.2.3",
+      "deprecated": true
     },
     {
       "version": "0.2.4",
-      "tag": "avalara-tax-v0.2.4"
+      "tag": "avalara-tax-v0.2.4",
+      "deprecated": true
     },
     {
       "version": "0.2.5",
