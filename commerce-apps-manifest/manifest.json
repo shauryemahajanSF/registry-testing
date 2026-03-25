@@ -65,7 +65,16 @@
             "provider": "salesforce",
             "version": "0.0.1",
             "zip": "salesforce-payments-v0.0.1.zip",
-            "sha256": "ff7326c72ea5839a34ca69cbf66a55c48f6f3a5587f180311fdee7b8e29d8420"
+            "sha256": "ff7326c72ea5839a34ca69cbf66a55c48f6f3a5587f180311fdee7b8e29d8420",
+            "configurationComponents": [
+                "ccbm_payments/multiStepPaymentMethods",
+                "ccbm_payments/expressPaymentMethods",
+                "ccbm_payments/expressCheckoutDisplay",
+                "ccbm_payments/paymentAdvancedSettings"
+            ],
+            "connectionDetailsComponents": [
+                "ccbm_payments/manageMerchantAccount"
+            ]
         },
         {
             "id": "custom-payment",
