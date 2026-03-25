@@ -121,7 +121,7 @@ jobs:
           set -euo pipefail
 
           # List of allowed top level folder names
-          allowed=("impex" "app-configuration" "storefront-next" "cartridges")
+          allowed=("impex" "app-configuration" "storefront-next" "cartridges" "icons")
 
           [[ -s changed_zips.txt ]] || exit 0
 
