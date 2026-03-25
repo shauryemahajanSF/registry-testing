@@ -113,9 +113,8 @@ jobs:
                 mapfile -t icon_files < <(find "$icons_dir" -type f \( -iname "*.png" -o -iname "*.svg" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print)
 
                 for icon_file in "${icon_files[@]}"; do
-                  icon_ext="${icon_file##*.}"
-                  # Rename icon to {isv-name}.{ext}
-                  dest_icon="$icons_manifest_dir/${isv_name}.${icon_ext}"
+                  icon_basename="$(basename "$icon_file")"
+                  dest_icon="$icons_manifest_dir/${icon_basename}"
 
                   # Only copy if it doesn't exist or is different
                   if [[ ! -f "$dest_icon" ]]; then
