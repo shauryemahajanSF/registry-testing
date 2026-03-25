@@ -2,8 +2,9 @@
 name: validate-commerce-app
 description: >-
   Validate a commerce app package before PR submission. Checks directory structure,
-  root manifest format, SHA256 hash, commerce-app.json, and runs the full PR checklist
-  from CONTRIBUTING.md. Use when preparing to submit a PR or debugging validation issues.
+  root manifest format, SHA256 hash, commerce-app.json, impex XML files, and runs
+  the full PR checklist from CONTRIBUTING.md. Use when preparing to submit a PR or
+  debugging validation issues.
 ---
 
 # Validate Commerce App Package
@@ -106,7 +107,80 @@ Extract and read `commerce-<appName>-app-v<version>/commerce-app.json`:
 3. Verify domain matches
 4. Check that publisher fields are valid URLs
 
-## Step 7: Check for catalog.json
+## Step 7: Validate impex files
+
+Extract the ZIP and validate all impex XML files for correctness:
+
+### XML Syntax Validation
+
+Validate all XML files are well-formed:
+```bash
+find commerce-<appName>-app-v<version>/impex/ -name "*.xml" -exec xmllint --noout {} \;
+```
+
+### Services Validation
+
+**Install file (`impex/install/services.xml`):**
+- [ ] XML namespace is `http://www.demandware.com/xml/impex/services/2015-07-01`
+- [ ] All service IDs use dotted notation (e.g., `vendor.service.api`)
+- [ ] All services reference valid credentials and profiles
+- [ ] No hardcoded production credentials or secrets
+- [ ] Timeouts are reasonable (5000-60000 ms)
+- [ ] Rate limiting configured for external APIs
+
+**Uninstall file (`impex/uninstall/services.xml`):**
+- [ ] All services use `mode="delete"`
+- [ ] Deletion order: service → profile → credential
+- [ ] All service/profile/credential IDs match install file exactly
+
+### Site Preferences Validation
+
+**Metadata file (`impex/install/meta/system-objecttype-extensions.xml`):**
+- [ ] XML namespace is `http://www.demandware.com/xml/impex/metadata/2006-10-31`
+- [ ] All attribute IDs use camelCase (not snake_case)
+- [ ] All attribute IDs prefixed with app name
+- [ ] All attributes have display names and descriptions
+- [ ] Default values match data types
+- [ ] All attributes added to group definition
+- [ ] Valid attribute types used (string, boolean, integer, enum-of-string, etc.)
+
+**Preferences file (`impex/install/sites/SITEID/preferences.xml`):**
+- [ ] Uses `SITEID` placeholder (not actual site ID)
+- [ ] All preference IDs match attribute definitions
+- [ ] Default values match data types
+- [ ] No sensitive data (API keys, secrets)
+
+### Custom Objects Validation (if present)
+
+**Custom object definitions (`impex/install/meta/custom-objecttype-definitions.xml`):**
+- [ ] `key-attribute` defined and mandatory
+- [ ] Storage scope is `site` or `organization`
+- [ ] Retention policy set (0 or 1-365 days)
+- [ ] Valid staging mode (`no-sharing`, `shared`, or `source-to-target`)
+- [ ] All attributes added to group
+
+### Cross-File Validation
+
+Verify install/uninstall pairs match:
+```bash
+# Extract and compare service IDs
+grep 'service-id=' impex/install/services.xml | sed 's/.*service-id="\([^"]*\)".*/\1/' | sort > /tmp/install.txt
+grep 'service-id=' impex/uninstall/services.xml | sed 's/.*service-id="\([^"]*\)".*/\1/' | sort > /tmp/uninstall.txt
+diff /tmp/install.txt /tmp/uninstall.txt
+```
+
+### Common Impex Errors
+
+Check for these common issues:
+- [ ] No unescaped special characters (`&` → `&amp;`, `<` → `&lt;`, etc.)
+- [ ] No duplicate service/credential/profile IDs
+- [ ] Service IDs don't use underscores (use dots instead)
+- [ ] Attribute IDs don't use underscores (use camelCase)
+- [ ] All XML files are well-formed (no unclosed tags)
+
+If any impex validation fails, report specific issues with file paths and lines.
+
+## Step 8: Check for catalog.json
 
 - If this is an **existing app** (catalog.json already exists):
   - [ ] Do NOT modify catalog.json - CI will update it
@@ -124,20 +198,31 @@ Extract and read `commerce-<appName>-app-v<version>/commerce-app.json`:
     }
     ```
 
-## Step 8: Run final PR checklist
+## Step 9: Run final PR checklist
 
 From CONTRIBUTING.md:
 
+**Package Structure:**
 - [ ] ZIP file name follows format: `<appName>-v<version>.zip`
+- [ ] ZIP contains no junk files (.DS_Store, __MACOSX, etc.)
+- [ ] No extracted directories are committed
+- [ ] All file paths are relative to app root (no absolute paths)
+
+**Manifest Validation:**
 - [ ] Root manifest (commerce-apps-manifest/manifest.json) is updated
 - [ ] Root manifest entry has all required fields
 - [ ] version, zip, and sha256 in root manifest are correct
 - [ ] SHA256 hash matches the actual ZIP file
-- [ ] catalog.json is included for new apps only
-- [ ] ZIP contains no junk files
 - [ ] commerce-app.json version matches root manifest version
-- [ ] All file paths are relative to app root (no absolute paths)
-- [ ] No extracted directories are committed
+- [ ] catalog.json is included for new apps only (with INIT values)
+
+**Impex Validation:**
+- [ ] All XML files are well-formed (pass xmllint validation)
+- [ ] Services have valid configuration and no hardcoded credentials
+- [ ] Install/uninstall services match exactly
+- [ ] Site preferences use camelCase and app-name prefixes
+- [ ] SITEID placeholder used (not actual site ID)
+- [ ] No sensitive data in impex files
 
 ## Report validation results
 

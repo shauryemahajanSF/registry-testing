@@ -19,7 +19,8 @@ If you're using Claude Code, several skills are available to streamline the cont
 - **`/validate-impex`** - Validate all impex XML files for syntax and common errors
 
 ### Validation & Updates
-- **`/validate-commerce-app`** - Validate your app package before submission (checks structure, manifest, SHA256, etc.)
+- **`/validate-commerce-app`** - Comprehensive validation before submission (checks structure, manifest, SHA256, impex XML, etc.)
+- **`/validate-impex`** - Deep validation of impex files only (useful during development, also included in `/validate-commerce-app`)
 - **`/update-app-version`** - Streamline version bumps for existing apps (updates version, regenerates ZIP, computes hash)
 
 ### Inspection & Comparison

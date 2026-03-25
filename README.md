@@ -252,7 +252,8 @@ This repository includes comprehensive skills for Commerce App development:
 - `/validate-impex` - Validate all impex files
 
 **Validation & Inspection:**
-- `/validate-commerce-app` - Validate complete app package
+- `/validate-commerce-app` - Comprehensive validation (structure, manifest, impex)
+- `/validate-impex` - Deep impex validation (also included in `/validate-commerce-app`)
 - `/extract-and-inspect` - Extract and inspect ZIP files
 - `/compare-app-versions` - Compare versions for changelogs
 
