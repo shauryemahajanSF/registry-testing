@@ -56,6 +56,18 @@
     ],
     "payment": [
         {
+            "id": "salesforce-payments",
+            "name": "Salesforce Payments",
+            "description": "Process payments natively with Salesforce Payments.",
+            "iconName": "salesforce.svg",
+            "domain": "payment",
+            "type": "app",
+            "provider": "salesforce",
+            "version": "0.0.1",
+            "zip": "salesforce-payments-v0.0.1.zip",
+            "sha256": "ff7326c72ea5839a34ca69cbf66a55c48f6f3a5587f180311fdee7b8e29d8420"
+        },
+        {
             "id": "custom-payment",
             "name": "Custom Payment",
             "description": "Configure a custom payment integration by providing your own APIs.",
@@ -65,5 +77,18 @@
             "provider": "custom"
         }
     ],
-    "additionalFeature": []
+    "additionalFeature": [
+        {
+            "id": "salesforce-gift-cards",
+            "name": "Salesforce Gift Cards",
+            "description": "Enable gift card purchasing, redemption, and balance management.",
+            "iconName": "salesforce.svg",
+            "domain": "additionalFeature",
+            "type": "app",
+            "provider": "salesforce",
+            "version": "0.0.1",
+            "zip": "salesforce-gift-cards-v0.0.1.zip",
+            "sha256": "a76c3079cdfb15e9e405ac12b8e64b277b76461f8aa2afd77c96ce9606c38d68"
+        }
+    ]
 }

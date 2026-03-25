@@ -1,0 +1,9 @@
+{
+  "name": "salesforce-gift-cards",
+  "displayName": "Salesforce Gift Cards",
+  "domain": "additionalFeature",
+  "description": "Sample Salesforce gift cards app used for testing",
+  "version": "0.0.1",
+  "zip": "salesforce-gift-cards-v0.0.1.zip",
+  "sha256": "a76c3079cdfb15e9e405ac12b8e64b277b76461f8aa2afd77c96ce9606c38d68"
+}

@@ -1,0 +1,12 @@
+{
+  "latest": {
+    "version": "0.0.1",
+    "tag": "salesforce-payments-v0.0.1"
+  },
+  "versions": [
+    {
+      "version": "0.0.1",
+      "tag": "salesforce-payments-v0.0.1"
+    }
+  ]
+}

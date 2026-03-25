@@ -1,0 +1,9 @@
+{
+  "name": "salesforce-payments",
+  "displayName": "Salesforce Payments",
+  "domain": "payment",
+  "description": "Sample Salesforce payments app used for testing",
+  "version": "0.0.1",
+  "zip": "salesforce-payments-v0.0.1.zip",
+  "sha256": "ff7326c72ea5839a34ca69cbf66a55c48f6f3a5587f180311fdee7b8e29d8420"
+}
