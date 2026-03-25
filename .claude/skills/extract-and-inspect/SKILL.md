@@ -12,11 +12,33 @@ Safely extract and inspect commerce app ZIP files without making modifications.
 
 ## Step 1: Identify ZIP to extract
 
-Gather information:
-- Domain (e.g., `tax`)
-- App name (e.g., `avalara-tax`)
-- Version to inspect (or latest)
-- Full path to ZIP: `<domain>/<isv-name>/<appName>-v<version>.zip`
+Parse the input and locate the ZIP file. Since each app directory only has ONE ZIP version, auto-detect it.
+
+**Usage:**
+```bash
+/extract-and-inspect avalara-tax
+/extract-and-inspect tax/avalara-tax
+```
+
+**Find the ZIP:**
+
+```bash
+# If input is just app name (e.g., "avalara-tax")
+# Search for it in all domain directories
+find . -name "*<app-name>-v*.zip" -type f | head -1
+
+# If input is domain/app (e.g., "tax/avalara-tax")
+# Look directly in that directory
+ls <domain>/<app-name>/*-v*.zip | head -1
+```
+
+**Expected result:** Single ZIP path like `tax/avalara-tax/avalara-tax-v0.2.8.zip`
+
+Extract the components from the ZIP path:
+- Domain: `tax`
+- App directory: `avalara-tax`
+- Full ZIP name: `avalara-tax-v0.2.8.zip`
+- Version: `0.2.8`
 
 ## Step 2: Pre-extraction validation
 
