@@ -22,7 +22,8 @@ Gather from the user (or infer from context):
 |-------|---------|----------|
 | App name (kebab-case) | `avalara-tax` | Yes |
 | Display name | `Avalara Tax` | Yes |
-| Domain | `tax` | Yes |
+| Domain | `tax` | Yes (one of: `tax`, `payment`, `shipping`, `additionalFeature`) |
+| Sub-domain | `giftCards` | Only if domain is `additionalFeature` |
 | Version | `0.2.8` | Yes |
 | Description | `Automated tax compliance by Avalara` | Yes |
 | Publisher name | `Avalara` | Yes |
@@ -114,7 +115,7 @@ Copy the hex digest (the long string before the filename).
 
 **CRITICAL:** Update the root manifest at `commerce-apps-manifest/manifest.json`:
 
-Find the entry for your app in the appropriate domain array (e.g., `tax`, `shipping`, `payment`) and update it:
+Find the entry for your app in the appropriate domain array (`tax`, `shipping`, `payment`, or `additionalFeature`) and update it:
 
 ```json
 {
@@ -130,6 +131,25 @@ Find the entry for your app in the appropriate domain array (e.g., `tax`, `shipp
   "sha256": "<computed_hash>"
 }
 ```
+
+**For `additionalFeature` apps**, also include `"subDomain"`:
+```json
+{
+  "id": "<appName>",
+  "name": "<displayName>",
+  "description": "<description>",
+  "iconName": "<appName>.png",
+  "domain": "additionalFeature",
+  "subDomain": "<subDomain>",
+  "type": "app",
+  "provider": "thirdParty",
+  "version": "<version>",
+  "zip": "<appName>-v<version>.zip",
+  "sha256": "<computed_hash>"
+}
+```
+
+Supported `subDomain` values: `giftCards`, `ratingsAndReviews`, `loyalty`, `search`, `addressVerification`, `analytics`, `approachingDiscounts`.
 
 **For new apps:** Add a new entry to the appropriate domain array.
 **For updates:** Update the existing entry's `version`, `zip`, and `sha256` fields.

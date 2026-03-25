@@ -32,19 +32,29 @@ body:
     id: domain
     attributes:
       label: Domain
-      description: App category/domain
+      description: App domain
       options:
         - tax
         - payment
         - shipping
-        - ratings-reviews
+        - additionalFeature
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sub-domain
+    attributes:
+      label: Sub-domain
+      description: Required for additionalFeature apps. Groups providers under a single hub tile.
+      options:
+        - N/A (tax, payment, or shipping)
+        - giftCards
+        - ratingsAndReviews
         - loyalty
-        - marketing
         - search
-        - inventory
+        - addressVerification
         - analytics
-        - personalization
-        - other
+        - approachingDiscounts
     validations:
       required: true
 

@@ -112,7 +112,8 @@ Find your app’s entry in the appropriate domain array (e.g., `tax`, `shipping`
 - `name` - Display name
 - `description` - App description
 - `iconName` - Icon filename (e.g., `avalara.png`)
-- `domain` - Domain category
+- `domain` - One of: `tax`, `payment`, `shipping`, or `additionalFeature`
+- `subDomain` - **(required for `additionalFeature` only)** Groups providers under a single hub tile. One of: `giftCards`, `ratingsAndReviews`, `loyalty`, `search`, `addressVerification`, `analytics`, `approachingDiscounts`
 - `type` - Always `"app"` for commerce apps
 - `provider` - Always `"thirdParty"` for ISV apps
 - `version` - Semantic version (e.g., `"1.0.0"`)
@@ -133,8 +134,9 @@ Copy the hex digest from the output into the `sha256` field (without the filenam
 
 On **Linux**, the equivalent is usually `sha256sum /path/to/zip`.
 
-#### Example Root Manifest Entry
+#### Example Root Manifest Entries
 
+**Standard domain (tax, payment, shipping):**
 ```json
 {
   "tax": [
@@ -154,6 +156,42 @@ On **Linux**, the equivalent is usually `sha256sum /path/to/zip`.
 }
 ```
 
+**Additional feature with subDomain (multiple providers grouped under one tile):**
+```json
+{
+  "additionalFeature": [
+    {
+      "id": "bazaarvoice-ratings",
+      "name": "Bazaarvoice Ratings & Reviews",
+      "description": "Customer ratings and reviews powered by Bazaarvoice.",
+      "iconName": "bazaarvoice.png",
+      "domain": "additionalFeature",
+      "subDomain": "ratingsAndReviews",
+      "type": "app",
+      "provider": "thirdParty",
+      "version": "1.0.0",
+      "zip": "bazaarvoice-ratings-v1.0.0.zip",
+      "sha256": "abc123..."
+    },
+    {
+      "id": "yotpo-reviews",
+      "name": "Yotpo Reviews",
+      "description": "Product reviews and UGC powered by Yotpo.",
+      "iconName": "yotpo.png",
+      "domain": "additionalFeature",
+      "subDomain": "ratingsAndReviews",
+      "type": "app",
+      "provider": "thirdParty",
+      "version": "1.0.0",
+      "zip": "yotpo-reviews-v1.0.0.zip",
+      "sha256": "def456..."
+    }
+  ]
+}
+```
+
+> Entries sharing the same `subDomain` are displayed as provider options under a single hub tile (e.g., a "Ratings & Reviews" tile with Bazaarvoice and Yotpo as choices).
+
 ---
 
 ## Repository Structure
@@ -168,12 +206,12 @@ Your app should be organized in the registry as follows:
 
 **Example:**
 ```
-ratings-reviews/bazaarvoice/
-├── ratings-reviews-v1.0.0.zip
-└── catalog.json
-
 tax/avalara/
 ├── avalara-tax-v0.2.8.zip
+└── catalog.json
+
+additionalFeature/bazaarvoice/
+├── bazaarvoice-ratings-v1.0.0.zip
 └── catalog.json
 ```
 

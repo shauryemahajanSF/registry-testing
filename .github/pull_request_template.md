@@ -2,7 +2,8 @@
 
 **App Name:**
 **Display Name:**
-**Domain:**
+**Domain:** <!-- tax, payment, shipping, or additionalFeature -->
+**Sub-domain:** <!-- Required for additionalFeature only: giftCards, ratingsAndReviews, loyalty, search, addressVerification, analytics, approachingDiscounts -->
 **ISV/Vendor Name:**
 **Version:**
 

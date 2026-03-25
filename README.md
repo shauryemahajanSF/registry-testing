@@ -120,16 +120,6 @@ tax/
     ├── manifest.json
     └── catalog.json
 
-ratings-reviews/
-├── bazaarvoice/
-│   ├── ratings-reviews-v1.0.0.zip
-│   ├── manifest.json
-│   └── catalog.json
-└── yotpo/
-    ├── yotpo-reviews-v1.0.0.zip
-    ├── manifest.json
-    └── catalog.json
-
 payment/
 ├── stripe/
 │   ├── stripe-payment-v1.0.0.zip
@@ -139,26 +129,44 @@ payment/
     ├── adyen-payment-v1.0.0.zip
     ├── manifest.json
     └── catalog.json
+
+additionalFeature/
+├── bazaarvoice/
+│   ├── bazaarvoice-ratings-v1.0.0.zip
+│   ├── manifest.json
+│   └── catalog.json
+└── salesforce-gift-cards/
+    ├── salesforce-gift-cards-v0.0.1.zip
+    ├── manifest.json
+    └── catalog.json
 ```
 
 **Note:** Extracted app directories (`commerce-{app-name}-app-v{version}/`) are for development only and should NOT be committed to the repository.
 
-### Common Domains
+### Domains
 
-Apps are categorized by domain (functionality area):
+There are four domains. Every app's `domain` field must be one of these:
 
 | Domain | Description | Example Apps |
 |--------|-------------|--------------|
 | `tax` | Tax calculation and compliance | Avalara, Vertex |
 | `payment` | Payment processing | Stripe, Adyen, PayPal |
 | `shipping` | Shipping and fulfillment | ShipStation, EasyPost |
-| `ratings-reviews` | Product ratings and reviews | Bazaarvoice, Yotpo, PowerReviews |
+| `additionalFeature` | All other checkout capabilities (see sub-domains) | Gift Cards, Reviews, Loyalty |
+
+### Sub-domains (for `additionalFeature`)
+
+Apps with `domain: "additionalFeature"` must include a `subDomain` field that groups them under a single hub tile. Multiple providers sharing the same `subDomain` appear as options within that tile.
+
+| Sub-domain | Description | Example Apps |
+|------------|-------------|--------------|
+| `giftCards` | Gift card purchasing, redemption, and balance | Salesforce Gift Cards, Adyen Gift Cards |
+| `ratingsAndReviews` | Product ratings and reviews | Bazaarvoice, Yotpo, PowerReviews |
 | `loyalty` | Loyalty programs and rewards | LoyaltyLion, Smile.io |
-| `marketing` | Marketing automation | Klaviyo, Braze |
 | `search` | Search and merchandising | Algolia, Elasticsearch |
-| `inventory` | Inventory management | Brightpearl, Cin7 |
+| `addressVerification` | Address validation and standardization | Smarty, Google Address Validation |
 | `analytics` | Analytics and reporting | Google Analytics, Segment |
-| `personalization` | Personalization engines | Dynamic Yield, Monetate |
+| `approachingDiscounts` | Approaching discount notifications | Salesforce Approaching Discounts |
 
 ## Tech Stack
 
@@ -202,7 +210,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for complete submission requirements and 
 3. Generate SHA256 hash: `shasum -a 256 my-app-v1.0.0.zip`
 4. Create `manifest.json` with all required fields (name, displayName, domain, description, version, zip, sha256)
 5. Create `catalog.json` with INIT placeholder (new apps only)
-6. Place files at `{domain}/{isv-name}/` (e.g., `ratings-reviews/bazaarvoice/`)
+6. Place files at `{domain}/{isv-name}/` (e.g., `tax/avalara/` or `additionalFeature/bazaarvoice/`)
 7. Commit ONLY the ZIP, manifest.json, and catalog.json (do NOT commit extracted directories)
 8. Open a PR
 
