@@ -1,14 +1,61 @@
 ---
 name: submit-app-pr
 description: >-
-  Guide through the PR submission process for commerce apps. Validates all requirements
-  from CONTRIBUTING.md are met, helps create PR with proper title/description, and
-  ensures CI workflows will pass. Use when ready to submit a commerce app PR.
+  Submit a PR for commerce app registry. Checks GitHub CLI authentication and creates
+  PR automatically if available, otherwise provides manual template. Validates requirements,
+  ensures proper formatting, and prepares for CI workflows. Use when ready to submit.
 ---
 
 # Submit Commerce App PR
 
 Guide developers through the complete PR submission process for commerce app registry.
+
+## Step 0: Check GitHub CLI and Authentication
+
+**FIRST**, check if automated PR creation is available:
+
+```bash
+# Check if gh CLI is installed
+which gh
+```
+
+**If `gh` is installed**, check authentication:
+```bash
+gh auth status --hostname github.com
+```
+
+### Authentication Results
+
+**✅ If authenticated to github.com:**
+- This skill will **automatically create the PR** for you
+- Continue to next steps
+
+**⚠️ If NOT authenticated to github.com:**
+
+You have two options:
+
+**Option A: Authenticate now (recommended)**
+```bash
+gh auth login --hostname github.com --web
+```
+Follow the prompts to authenticate. Once done, this skill will create the PR automatically.
+
+**Option B: Create PR manually**
+Skip authentication and this skill will provide a PR template at Step 6 for manual creation via web browser.
+
+**❌ If `gh` CLI is not installed:**
+
+You can install it or proceed with manual PR creation:
+
+**To install:**
+- macOS: `brew install gh`
+- Linux: See https://cli.github.com/manual/installation
+- Windows: Download from https://cli.github.com/
+
+**Or proceed without it:**
+This skill will provide a PR template for manual creation at Step 6.
+
+---
 
 ## Step 1: Pre-submission validation
 
@@ -88,15 +135,103 @@ git push origin add-<appName>-v<version>
 
 ## Step 6: Create PR on GitHub
 
-Navigate to GitHub and create a PR with the following template:
+Based on your GitHub CLI authentication status from Step 0, follow the appropriate path:
 
-### PR Title
+---
+
+### Path A: Automated PR Creation (GitHub CLI Authenticated) ✅
+
+If you're authenticated to github.com, use the GitHub CLI to create the PR automatically:
+
+```bash
+# Get current branch name
+CURRENT_BRANCH=$(git branch --show-current)
+
+# Create PR with title and description
+gh pr create \
+  --title "Add <displayName> v<version>" \
+  --body "## Commerce App Submission
+
+**App Name:** <appName>
+**Display Name:** <displayName>
+**Domain:** <domain>
+**Version:** <version>
+
+## Changes
+- [ ] New app submission
+- [ ] Version update (previous version: v<oldVersion>)
+- [ ] Bug fix or patch
+
+## Description
+<!-- Brief description of what this app does or what changed in this version -->
+
+## Checklist
+
+- [x] ZIP file name follows the required format: \`<appName>-v<version>.zip\`
+- [x] Root manifest \`commerce-apps-manifest/manifest.json\` includes all required fields
+- [x] \`version\`, \`zip\`, and \`sha256\` are updated correctly in root manifest
+- [x] SHA256 hash verified to match the ZIP file
+- [x] \`catalog.json\` included for new apps only (with INIT values)
+- [x] ZIP contains single root folder: \`commerce-<appName>-app-v<version>/\`
+- [x] No junk files in ZIP (.DS_Store, __MACOSX, hidden files, Thumbs.db)
+- [x] commerce-app.json version matches root manifest version
+- [x] Validated with \`/validate-commerce-app\` skill
+
+## CI Workflows
+
+This PR will trigger:
+- **verify-zip.yml** - Validates ZIP structure, manifest format, and SHA256 hash
+- **update-catalog.yml** - Updates registry catalog on merge (if applicable)
+
+## Testing
+<!-- Describe any testing performed on the app -->
+
+---
+
+**Submitter's Notes:**
+<!-- Any additional context or notes for reviewers -->" \
+  --base main \
+  --head "$CURRENT_BRANCH"
+```
+
+**Expected output:**
+```
+https://github.com/<owner>/<repo>/pull/<number>
+```
+
+The PR is now created! 🎉 Proceed to Step 7 to monitor CI checks.
+
+**Alternative: Interactive Mode**
+
+If you prefer to edit the PR description in your editor:
+
+```bash
+gh pr create --title "Add <displayName> v<version>" --fill
+```
+
+This opens your default editor for the PR body.
+
+---
+
+### Path B: Manual PR Creation (No GitHub CLI or Not Authenticated) 📝
+
+If GitHub CLI is not available or you're not authenticated, create the PR manually via web browser:
+
+1. **Get the PR creation URL:**
+   ```bash
+   CURRENT_BRANCH=$(git branch --show-current)
+   REPO_URL=$(git remote get-url origin | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
+   echo "$REPO_URL/compare/$CURRENT_BRANCH?expand=1"
+   ```
+
+2. **Open the URL in your browser** and paste the following template:
+
+**PR Title:**
 ```
 Add <displayName> v<version>
 ```
 
-### PR Description Template
-
+**PR Description:**
 ```markdown
 ## Commerce App Submission
 
@@ -115,15 +250,15 @@ Add <displayName> v<version>
 
 ## Checklist
 
-- [ ] ZIP file name follows the required format: `<appName>-v<version>.zip`
-- [ ] Root manifest `commerce-apps-manifest/manifest.json` includes all required fields (id, name, description, domain, version, zip, sha256, etc.)
-- [ ] `version`, `zip`, and `sha256` are updated correctly in root manifest
-- [ ] SHA256 hash verified to match the ZIP file
-- [ ] `catalog.json` included for new apps only (with INIT values)
-- [ ] ZIP contains single root folder: `commerce-<appName>-app-v<version>/`
-- [ ] No junk files in ZIP (.DS_Store, __MACOSX, hidden files, Thumbs.db)
-- [ ] commerce-app.json version matches root manifest version
-- [ ] Validated with `/validate-commerce-app` skill
+- [x] ZIP file name follows the required format: `<appName>-v<version>.zip`
+- [x] Root manifest `commerce-apps-manifest/manifest.json` includes all required fields (id, name, description, domain, version, zip, sha256, etc.)
+- [x] `version`, `zip`, and `sha256` are updated correctly in root manifest
+- [x] SHA256 hash verified to match the ZIP file
+- [x] `catalog.json` included for new apps only (with INIT values)
+- [x] ZIP contains single root folder: `commerce-<appName>-app-v<version>/`
+- [x] No junk files in ZIP (.DS_Store, __MACOSX, hidden files, Thumbs.db)
+- [x] commerce-app.json version matches root manifest version
+- [x] Validated with `/validate-commerce-app` skill
 
 ## CI Workflows
 
@@ -139,6 +274,24 @@ This PR will trigger:
 **Submitter's Notes:**
 <!-- Any additional context or notes for reviewers -->
 ```
+
+3. **Customize the template** with your specific app details
+4. **Submit the PR**
+
+---
+
+### Commit Message Format Reference
+
+For both paths, use these title formats:
+
+- **New app**: `Add <displayName> v<version>`
+- **Update**: `Update <displayName> to v<version>`
+- **Fix**: `Fix <displayName> v<version> - <brief description>`
+
+**Examples:**
+- `Add Avalara Tax v1.0.0`
+- `Update Avalara Tax to v1.0.1`
+- `Fix Avalara Tax v1.0.1 - correct service timeout`
 
 ## Step 7: Monitor CI checks
 
