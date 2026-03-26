@@ -14,8 +14,7 @@ Run comprehensive validation checks on a commerce app before submitting a PR.
 ## Step 1: Identify the app to validate
 
 Gather or infer:
-- Domain (one of: `tax`, `payment`, `shipping`, `additionalFeature`)
-- Sub-domain (for `additionalFeature` only, e.g., `giftCards`, `ratingsAndReviews`)
+- Domain (one of: `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, `approaching-discounts`)
 - App name (e.g., `avalara-tax`)
 - Version to validate (or use latest ZIP in directory)
 
@@ -32,7 +31,7 @@ Check that ZIP file exists at `<domain>/<isv-name>/<appName>-v<version>.zip`
 
 2. Read the root manifest at `commerce-apps-manifest/manifest.json`
 
-3. Find your app's entry in the appropriate domain array (`tax`, `shipping`, `payment`, or `additionalFeature`)
+3. Find your app's entry in the appropriate domain array (`tax`, `shipping`, `payment`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, `approaching-discounts`)
 
 4. Compare computed hash with `sha256` field in the manifest entry
 
@@ -47,8 +46,7 @@ Check that the app entry in `commerce-apps-manifest/manifest.json` contains all 
 - `name` - human-readable display name
 - `description` - app description
 - `iconName` - icon filename (e.g., `avalara.png`)
-- `domain` - must be one of: `tax`, `payment`, `shipping`, `additionalFeature`
-- `subDomain` - required when `domain` is `additionalFeature`. Must be one of: `giftCards`, `ratingsAndReviews`, `loyalty`, `search`, `addressVerification`, `analytics`, `approachingDiscounts`
+- `domain` - must be one of: `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, `approaching-discounts`
 - `type` - must be `"app"`
 - `provider` - must be `"thirdParty"`
 - `version` - semantic version (e.g., `0.2.8`)
@@ -59,8 +57,7 @@ Check that the app entry in `commerce-apps-manifest/manifest.json` contains all 
 1. Verify entry exists in correct domain array
 2. Verify all required fields are present and non-empty
 3. Verify `domain` is a valid value
-4. If `domain` is `additionalFeature`, verify `subDomain` is present and valid
-5. Verify version format follows semantic versioning
+4. Verify version format follows semantic versioning
 6. Verify zip filename matches the actual file
 7. Verify SHA256 matches computed hash
 

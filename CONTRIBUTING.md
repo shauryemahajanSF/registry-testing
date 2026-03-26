@@ -131,14 +131,13 @@ Each PR must update the root manifest at `commerce-apps-manifest/manifest.json` 
 
 #### Required Fields
 
-Find your app’s entry in the appropriate domain array (e.g., `tax`, `shipping`, `payment`, `additionalFeature`) and update or add an entry with the following fields:
+Find your app’s entry in the appropriate domain array (e.g., `tax`, `shipping`, `payment`, `gift-cards`) and update or add an entry with the following fields:
 
 - `id` - App identifier (kebab-case)
 - `name` - Display name
 - `description` - App description
 - `iconName` - Icon filename (e.g., `avalara.png`)
-- `domain` - One of: `tax`, `payment`, `shipping`, or `additionalFeature`
-- `subDomain` - **(required for `additionalFeature` only)** Groups providers under a single hub tile. One of: `giftCards`, `ratingsAndReviews`, `loyalty`, `search`, `addressVerification`, `analytics`, `approachingDiscounts`
+- `domain` - One of: `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, `approaching-discounts`
 - `type` - Always `"app"` for commerce apps
 - `provider` - Always `"thirdParty"` for ISV apps
 - `version` - Semantic version (e.g., `"1.0.0"`)
@@ -181,17 +180,16 @@ On **Linux**, the equivalent is usually `sha256sum /path/to/zip`.
 }
 ```
 
-**Additional feature with subDomain (multiple providers grouped under one tile):**
+**Additional domain (multiple providers under one domain):**
 ```json
 {
-  "additionalFeature": [
+  "ratings-and-reviews": [
     {
       "id": "bazaarvoice-ratings",
       "name": "Bazaarvoice Ratings & Reviews",
       "description": "Customer ratings and reviews powered by Bazaarvoice.",
       "iconName": "bazaarvoice.png",
-      "domain": "additionalFeature",
-      "subDomain": "ratingsAndReviews",
+      "domain": "ratings-and-reviews",
       "type": "app",
       "provider": "thirdParty",
       "version": "1.0.0",
@@ -203,8 +201,7 @@ On **Linux**, the equivalent is usually `sha256sum /path/to/zip`.
       "name": "Yotpo Reviews",
       "description": "Product reviews and UGC powered by Yotpo.",
       "iconName": "yotpo.png",
-      "domain": "additionalFeature",
-      "subDomain": "ratingsAndReviews",
+      "domain": "ratings-and-reviews",
       "type": "app",
       "provider": "thirdParty",
       "version": "1.0.0",
@@ -215,7 +212,7 @@ On **Linux**, the equivalent is usually `sha256sum /path/to/zip`.
 }
 ```
 
-> Entries sharing the same `subDomain` are displayed as provider options under a single hub tile (e.g., a "Ratings & Reviews" tile with Bazaarvoice and Yotpo as choices).
+> Entries sharing the same domain are displayed as provider options under a single hub tile (e.g., a "Ratings & Reviews" tile with Bazaarvoice and Yotpo as choices). Domains `tax`, `payment`, and `shipping` show under "Providers" on the checkout hub; all other domains show under "Additional Setup".
 
 ---
 
@@ -235,7 +232,7 @@ tax/avalara/
 ├── avalara-tax-v0.2.8.zip
 └── catalog.json
 
-additionalFeature/bazaarvoice/
+ratings-and-reviews/bazaarvoice/
 ├── bazaarvoice-ratings-v1.0.0.zip
 └── catalog.json
 ```

@@ -16,8 +16,7 @@ Gather the following information from the user:
 
 | Input | Example | Notes |
 |-------|---------|-------|
-| Domain | `additionalFeature` | One of: `tax`, `payment`, `shipping`, `additionalFeature` |
-| Sub-domain | `ratingsAndReviews` | Required for `additionalFeature` only (see list below) |
+| Domain | `ratings-and-reviews` | One of: `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, `approaching-discounts` |
 | ISV/Vendor name | `bazaarvoice` | Your company name (lowercase, hyphens) |
 | App name (kebab-case) | `bazaarvoice-ratings` | Unique app identifier |
 | Display name | `Bazaarvoice Ratings & Reviews` | Human-readable name with vendor |
@@ -38,23 +37,20 @@ Gather the following information from the user:
 - `payment/stripe/commerce-stripe-payment-app-v1.0.0/`
 - `payment/adyen/commerce-adyen-payment-app-v1.0.0/`
 - `shipping/shippo/commerce-shippo-shipping-app-v1.0.0/`
-- `additionalFeature/bazaarvoice/commerce-bazaarvoice-ratings-app-v1.0.0/`
-- `additionalFeature/salesforce-gift-cards/commerce-salesforce-gift-cards-app-v0.0.1/`
+- `ratings-and-reviews/bazaarvoice/commerce-bazaarvoice-ratings-app-v1.0.0/`
+- `gift-cards/salesforce-gift-cards/commerce-salesforce-gift-cards-app-v0.0.1/`
 
 **Domains:**
 - `tax` - Tax calculation and compliance
 - `payment` - Payment processing
 - `shipping` - Shipping and fulfillment
-- `additionalFeature` - All other capabilities (requires `subDomain`)
-
-**Sub-domains (for `additionalFeature` only):**
-- `giftCards` - Gift card purchasing, redemption, and balance
-- `ratingsAndReviews` - Product ratings and reviews
+- `gift-cards` - Gift card purchasing, redemption, and balance
+- `ratings-and-reviews` - Product ratings and reviews
 - `loyalty` - Loyalty programs and rewards
 - `search` - Search and merchandising
-- `addressVerification` - Address validation and standardization
+- `address-verification` - Address validation and standardization
 - `analytics` - Analytics and reporting
-- `approachingDiscounts` - Approaching discount notifications
+- `approaching-discounts` - Approaching discount notifications
 
 ## Step 2: Create domain and ISV directories
 
@@ -67,8 +63,8 @@ cd <domain>/<isv-name>
 
 **Example:**
 ```bash
-mkdir -p additionalFeature/bazaarvoice
-cd additionalFeature/bazaarvoice
+mkdir -p ratings-and-reviews/bazaarvoice
+cd ratings-and-reviews/bazaarvoice
 ```
 
 ## Step 3: Create app directory structure
@@ -761,17 +757,17 @@ To get started:
 - Service: Shipping carrier API
 - Helpers: Rate calculation, address validation
 
-### Ratings/Reviews App (`additionalFeature` / `ratingsAndReviews`)
+### Ratings/Reviews App (`ratings-and-reviews`)
 - Hooks: product data enrichment
 - Service: Reviews platform API
 - Helpers: Review aggregation, moderation
 
-### Loyalty App (`additionalFeature` / `loyalty`)
+### Loyalty App (`loyalty`)
 - Hooks: order completion, points calculation
 - Service: Loyalty platform API
 - Helpers: Points calculation, rewards management
 
-### Gift Cards App (`additionalFeature` / `giftCards`)
+### Gift Cards App (`gift-cards`)
 - Hooks: payment method integration, balance check
 - Service: Gift card platform API
 - Helpers: Balance management, redemption
