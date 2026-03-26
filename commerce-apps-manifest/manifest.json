@@ -86,14 +86,13 @@
             "provider": "custom"
         }
     ],
-    "additionalFeature": [
+    "gift-cards": [
         {
             "id": "salesforce-gift-cards",
             "name": "Salesforce Gift Cards",
             "description": "Enable gift card purchasing, redemption, and balance management.",
             "iconName": "salesforce.svg",
-            "domain": "additionalFeature",
-            "subDomain": "giftCards",
+            "domain": "gift-cards",
             "type": "app",
             "provider": "salesforce",
             "version": "0.0.1",
@@ -105,8 +104,7 @@
             "name": "Adyen Gift Cards",
             "description": "Enable gift card purchasing, redemption, and balance management.",
             "iconName": "salesforce.svg",
-            "domain": "additionalFeature",
-            "subDomain": "giftCards",
+            "domain": "gift-cards",
             "type": "app",
             "provider": "thirdParty",
             "version": "0.0.1",
