@@ -10,8 +10,7 @@ This is a **Commerce App Registry** for Salesforce Commerce Cloud B2C Commerce. 
 
 **Key Concepts:**
 - **Commerce App Package (CAP):** A ZIP file containing cartridges, UI extensions, impex configs, and documentation
-- **Domain:** One of four functional categories: `tax`, `payment`, `shipping`, or `additionalFeature`
-- **Sub-domain:** For `additionalFeature` apps, a grouping that identifies the capability (e.g., `giftCards`, `ratingsAndReviews`, `loyalty`). Multiple providers can share the same sub-domain, appearing as options under a single hub tile.
+- **Domain:** Functional category for the app. Can be a provider domain (`tax`, `payment`, `shipping`) or a feature domain (`gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, `approaching-discounts`)
 - **ISV:** Independent Software Vendor (the company publishing the app)
 - **Impex:** XML configuration files for SFCC (services, site preferences, custom objects)
 
@@ -29,7 +28,7 @@ commerce-{app-name}-app-v{version}/  # Extracted directory (dev only)
 
 **Examples:**
 - `tax/avalara/avalara-tax-v0.2.8.zip`
-- `additionalFeature/bazaarvoice/ratings-reviews-v1.0.0.zip`
+- `gift-cards/bazaarvoice/gift-cards-v1.0.0.zip`
 - `payment/stripe/stripe-payment-v1.0.0.zip`
 
 **Critical Rule:** Extracted app directories are for development only. Only ZIP, manifest.json, and catalog.json should be committed.
@@ -72,7 +71,7 @@ User: "I want to build a ratings and reviews app"
 
 Your response:
 1. Suggest `/scaffold-commerce-app`
-2. Gather info: domain (additionalFeature), subDomain (ratingsAndReviews), ISV name, app details
+2. Gather info: domain (ratings-and-reviews), ISV name, app details
 3. After scaffolding, guide them to build their app code
 4. Suggest `/generate-service-impex` for API integration
 5. Suggest `/generate-site-preferences-impex` for settings
@@ -282,11 +281,11 @@ tax/avalara-tax/avalara-tax-v0.2.8.zip
 # RIGHT
 tax/avalara/avalara-tax-v0.2.8.zip
 
-# WRONG - using sub-domain as top-level directory
-ratings-reviews/bazaarvoice/ratings-reviews-v1.0.0.zip
+# WRONG - using different domain naming
+ratingsAndReviews/bazaarvoice/ratings-reviews-v1.0.0.zip
 
-# RIGHT - additionalFeature is the domain, subDomain goes in manifest
-additionalFeature/bazaarvoice/ratings-reviews-v1.0.0.zip
+# RIGHT - domain uses hyphen-case
+ratings-and-reviews/bazaarvoice/ratings-reviews-v1.0.0.zip
 ```
 
 ### ❌ Committing Extracted Directories
@@ -360,28 +359,25 @@ zip -r app.zip folder/ -x "*.DS_Store" -x "__MACOSX/*" -x "*/.*" -x "Thumbs.db"
 
 ### Domains
 
-There are exactly **four domains**. The `domain` field in manifest entries and `commerce-app.json` must be one of:
+The `domain` field in manifest entries and `commerce-app.json` must be one of these values (using hyphen-case):
 
+#### Provider Domains (show under "Providers" in Checkout Hub)
 | Domain | Description |
 |--------|-------------|
 | `tax` | Tax calculation and compliance |
 | `payment` | Payment processing |
 | `shipping` | Shipping and fulfillment |
-| `additionalFeature` | All other capabilities (see sub-domains below) |
 
-### Sub-domains (for `additionalFeature` only)
-
-Apps with `domain: "additionalFeature"` must include a `subDomain` field. Entries sharing the same `subDomain` are grouped under a single hub tile with a provider selection step. Supported values:
-
-| Sub-domain | Description | Example Apps |
-|------------|-------------|--------------|
-| `giftCards` | Gift card purchasing, redemption, and balance | Salesforce Gift Cards, Adyen Gift Cards |
-| `ratingsAndReviews` | Product ratings and reviews | Bazaarvoice, Yotpo, PowerReviews |
+#### Feature Domains (show under "Additional Setup" in Checkout Hub)
+| Domain | Description | Example Apps |
+|--------|-------------|--------------|
+| `gift-cards` | Gift card purchasing, redemption, and balance | Salesforce Gift Cards, Adyen Gift Cards |
+| `ratings-and-reviews` | Product ratings and reviews | Bazaarvoice, Yotpo, PowerReviews |
 | `loyalty` | Loyalty programs and rewards | LoyaltyLion, Smile.io |
 | `search` | Search and merchandising | Algolia, Elasticsearch |
-| `addressVerification` | Address validation and standardization | Smarty, Google Address Validation |
+| `address-verification` | Address validation and standardization | Smarty, Google Address Validation |
 | `analytics` | Analytics and reporting | Google Analytics, Segment |
-| `approachingDiscounts` | Approaching discount notifications | Salesforce Approaching Discounts |
+| `approaching-discounts` | Approaching discount notifications | Salesforce Approaching Discounts |
 
 ### Common App Patterns
 | Type | What It Does | Typical Components |
@@ -389,9 +385,9 @@ Apps with `domain: "additionalFeature"` must include a `subDomain` field. Entrie
 | Tax | Calculate sales tax | Service integration, hooks (calculate, commit, cancel) |
 | Payment | Process payments | Payment processor integration, authorization hooks |
 | Shipping | Calculate shipping rates | Carrier API integration, rate calculation hooks |
-| Reviews (`additionalFeature` / `ratingsAndReviews`) | Product ratings/reviews | Reviews API, React components for display |
-| Loyalty (`additionalFeature` / `loyalty`) | Points and rewards | Customer data sync, points calculation |
-| Gift Cards (`additionalFeature` / `giftCards`) | Gift card management | Payment method integration, balance API |
+| Reviews (`ratings-and-reviews`) | Product ratings/reviews | Reviews API, React components for display |
+| Loyalty | Points and rewards | Customer data sync, points calculation |
+| Gift Cards (`gift-cards`) | Gift card management | Payment method integration, balance API |
 
 ### Impex File Types
 
@@ -525,7 +521,7 @@ Before suggesting `/submit-app-pr`, verify:
 ## Common Questions & Answers
 
 **Q: "How do I start a new ratings app?"**
-A: Use `/scaffold-commerce-app` and provide: domain=`additionalFeature`, subDomain=`ratingsAndReviews`, ISV name, app details. It generates the complete structure.
+A: Use `/scaffold-commerce-app` and provide: domain=`ratings-and-reviews`, ISV name, app details. It generates the complete structure.
 
 **Q: "How do I add API integration?"**
 A: Use `/generate-service-impex` - it creates both install and uninstall service configs with proper authentication, rate limiting, and circuit breakers.
@@ -550,7 +546,7 @@ A: Depends on what you're doing:
 - Anything else: NO - CI manages it
 
 **Q: "Where does my app go in the registry?"**
-A: `{domain}/{isv-name}/` where domain is one of `tax`, `payment`, `shipping`, or `additionalFeature`, and isv-name is your company name. For `additionalFeature` apps, the `subDomain` field in the manifest identifies the capability type.
+A: `{domain}/{isv-name}/` where domain is one of: `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, or `approaching-discounts`. The domain uses hyphen-case and is specified directly in the manifest.
 
 ## Key Files to Reference
 

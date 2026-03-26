@@ -37,24 +37,13 @@ body:
         - tax
         - payment
         - shipping
-        - additionalFeature
-    validations:
-      required: true
-
-  - type: dropdown
-    id: sub-domain
-    attributes:
-      label: Sub-domain
-      description: Required for additionalFeature apps. Groups providers under a single hub tile.
-      options:
-        - N/A (tax, payment, or shipping)
-        - giftCards
-        - ratingsAndReviews
+        - gift-cards
+        - ratings-and-reviews
         - loyalty
         - search
-        - addressVerification
+        - address-verification
         - analytics
-        - approachingDiscounts
+        - approaching-discounts
     validations:
       required: true
 

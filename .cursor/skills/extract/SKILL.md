@@ -92,7 +92,7 @@ Ready to modify! When done, use /generate-commerce-app to repackage.
 ### Development workflow
 ```bash
 /extract my-app
-cd additionalFeature/vendor/commerce-my-app-v1.0.0/
+cd gift-cards/vendor/commerce-my-app-v1.0.0/
 # Make changes
 /generate-commerce-app .
 ```
