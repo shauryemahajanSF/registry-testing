@@ -65,7 +65,7 @@
             "provider": "salesforce",
             "version": "0.0.1",
             "zip": "salesforce-payments-v0.0.1.zip",
-            "sha256": "ff7326c72ea5839a34ca69cbf66a55c48f6f3a5587f180311fdee7b8e29d8420",
+            "sha256": "95e957818883589b582496f9d223ad32a27caadc7d2c5c53b2f7bb5e8dbb785c",
             "configurationComponents": [
                 "ccbm_payments/multiStepPaymentMethods",
                 "ccbm_payments/expressPaymentMethods",
@@ -97,7 +97,7 @@
             "provider": "salesforce",
             "version": "0.0.1",
             "zip": "salesforce-gift-cards-v0.0.1.zip",
-            "sha256": "a76c3079cdfb15e9e405ac12b8e64b277b76461f8aa2afd77c96ce9606c38d68"
+            "sha256": "7d139104281bf8246cf8c9a48d40afbdd0d1a3626487aae3a24012672c679cdb"
         },
         {
             "id": "adyen-gift-cards",
@@ -109,7 +109,7 @@
             "provider": "thirdParty",
             "version": "0.0.1",
             "zip": "adyen-gift-cards-v0.0.1.zip",
-            "sha256": "a76c3079cdfb15e9e405ac12b8e64b277b76461f8aa2afd77c96ce9606c38d68"
+            "sha256": "e5de7da7e4868a116b685132e0a17d086e832929b12400f0fb171c7c7aee30e2"
         }
     ]
 }
