@@ -56,6 +56,23 @@
     ],
     "payment": [
         {
+            "id": "test-payment",
+            "name": "Test Payment",
+            "description": "A basic test payment integration for development and testing.",
+            "domain": "payment",
+            "type": "app",
+            "provider": "thirdParty",
+            "version": "1.0.0",
+            "zip": "test-payment-v1.0.0.zip",
+            "sha256": "617c451efc9c1c70f3ca2a0687933eb77bd1077be7c98cf8db2f4b638a8bdf09",
+            "configurationComponents": [
+                "ccbm_checkoutsetup/testConfigComponent"
+            ],
+            "connectionDetailsComponents": [
+                "ccbm_checkoutsetup/testConnectionDetailsComponent"
+            ]
+        },
+        {
             "id": "custom-payment",
             "name": "Custom Payment",
             "description": "Configure a custom payment integration by providing your own APIs.",
