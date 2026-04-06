@@ -64,12 +64,15 @@ This skill will provide a PR template for manual creation at Step 6.
 
 Before creating a PR, run validation checks:
 
-1. Use the `/validate-commerce-app` skill to ensure:
+1. Use the `/validate-app` skill to ensure:
    - [ ] All required files are present
    - [ ] Root manifest (commerce-apps-manifest/manifest.json) is updated
    - [ ] SHA256 hash matches
    - [ ] ZIP structure is correct
    - [ ] No junk files included
+   - [ ] App icon in commerce-apps-manifest/icons/
+   - [ ] Translations in commerce-apps-manifest/translations/
+   - [ ] Architecture-specific validations passed
 
 2. If validation fails, fix issues before proceeding
 
@@ -84,6 +87,9 @@ git status
 **Expected changes for new app version:**
 - Modified: `commerce-apps-manifest/manifest.json` (root manifest with your app entry)
 - Added: `<domain>/<isv-name>/<appName>-v<version>.zip`
+- Added/Modified: `commerce-apps-manifest/icons/<iconName>.png` (app icon)
+- Modified: `commerce-apps-manifest/translations/en-US.json` (minimum requirement)
+- Optional: Modified other translation files (de.json, fr.json, es.json, etc.)
 - Optional: Modified `<domain>/<isv-name>/catalog.json` (only if brand new app OR deprecating a version)
 
 **IMPORTANT - Do NOT commit:**
@@ -104,6 +110,10 @@ Create a clear, descriptive commit message:
 
 ```bash
 git add commerce-apps-manifest/manifest.json
+git add commerce-apps-manifest/icons/<iconName>.png
+git add commerce-apps-manifest/translations/en-US.json
+# Add other translation files if updated:
+# git add commerce-apps-manifest/translations/*.json
 git add <domain>/<isv-name>/<appName>-v<version>.zip
 
 # For new apps only:
@@ -165,6 +175,13 @@ gh pr create \
 - [ ] Version update (previous version: v<oldVersion>)
 - [ ] Bug fix or patch
 
+## Files Modified
+- \`commerce-apps-manifest/manifest.json\` - Updated app entry
+- \`commerce-apps-manifest/icons/<iconName>.png\` - App icon
+- \`commerce-apps-manifest/translations/en-US.json\` - App translations (en-US)
+- \`<domain>/<isv-name>/<appName>-v<version>.zip\` - App package
+- \`<domain>/<isv-name>/catalog.json\` - New apps only
+
 ## Description
 <!-- Brief description of what this app does or what changed in this version -->
 
@@ -174,11 +191,14 @@ gh pr create \
 - [x] Root manifest \`commerce-apps-manifest/manifest.json\` includes all required fields
 - [x] \`version\`, \`zip\`, and \`sha256\` are updated correctly in root manifest
 - [x] SHA256 hash verified to match the ZIP file
+- [x] App icon exists in \`commerce-apps-manifest/icons/<iconName>.png\`
+- [x] Translations added to \`commerce-apps-manifest/translations/en-US.json\` (minimum)
 - [x] \`catalog.json\` included for new apps only (with INIT values)
 - [x] ZIP contains single root folder: \`commerce-<appName>-app-v<version>/\`
 - [x] No junk files in ZIP (.DS_Store, __MACOSX, hidden files, Thumbs.db)
 - [x] commerce-app.json version matches root manifest version
-- [x] Validated with \`/validate-commerce-app\` skill
+- [x] Architecture-specific validations passed (UI/Backend/Fullstack)
+- [x] Validated with \`/validate-app\` skill
 
 ## CI Workflows
 
@@ -248,6 +268,13 @@ Add <displayName> v<version>
 - [ ] Version update (previous version: v<oldVersion>)
 - [ ] Bug fix or patch
 
+## Files Modified
+- `commerce-apps-manifest/manifest.json` - Updated app entry
+- `commerce-apps-manifest/icons/<iconName>.png` - App icon
+- `commerce-apps-manifest/translations/en-US.json` - App translations (en-US)
+- `<domain>/<isv-name>/<appName>-v<version>.zip` - App package
+- `<domain>/<isv-name>/catalog.json` - New apps only
+
 ## Description
 <!-- Brief description of what this app does or what changed in this version -->
 
@@ -257,11 +284,14 @@ Add <displayName> v<version>
 - [x] Root manifest `commerce-apps-manifest/manifest.json` includes all required fields (id, name, description, domain, version, zip, sha256, etc.)
 - [x] `version`, `zip`, and `sha256` are updated correctly in root manifest
 - [x] SHA256 hash verified to match the ZIP file
+- [x] App icon exists in `commerce-apps-manifest/icons/<iconName>.png`
+- [x] Translations added to `commerce-apps-manifest/translations/en-US.json` (minimum)
 - [x] `catalog.json` included for new apps only (with INIT values)
 - [x] ZIP contains single root folder: `commerce-<appName>-app-v<version>/`
 - [x] No junk files in ZIP (.DS_Store, __MACOSX, hidden files, Thumbs.db)
 - [x] commerce-app.json version matches root manifest version
-- [x] Validated with `/validate-commerce-app` skill
+- [x] Architecture-specific validations passed (UI/Backend/Fullstack)
+- [x] Validated with `/validate-app` skill
 
 ## CI Workflows
 

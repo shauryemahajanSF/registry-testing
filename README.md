@@ -36,7 +36,7 @@ If you're using Claude Code, we provide comprehensive skills to streamline devel
 
 **Start a new app:**
 ```
-/scaffold-commerce-app
+/scaffold-app
 ```
 
 **Generate impex files:**
@@ -48,14 +48,14 @@ If you're using Claude Code, we provide comprehensive skills to streamline devel
 
 **Package and validate:**
 ```
-/generate-commerce-app
-/validate-commerce-app
+/package-app
+/validate-app
 /validate-impex
 ```
 
 **Submit to registry:**
 ```
-/submit-app-pr
+/submit-pr
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for complete skill documentation.
@@ -70,7 +70,9 @@ commerce-{app-name}-app-v{version}/
 ├── README.md                        # Documentation
 ├── app-configuration/
 │   └── tasksList.json              # Post-install merchant setup steps
-├── cartridges/
+├── icons/                          # App icon (required)
+│   └── {isv-name}.png              # Copied to commerce-apps-manifest/icons/
+├── cartridges/                     # Backend-only or Fullstack apps
 │   ├── site_cartridges/{name}/    # Script API hook implementations
 │   │   ├── package.json
 │   │   ├── cartridge/scripts/
@@ -80,10 +82,15 @@ commerce-{app-name}-app-v{version}/
 │   │   │   └── services/          # Service framework wrappers
 │   │   └── test/                  # Unit tests
 │   └── bm_cartridges/             # Business Manager extensions (optional)
-├── storefront-next/src/extensions/{name}/  # React components for UI Targets
+├── storefront-next/src/extensions/{name}/  # UI-only or Fullstack apps
 │   ├── target-config.json         # Maps components → storefront extension points
-│   └── components/
-├── impex/
+│   ├── index.ts                   # Barrel exports
+│   ├── components/
+│   └── locales/                   # Required: en-US, en-GB, it-IT
+│       ├── en-US/translations.json
+│       ├── en-GB/translations.json
+│       └── it-IT/translations.json
+├── impex/                          # Backend-only or Fullstack apps
 │   ├── install/                   # Service configs, custom attributes, preferences
 │   │   ├── services.xml
 │   │   ├── meta/
@@ -93,8 +100,12 @@ commerce-{app-name}-app-v{version}/
 │   │       └── preferences.xml
 │   └── uninstall/                 # Cleanup for uninstalled apps
 │       └── services.xml
-└── icons/                         # App icon (optional)
 ```
+
+**Three architectures:**
+- **UI-only**: Has `storefront-next/`, no `cartridges/` or `impex/`
+- **Backend-only**: Has `cartridges/` and `impex/`, no `storefront-next/`
+- **Fullstack**: Has all three: `storefront-next/`, `cartridges/`, and `impex/`
 
 ## Published Apps
 
@@ -103,8 +114,17 @@ Apps are organized by domain and ISV/vendor:
 ```
 {domain}/{isv-name}/
   ├── {app-name}-v{version}.zip    # The installable CAP
-  ├── manifest.json                 # Version metadata + SHA256 hash
   └── catalog.json                  # Version history (updated by CI)
+
+commerce-apps-manifest/
+  ├── manifest.json                 # Root manifest with all app entries
+  ├── icons/
+  │   └── {iconName}.png            # App icons
+  └── translations/
+      ├── en-US.json                # App translations (minimum)
+      ├── de.json
+      ├── fr.json
+      └── ... (13 locale files)
 ```
 
 **Example structure:**
@@ -113,38 +133,29 @@ Apps are organized by domain and ISV/vendor:
 tax/
 ├── avalara/
 │   ├── avalara-tax-v0.2.8.zip
-│   ├── manifest.json
 │   └── catalog.json
 └── vertex/
     ├── vertex-tax-v1.0.0.zip
-    ├── manifest.json
     └── catalog.json
 
 payment/
 ├── stripe/
 │   ├── stripe-payment-v1.0.0.zip
-│   ├── manifest.json
 │   └── catalog.json
 └── adyen/
     ├── adyen-payment-v1.0.0.zip
-    ├── manifest.json
     └── catalog.json
 
-gift-cards/
-├── salesforce-gift-cards/
-│   ├── salesforce-gift-cards-v0.0.1.zip
-│   ├── manifest.json
-│   └── catalog.json
-└── adyen-gift-cards/
-    ├── adyen-gift-cards-v0.0.1.zip
-    ├── manifest.json
-    └── catalog.json
-
-ratings-and-reviews/
-└── bazaarvoice/
-    ├── bazaarvoice-ratings-v1.0.0.zip
-    ├── manifest.json
-    └── catalog.json
+commerce-apps-manifest/
+├── manifest.json              # Contains all app entries
+├── icons/
+│   ├── avalara.png
+│   ├── stripe.png
+│   └── bazaarvoice.png
+└── translations/
+    ├── en-US.json            # All app translations
+    ├── de.json
+    └── ... (13 locale files)
 ```
 
 **Note:** Extracted app directories (`commerce-{app-name}-app-v{version}/`) are for development only and should NOT be committed to the repository.
@@ -194,37 +205,41 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for complete submission requirements and 
 
 **Using Claude Code (Recommended):**
 
-1. **Scaffold new app:** `/scaffold-commerce-app`
+1. **Scaffold new app:** `/scaffold-app`
 2. **Build your app code** (cartridges, extensions, etc.)
 3. **Generate impex:** `/generate-service-impex`, `/generate-site-preferences-impex`
-4. **Package app:** `/generate-commerce-app`
-5. **Validate:** `/validate-commerce-app` and `/validate-impex`
-6. **Submit PR:** `/submit-app-pr`
+4. **Package app:** `/package-app`
+5. **Validate:** `/validate-app`
+6. **Submit PR:** `/submit-pr`
 
 **Manual Process:**
 
 1. Build your app directory with required structure
 2. Package as a CAP ZIP file: `zip -r my-app-v1.0.0.zip commerce-my-app-app-v1.0.0/ -x "*.DS_Store" -x "__MACOSX/*" -x "*/.*"`
 3. Generate SHA256 hash: `shasum -a 256 my-app-v1.0.0.zip`
-4. Create `manifest.json` with all required fields (name, displayName, domain, description, version, zip, sha256)
-5. Create `catalog.json` with INIT placeholder (new apps only)
-6. Place files at `{domain}/{isv-name}/` (e.g., `tax/avalara/` or `ratings-and-reviews/bazaarvoice/`)
-7. Delete old ZIP versions: `rm -f {app-name}-v*.zip` (keep only the latest version)
-8. Commit ONLY the ZIP, manifest.json, and catalog.json (do NOT commit extracted directories)
-9. Open a PR
+4. Update root manifest at `commerce-apps-manifest/manifest.json` with app entry (id, name, description, iconName, domain, version, zip, sha256)
+5. Copy app icon to `commerce-apps-manifest/icons/{iconName}.png`
+6. Add translations to `commerce-apps-manifest/translations/en-US.json` (minimum requirement)
+7. Create `catalog.json` with INIT placeholder (new apps only)
+8. Place ZIP at `{domain}/{isv-name}/` (e.g., `tax/avalara/` or `ratings-and-reviews/bazaarvoice/`)
+9. Delete old ZIP versions: `rm -f {app-name}-v*.zip` (keep only the latest version)
+10. Commit ONLY the ZIP, root manifest, icon, translations, and catalog.json (do NOT commit extracted directories)
+11. Open a PR
 
 **CI Validation:** Validates ZIP structure, manifest format, and SHA256 hash. On merge, creates a Git tag and updates the catalog automatically.
 
-**Updating an app:** Update the ZIP and `manifest.json` only. Do NOT add new versions to `catalog.json` (CI handles it). You may add `"deprecated": true` to existing versions if needed.
+**Updating an app:** Update the ZIP, root manifest entry, and icon/translations (if changed). Do NOT add new versions to `catalog.json` (CI handles it). You may add `"deprecated": true` to existing versions if needed.
 
 ### What to Commit
 
 Only commit these files to the repository:
 
 ✅ **DO commit:**
-- `{app-name}-v{version}.zip` - The packaged app
-- `manifest.json` - App metadata and SHA256 hash
-- `catalog.json` - Version catalog (new apps only, with INIT values)
+- `{domain}/{isv-name}/{app-name}-v{version}.zip` - The packaged app
+- `commerce-apps-manifest/manifest.json` - Root manifest with app entry
+- `commerce-apps-manifest/icons/{iconName}.png` - App icon
+- `commerce-apps-manifest/translations/en-US.json` - App translations (minimum)
+- `{domain}/{isv-name}/catalog.json` - Version catalog (new apps only, with INIT values)
 
 ❌ **DO NOT commit:**
 - `commerce-{app-name}-app-v{version}/` - Extracted app directories (dev only)
@@ -240,9 +255,9 @@ The repository `.gitignore` is configured to exclude extracted directories and s
 This repository includes comprehensive skills for Commerce App development:
 
 **App Development:**
-- `/scaffold-commerce-app` - Generate complete app structure
-- `/generate-commerce-app` - Package app into ZIP
-- `/update-app-version` - Streamline version bumps
+- `/scaffold-app` - Generate complete app structure (UI-only, Backend-only, or Fullstack)
+- `/package-app` - Package app into registry-ready ZIP with icon and translations
+- `/bump-version` - Bump version and regenerate all related files
 
 **Impex Generation:**
 - `/generate-service-impex` - Service credentials, profiles, definitions
@@ -251,13 +266,12 @@ This repository includes comprehensive skills for Commerce App development:
 - `/validate-impex` - Validate all impex files
 
 **Validation & Inspection:**
-- `/validate-commerce-app` - Comprehensive validation (structure, manifest, impex)
-- `/validate-impex` - Deep impex validation (also included in `/validate-commerce-app`)
-- `/extract-and-inspect` - Extract and inspect ZIP files
-- `/compare-app-versions` - Compare versions for changelogs
+- `/validate-app` - Comprehensive architecture-aware validation (structure, manifest, impex, icons, translations)
+- `/inspect-app` - Extract and inspect ZIP files
+- `/diff-versions` - Compare versions for changelogs
 
 **Submission:**
-- `/submit-app-pr` - Guide through PR submission process
+- `/submit-pr` - Guide through PR submission process with automated GitHub CLI integration
 
 ### External Contributors
 
