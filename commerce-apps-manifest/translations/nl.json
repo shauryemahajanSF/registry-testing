@@ -23,4 +23,9 @@
         "name": "Aangepaste betaling",
         "description": "Configureer een aangepaste betalingsintegratie met uw eigen API's."
     }
+    },
+    "loqate-address-verification": {
+        "name": "Loqate Address Verification",
+        "description": "Address Verification Application with GBG Loqate"
+    }
 }

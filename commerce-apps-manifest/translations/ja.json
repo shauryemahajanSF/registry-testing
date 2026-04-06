@@ -23,4 +23,9 @@
         "name": "カスタム決済",
         "description": "独自のAPIを使用してカスタム決済統合を設定します。"
     }
+    },
+    "loqate-address-verification": {
+        "name": "Loqate Address Verification",
+        "description": "Address Verification Application with GBG Loqate"
+    }
 }

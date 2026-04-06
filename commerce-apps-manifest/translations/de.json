@@ -23,4 +23,9 @@
         "name": "Benutzerdefinierte Zahlung",
         "description": "Konfigurieren Sie eine benutzerdefinierte Zahlungsintegration mit Ihren eigenen APIs."
     }
+    },
+    "loqate-address-verification": {
+        "name": "Loqate Address Verification",
+        "description": "Address Verification Application with GBG Loqate"
+    }
 }

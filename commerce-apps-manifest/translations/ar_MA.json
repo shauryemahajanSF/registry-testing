@@ -23,4 +23,9 @@
         "name": "دفع مخصص",
         "description": "تكوين تكامل دفع مخصص من خلال توفير واجهات API الخاصة بك."
     }
+    },
+    "loqate-address-verification": {
+        "name": "Loqate Address Verification",
+        "description": "Address Verification Application with GBG Loqate"
+    }
 }

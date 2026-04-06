@@ -23,4 +23,9 @@
         "name": "맞춤 결제",
         "description": "자체 API를 제공하여 맞춤 결제 통합을 구성합니다."
     }
+    },
+    "loqate-address-verification": {
+        "name": "Loqate Address Verification",
+        "description": "Address Verification Application with GBG Loqate"
+    }
 }

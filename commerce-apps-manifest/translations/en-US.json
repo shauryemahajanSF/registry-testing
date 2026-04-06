@@ -22,5 +22,9 @@
     "custom-payment": {
         "name": "Custom Payment",
         "description": "Configure a custom payment integration by providing your own APIs."
+    },
+    "loqate-address-verification": {
+        "name": "Loqate Address Verification",
+        "description": "Address Verification Application with GBG Loqate"
     }
 }

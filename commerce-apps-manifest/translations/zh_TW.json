@@ -23,4 +23,9 @@
         "name": "自訂付款",
         "description": "透過提供您自己的 API 來設定自訂付款整合。"
     }
+    },
+    "loqate-address-verification": {
+        "name": "Loqate Address Verification",
+        "description": "Address Verification Application with GBG Loqate"
+    }
 }
