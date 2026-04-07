@@ -49,13 +49,13 @@ Before extracting, verify ZIP integrity:
 
 ```bash
 # Check if ZIP exists
-ls -lh <domain>/<isv-name>/<appName>-v<version>.zip
+ls -lh <domain>/<appName>/<appName>-v<version>.zip
 
 # List contents without extracting
-unzip -l <domain>/<isv-name>/<appName>-v<version>.zip
+unzip -l <domain>/<appName>/<appName>-v<version>.zip
 
 # Verify ZIP is not corrupted
-unzip -t <domain>/<isv-name>/<appName>-v<version>.zip
+unzip -t <domain>/<appName>/<appName>-v<version>.zip
 ```
 
 **Check for red flags:**
@@ -70,7 +70,7 @@ unzip -t <domain>/<isv-name>/<appName>-v<version>.zip
 Extract to the app's directory:
 
 ```bash
-cd <domain>/<isv-name>/
+cd <domain>/<appName>/
 unzip -q <appName>-v<version>.zip
 ```
 
@@ -235,7 +235,7 @@ Create a summary of findings:
 ```markdown
 ## Inspection Report: <appName> v<version>
 
-**Extracted from:** `<domain>/<isv-name>/<appName>-v<version>.zip`
+**Extracted from:** `<domain>/<appName>/<appName>-v<version>.zip`
 **Extraction date:** <current_date>
 
 ### Directory Structure
@@ -268,40 +268,15 @@ Create a summary of findings:
 
 ## Step 10: Clean up extracted directory
 
-After inspection, **always** remove the extracted directory:
+After inspection, remove the extracted directory:
 
 ```bash
-cd <domain>/<isv-name>/
+cd <domain>/<appName>/
 rm -rf commerce-<appName>-app-v<version>/
 ```
 
-**IMPORTANT:**
-- Extracted directories should NEVER be committed to the repository
-- They are for inspection, debugging, and development only
-- Only ZIP and catalog.json belong in the app directory
-- Root manifest (commerce-apps-manifest/manifest.json) must be updated separately
-
-**Keep extracted directory temporarily if:**
-- You need to make modifications and repackage
-- You're actively comparing versions
-- You're debugging an issue
-- You're generating a new ZIP from it
-
-**But always delete before committing to git!**
+**Note:** Extracted directories are for inspection only - never commit them. Only ZIP and catalog.json belong in the app directory.
 
 ## Use cases
 
-### Use case 1: Code review
-Extract and review structure before approving a PR.
-
-### Use case 2: Debugging
-Extract to investigate why CI validation is failing.
-
-### Use case 3: Learning
-Extract reference apps to learn best practices and patterns.
-
-### Use case 4: Version comparison
-Extract multiple versions to compare changes (see `/compare-app-versions`).
-
-### Use case 5: Re-packaging
-Extract, modify, and re-package using `/generate-commerce-app`.
+**Common scenarios:** Code review, CI debugging, learning from reference apps, version comparison (see `/diff-versions`), or re-packaging with `/package-app`.

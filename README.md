@@ -71,7 +71,7 @@ commerce-{app-name}-app-v{version}/
 ├── app-configuration/
 │   └── tasksList.json              # Post-install merchant setup steps
 ├── icons/                          # App icon (required)
-│   └── {isv-name}.png              # Copied to commerce-apps-manifest/icons/
+│   └── {icon-filename}.png         # CI extracts to commerce-apps-manifest/icons/
 ├── cartridges/                     # Backend-only or Fullstack apps
 │   ├── site_cartridges/{name}/    # Script API hook implementations
 │   │   ├── package.json
@@ -109,11 +109,11 @@ commerce-{app-name}-app-v{version}/
 
 ## Published Apps
 
-Apps are organized by domain and ISV/vendor:
+Apps are organized by domain and app name:
 
 ```
-{domain}/{isv-name}/
-  ├── {app-name}-v{version}.zip    # The installable CAP
+{domain}/{appName}/
+  ├── {appName}-v{version}.zip     # The installable CAP
   └── catalog.json                  # Version history (updated by CI)
 
 commerce-apps-manifest/
@@ -131,18 +131,18 @@ commerce-apps-manifest/
 
 ```
 tax/
-├── avalara/
+├── avalara-tax/
 │   ├── avalara-tax-v0.2.8.zip
 │   └── catalog.json
-└── vertex/
+└── vertex-tax/
     ├── vertex-tax-v1.0.0.zip
     └── catalog.json
 
 payment/
-├── stripe/
+├── stripe-payment/
 │   ├── stripe-payment-v1.0.0.zip
 │   └── catalog.json
-└── adyen/
+└── adyen-payment/
     ├── adyen-payment-v1.0.0.zip
     └── catalog.json
 
@@ -218,15 +218,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for complete submission requirements and 
 2. Package as a CAP ZIP file: `zip -r my-app-v1.0.0.zip commerce-my-app-app-v1.0.0/ -x "*.DS_Store" -x "__MACOSX/*" -x "*/.*"`
 3. Generate SHA256 hash: `shasum -a 256 my-app-v1.0.0.zip`
 4. Update root manifest at `commerce-apps-manifest/manifest.json` with app entry (id, name, description, iconName, domain, version, zip, sha256)
-5. Copy app icon to `commerce-apps-manifest/icons/{iconName}.png`
-6. Add translations to `commerce-apps-manifest/translations/en-US.json` (minimum requirement)
-7. Create `catalog.json` with INIT placeholder (new apps only)
-8. Place ZIP at `{domain}/{isv-name}/` (e.g., `tax/avalara/` or `ratings-and-reviews/bazaarvoice/`)
+5. Add translations to `commerce-apps-manifest/translations/en-US.json` (minimum requirement)
+6. Create `catalog.json` with INIT placeholder (new apps only)
+7. Place ZIP at `{domain}/{appName}/` where `{appName}` matches the "id" field (e.g., `tax/avalara-tax/` or `address-verification/loqate-address-verification/`)
 9. Delete old ZIP versions: `rm -f {app-name}-v*.zip` (keep only the latest version)
 10. Commit ONLY the ZIP, root manifest, icon, translations, and catalog.json (do NOT commit extracted directories)
 11. Open a PR
 
-**CI Validation:** Validates ZIP structure, manifest format, and SHA256 hash. On merge, creates a Git tag and updates the catalog automatically.
+**CI Validation:** Validates ZIP structure, manifest format, and SHA256 hash. On merge, creates a Git tag, extracts app icons to `commerce-apps-manifest/icons/`, and updates the catalog automatically.
 
 **Updating an app:** Update the ZIP, root manifest entry, and icon/translations (if changed). Do NOT add new versions to `catalog.json` (CI handles it). You may add `"deprecated": true` to existing versions if needed.
 
@@ -235,11 +234,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for complete submission requirements and 
 Only commit these files to the repository:
 
 ✅ **DO commit:**
-- `{domain}/{isv-name}/{app-name}-v{version}.zip` - The packaged app
+- `{domain}/{appName}/{appName}-v{version}.zip` - The packaged app
 - `commerce-apps-manifest/manifest.json` - Root manifest with app entry
-- `commerce-apps-manifest/icons/{iconName}.png` - App icon
 - `commerce-apps-manifest/translations/en-US.json` - App translations (minimum)
-- `{domain}/{isv-name}/catalog.json` - Version catalog (new apps only, with INIT values)
+- `{domain}/{appName}/catalog.json` - Version catalog (new apps only, with INIT values)
+
+**Note:** App icons are automatically extracted from the ZIP by the CI workflow and added to `commerce-apps-manifest/icons/` - do NOT manually commit icons.
 
 ❌ **DO NOT commit:**
 - `commerce-{app-name}-app-v{version}/` - Extracted app directories (dev only)

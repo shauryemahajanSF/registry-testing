@@ -1,19 +1,23 @@
 {
+  "skill_name": "inspect-app",
   "evals": [
     {
-      "prompt": "Can you show me what's inside the avalara-tax app? I want to learn from it.",
-      "context": "User wants to explore existing app structure for learning",
-      "expected_behavior": "Should trigger inspect-app skill, extract ZIP, show directory structure, key files, and implementation patterns"
+      "id": 1,
+      "prompt": "Hey, I need to see what's inside the avalara-tax app ZIP to understand how it's structured. Can you extract and show me the directory layout and key files?",
+      "expected_output": "Extracts avalara-tax ZIP from tax/avalara-tax/, shows directory tree, validates structure, reads commerce-app.json and key config files, then cleans up extracted directory",
+      "files": []
     },
     {
-      "prompt": "Let me take a look at how the salesforce-gift-cards app is structured",
-      "context": "User wants to review specific app implementation",
-      "expected_behavior": "Should trigger inspect-app, locate and extract app, provide detailed inspection"
+      "id": 2,
+      "prompt": "I'm getting CI validation errors on the loqate-address-verification app. Can you inspect the ZIP at address-verification/loqate-address-verification/ and check for any obvious issues like junk files or missing required files?",
+      "expected_output": "Extracts ZIP, runs validation checks for junk files (.DS_Store, __MACOSX), verifies required files (commerce-app.json, README.md, tasksList.json), checks for common issues, reports findings, cleans up",
+      "files": []
     },
     {
-      "prompt": "Extract the shipping app ZIP so I can review the code",
-      "context": "User requesting extraction for code review",
-      "expected_behavior": "Should trigger inspect-app with read-only extraction and inspection"
+      "id": 3,
+      "prompt": "I want to learn how the stripe payment integration works. Can you extract the stripe-payment app and show me the hook implementations and service configurations?",
+      "expected_output": "Extracts stripe-payment ZIP from payment/stripe-payment/, locates and displays hooks.json, service configurations from impex/install/services.xml, shows hook implementation files, provides overview, cleans up",
+      "files": []
     }
   ]
 }

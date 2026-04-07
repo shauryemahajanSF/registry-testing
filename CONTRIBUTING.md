@@ -9,8 +9,8 @@ Please follow the guidelines below when submitting new or updated commerce app v
 If you're using Claude Code, several skills are available to streamline the contribution process:
 
 ### Building Apps
-- **`/scaffold-commerce-app`** - Generate initial directory structure and template files for a new commerce app from scratch
-- **`/generate-commerce-app`** - Package an existing app directory into a registry-ready Commerce App Package (CAP) ZIP
+- **`/scaffold-app`** - Generate initial directory structure and template files for a new commerce app from scratch
+- **`/package-app`** - Package an existing app directory into a registry-ready Commerce App Package (CAP) ZIP
 
 ### Impex Generation
 - **`/generate-service-impex`** - Generate SFCC service configuration impex (credentials, profiles, definitions)
@@ -19,23 +19,23 @@ If you're using Claude Code, several skills are available to streamline the cont
 - **`/validate-impex`** - Validate all impex XML files for syntax and common errors
 
 ### Validation & Updates
-- **`/validate-commerce-app`** - Comprehensive validation before submission (checks structure, manifest, SHA256, impex XML, etc.)
-- **`/validate-impex`** - Deep validation of impex files only (useful during development, also included in `/validate-commerce-app`)
-- **`/update-app-version`** - Streamline version bumps for existing apps (updates version, regenerates ZIP, computes hash)
+- **`/validate-app`** - Comprehensive validation before submission (checks structure, manifest, SHA256, impex XML, icons, translations)
+- **`/validate-impex`** - Deep validation of impex files only (useful during development, also included in `/validate-app`)
+- **`/bump-version`** - Streamline version bumps for existing apps (updates version, regenerates ZIP, computes hash)
 
 ### Inspection & Comparison
-- **`/extract-and-inspect`** - Extract and inspect ZIP files to review structure and contents
-- **`/compare-app-versions`** - Compare two versions to see what changed (useful for code review and changelogs)
+- **`/inspect-app`** - Extract and inspect ZIP files to review structure and contents
+- **`/diff-versions`** - Compare two versions to see what changed (useful for code review and changelogs)
 
 ### Submission
-- **`/submit-app-pr`** - Guide through the PR submission process with proper formatting and checklist
+- **`/submit-pr`** - Guide through the PR submission process with proper formatting and checklist
 
 **Typical workflow:**
-1. Start new app → `/scaffold-commerce-app`
+1. Start new app → `/scaffold-app`
 2. Build your app code and logic
-3. Package for registry → `/generate-commerce-app`
-4. Validate before submitting → `/validate-commerce-app`
-5. Submit PR → `/submit-app-pr`
+3. Package for registry → `/package-app`
+4. Validate before submitting → `/validate-app`
+5. Submit PR → `/submit-pr`
 
 These skills automate many of the manual steps described below and help catch common issues early.
 

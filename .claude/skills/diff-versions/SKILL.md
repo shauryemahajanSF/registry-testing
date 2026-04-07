@@ -22,8 +22,8 @@ Gather information:
 
 Verify both ZIPs exist:
 ```bash
-ls -lh <domain>/<isv-name>/<appName>-v<oldVersion>.zip
-ls -lh <domain>/<isv-name>/<appName>-v<newVersion>.zip
+ls -lh <domain>/<appName>/<appName>-v<oldVersion>.zip
+ls -lh <domain>/<appName>/<appName>-v<newVersion>.zip
 ```
 
 ## Step 2: Extract both versions
@@ -31,7 +31,7 @@ ls -lh <domain>/<isv-name>/<appName>-v<newVersion>.zip
 Extract both versions for comparison:
 
 ```bash
-cd <domain>/<isv-name>/
+cd <domain>/<appName>/
 
 # Extract old version
 unzip -q <appName>-v<oldVersion>.zip
@@ -286,38 +286,19 @@ meld commerce-<appName>-app-v<oldVersion>/ \
 
 ## Step 10: Clean up after comparison
 
-**Always** remove extracted directories after comparison:
+Remove extracted directories after comparison:
 
 ```bash
-cd <domain>/<isv-name>/
-rm -rf commerce-<appName>-app-v<oldVersion>/
-rm -rf commerce-<appName>-app-v<newVersion>/
+cd <domain>/<appName>/
+rm -rf commerce-<appName>-app-v<oldVersion>/ commerce-<appName>-app-v<newVersion>/
 rm /tmp/old_files.txt /tmp/new_files.txt
 ```
 
-**IMPORTANT:**
-- Extracted directories should NEVER be committed to the repository
-- They are for comparison and inspection only
-- Only ZIP and catalog.json belong in the app directory
-- Root manifest (commerce-apps-manifest/manifest.json) must be updated separately
-- Always verify with `git status` that no extracted directories are staged
+**Note:** Extracted directories are for comparison only - never commit them.
 
 ## Use cases
 
-### Use case 1: PR Review
-Compare versions to understand what changed in a PR before approving.
-
-### Use case 2: Changelog Generation
-Generate a changelog by comparing versions and documenting changes.
-
-### Use case 3: Regression Investigation
-Compare versions to find what changed that might have caused a regression.
-
-### Use case 4: Migration Planning
-Compare versions to plan migration steps and identify breaking changes.
-
-### Use case 5: Learning
-Compare versions of reference apps to learn best practices and patterns.
+**Common scenarios:** PR review, changelog generation, regression investigation, migration planning, or learning from version evolution.
 
 ## Quick comparison commands
 
@@ -352,11 +333,6 @@ diff -rq commerce-<appName>-app-v<oldVersion>/ \
 - [ ] Report generated (if needed)
 - [ ] Extracted directories cleaned up
 
-## Tips for effective comparisons
+## Tips
 
-1. **Start high-level** - File counts and structure before diving into code
-2. **Focus on what matters** - Prioritize hooks, services, and business logic
-3. **Ignore noise** - Skip generated files, logs, and dependencies
-4. **Document findings** - Create a report for future reference
-5. **Use visual tools** - GUI diff tools are great for detailed code review
-6. **Test before and after** - If possible, test both versions to validate changes
+Start with high-level structure, focus on hooks/services/logic, ignore noise (logs, dependencies), document findings, use visual diff tools for code review.

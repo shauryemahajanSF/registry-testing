@@ -30,7 +30,8 @@
 - [ ] ZIP file name follows format: `{appName}-v{version}.zip`
 - [ ] ZIP contains single root folder: `commerce-{appName}-app-v{version}/`
 - [ ] Root `manifest.json` includes all required fields (id, name, description, iconName, domain, version, zip, sha256)
-- [ ] App icon exists in `commerce-apps-manifest/icons/{iconName}.png`
+- [ ] App icon exists in ZIP at `commerce-{appName}-app-v{version}/icons/` (CI extracts automatically)
+- [ ] Icon filename in ZIP matches `iconName` field in root manifest
 - [ ] Translations added to `commerce-apps-manifest/translations/en-US.json` (minimum requirement)
 - [ ] `catalog.json` included for new apps only (with INIT values)
 - [ ] If updating existing app: Did NOT add new versions to `catalog.json` (CI handles this)
@@ -51,8 +52,8 @@
 - [ ] No hardcoded credentials
 
 ### Directory Structure
-- [ ] App follows structure: `{domain}/{isv-name}/`
-- [ ] Only ZIP, root manifest.json, icon, translations, and catalog.json (new apps) are committed
+- [ ] App located at `{domain}/{appName}/` where `{appName}` matches the "id" field in manifest
+- [ ] Only ZIP, root manifest.json, translations, and catalog.json (new apps) are committed
 - [ ] No extracted directories (`commerce-*-app-v*/`) committed
 - [ ] No system files (`.DS_Store`, `Thumbs.db`) committed
 
@@ -96,7 +97,7 @@
 
 **By submitting this PR, I confirm that:**
 - I have read and followed the [CONTRIBUTING.md](../CONTRIBUTING.md) guidelines
-- My app follows the required directory structure: `{domain}/{isv-name}/`
-- I am only committing ZIP, manifest.json, and catalog.json (no extracted directories)
+- My app follows the required directory structure: `{domain}/{appName}/` where `{appName}` matches the manifest "id" field
+- I am only committing ZIP, manifest.json, translations, and catalog.json (no extracted directories)
 - All hardcoded credentials are placeholders, not production values
 - I have signed the Contributor License Agreement (CLA) if I am an external contributor
