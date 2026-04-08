@@ -1,282 +1,116 @@
 ---
 name: inspect-app
 description: >-
-  Extract and inspect a commerce app ZIP to explore its structure and contents without modification.
-  Use this skill immediately when users want to "look at", "inspect", "explore", "review", "examine",
-  or "see what's inside" any app ZIP. Also trigger when users mention specific app names to learn from
-  them, when debugging issues, during code review, or when they want to understand how an existing app
-  works. This is a READ-ONLY operation perfect for learning and investigation - use it proactively
-  whenever users express curiosity about any app's implementation, structure, or contents.
+  Extract and optionally inspect a commerce app ZIP. Handles both quick extraction for modification
+  and full inspection for learning/review/debugging. Use when users want to "extract", "look at",
+  "inspect", "explore", "review", "examine", or "see what's inside" any app ZIP. Trigger proactively
+  whenever users express curiosity about an app's implementation, structure, or contents.
 ---
 
-# Extract and Inspect Commerce App
+# Extract & Inspect Commerce App
 
-Safely extract and inspect commerce app ZIP files without making modifications.
+Extract commerce app ZIPs with optional deep inspection. Determines depth from user intent:
+- **Extract only** — user wants to modify/edit → extract and stop
+- **Full inspection** — user wants to understand/review/debug → extract, inspect, report, cleanup
 
-## Step 1: Identify ZIP to extract
+## Usage
 
-Parse the input and locate the ZIP file. Since each app directory only has ONE ZIP version, auto-detect it.
-
-**Usage:**
 ```bash
-/extract-and-inspect avalara-tax
-/extract-and-inspect tax/avalara-tax
+/inspect-app <app-name>
+/inspect-app <domain>/<app-name>
 ```
 
-**Find the ZIP:**
+## Step 1: Locate and extract ZIP
 
 ```bash
-# If input is just app name (e.g., "avalara-tax")
-# Search for it in all domain directories
+# Find ZIP (app name only → search all domains; domain/app → direct lookup)
 find . -name "*<app-name>-v*.zip" -type f | head -1
 
-# If input is domain/app (e.g., "tax/avalara-tax")
-# Look directly in that directory
-ls <domain>/<app-name>/*-v*.zip | head -1
+# Validate and extract
+cd <domain>/<app-name>/
+unzip -t <app-name>-v<version>.zip
+unzip -q <app-name>-v<version>.zip
 ```
 
-**Expected result:** Single ZIP path like `tax/avalara-tax/avalara-tax-v0.2.8.zip`
+Creates: `commerce-<app-name>-app-v<version>/`
 
-Extract the components from the ZIP path:
-- Domain: `tax`
-- App directory: `avalara-tax`
-- Full ZIP name: `avalara-tax-v0.2.8.zip`
-- Version: `0.2.8`
+If directory already exists, ask user before overwriting.
 
-## Step 2: Pre-extraction validation
+## Step 2: Determine intent
 
-Before extracting, verify ZIP integrity:
+**If user wants to modify/edit** → show path, stop:
 
-```bash
-# Check if ZIP exists
-ls -lh <domain>/<appName>/<appName>-v<version>.zip
+```
+✅ Extracted to: <domain>/<app-name>/commerce-<app-name>-app-v<version>/
 
-# List contents without extracting
-unzip -l <domain>/<appName>/<appName>-v<version>.zip
-
-# Verify ZIP is not corrupted
-unzip -t <domain>/<appName>/<appName>-v<version>.zip
+When done editing, use /package-app to repackage.
+⚠️  Delete extracted directory before committing.
 ```
 
-**Check for red flags:**
-- Multiple root folders (should only be one)
-- Path prefixes like `tax/`, `domain/` in the ZIP
-- Junk files: `.DS_Store`, `__MACOSX`, `Thumbs.db`
-- Hidden files (starting with `.`)
-- Unexpected file extensions
+**If user wants to inspect/review/learn/debug** → continue to Step 3.
 
-## Step 3: Extract ZIP
-
-Extract to the app's directory:
+## Step 3: Inspect structure and key files
 
 ```bash
-cd <domain>/<appName>/
-unzip -q <appName>-v<version>.zip
-```
-
-Expected result:
-- Creates directory: `commerce-<appName>-app-v<version>/`
-- All app files nested inside this single root folder
-
-**Note:** If the directory already exists, you may need to remove it first:
-```bash
-rm -rf commerce-<appName>-app-v<version>/
-unzip -q <appName>-v<version>.zip
-```
-
-## Step 4: Inspect directory structure
-
-Generate and review the directory tree:
-
-```bash
-cd commerce-<appName>-app-v<version>/
+cd commerce-<app-name>-app-v<version>/
 tree -L 3 -I 'node_modules|*.log'
 ```
 
-Or if tree is not available:
-```bash
-find . -type f -not -path "*/node_modules/*" | head -50
-```
+Read and validate:
+- **commerce-app.json** — id, version, domain, publisher
+- **README.md** — installation docs present
+- **hooks.json** — `cartridges/site_cartridges/*/cartridge/scripts/hooks.json`
+- **services.xml** — `impex/install/services.xml` (if present)
 
-**Expected structure:**
-```
-commerce-<appName>-app-v<version>/
-├── commerce-app.json
-├── README.md
-├── app-configuration/
-│   └── tasksList.json
-├── cartridges/
-│   ├── site_cartridges/<cartridge_name>/
-│   │   ├── package.json
-│   │   ├── cartridge/scripts/
-│   │   └── test/
-│   └── bm_cartridges/<bm_cartridge_name>/
-├── storefront-next/src/extensions/<app-name>/
-│   ├── target-config.json
-│   ├── components/
-│   ├── context/
-│   ├── hooks/
-│   ├── locales/
-│   ├── middlewares/
-│   ├── providers/
-│   ├── routes/
-│   ├── stores/
-│   └── tests/
-├── impex/
-│   ├── install/
-│   │   ├── services.xml
-│   │   ├── meta/system-objecttype-extensions.xml
-│   │   └── sites/SITEID/preferences.xml
-│   └── uninstall/
-│       └── services.xml
-└── icons/
-```
+Verify referenced script files actually exist.
 
-## Step 5: Inspect key files
-
-Read and validate key configuration files:
-
-### commerce-app.json
-```bash
-cat commerce-app.json | jq .
-```
-
-**Check:**
-- [ ] `id` matches app name
-- [ ] `version` matches expected version
-- [ ] `domain` is correct
-- [ ] Publisher information is complete
-
-### README.md
-```bash
-head -30 README.md
-```
-
-**Check:**
-- [ ] Clear installation instructions
-- [ ] Configuration documentation
-- [ ] Support/contact information
-
-### Hooks configuration
-```bash
-cat cartridges/site_cartridges/*/cartridge/scripts/hooks.json | jq .
-```
-
-**Check:**
-- [ ] Hook names follow conventions
-- [ ] Script paths are valid
-- [ ] All referenced scripts exist
-
-### Services configuration
-```bash
-cat impex/install/services.xml
-```
-
-**Check:**
-- [ ] Service ID is unique
-- [ ] Profile and credential IDs are consistent
-- [ ] Service definitions reference correct cartridge paths
-
-## Step 6: Validate file references
-
-Check that all referenced files actually exist:
+## Step 4: Check for issues
 
 ```bash
-# Find all .js files referenced in hooks.json
-grep -r "\.js" cartridges/*/cartridge/scripts/hooks.json
+# Junk files
+find . -name ".DS_Store" -o -name "Thumbs.db" -o -name "__MACOSX" -o -name "*.swp"
 
-# Verify those files exist
-ls -la cartridges/*/cartridge/scripts/hooks/
-ls -la cartridges/*/cartridge/scripts/helpers/
-ls -la cartridges/*/cartridge/scripts/services/
-```
-
-## Step 7: Check for common issues
-
-Run automated checks:
-
-```bash
-# Check for junk files that shouldn't be there
-find . -name ".DS_Store" -o -name "Thumbs.db" -o -name "*.swp"
-
-# Check for node_modules (shouldn't be in ZIP)
+# Shouldn't be in ZIP
 find . -type d -name "node_modules"
 
-# Check for absolute paths (bad practice)
-grep -r "/Users/" . 2>/dev/null || echo "No absolute paths found"
-grep -r "C:\\\\" . 2>/dev/null || echo "No absolute Windows paths found"
+# Absolute paths
+grep -r "/Users/\|C:\\\\" . 2>/dev/null
 
-# Check for TODO/FIXME comments
-grep -rn "TODO\|FIXME" cartridges/ || echo "No TODOs found"
-
-# Check for hardcoded credentials (security issue)
-grep -ri "password\|apikey\|secret" cartridges/ impex/ || echo "No hardcoded secrets found"
+# Hardcoded secrets
+grep -ri "password\|apikey\|secret" cartridges/ impex/ 2>/dev/null
 ```
 
-## Step 8: Compare with reference implementation
+## Step 5: Report and cleanup
 
-If available, compare with the reference app (e.g., `avalara-tax`):
-
-```bash
-# Compare directory structures
-diff <(cd /path/to/reference && find . -type f | sort) \
-     <(cd /path/to/current && find . -type f | sort)
-
-# Compare specific files
-diff /path/to/reference/commerce-app.json ./commerce-app.json
-```
-
-## Step 9: Generate inspection report
-
-Create a summary of findings:
-
-**Report template:**
+Generate summary:
 
 ```markdown
-## Inspection Report: <appName> v<version>
+## Inspection Report: <app-name> v<version>
 
-**Extracted from:** `<domain>/<appName>/<appName>-v<version>.zip`
-**Extraction date:** <current_date>
-
-### Directory Structure
-- Root folder: `commerce-<appName>-app-v<version>/`
-- Total files: <count>
+### Structure
+- Root: `commerce-<app-name>-app-v<version>/`
+- Files: <count>
 - Cartridges: <list>
-- Extensions: <list>
 
-### Validation Results
+### Validation
 - [ ] commerce-app.json valid
-- [ ] All hook scripts exist
-- [ ] Services configured correctly
-- [ ] No junk files found
+- [ ] Hook scripts exist
+- [ ] Services configured
+- [ ] No junk files
 - [ ] No hardcoded secrets
-- [ ] Documentation present
 
-### Issues Found
-<list any issues or none>
-
-### Files Reviewed
-- commerce-app.json
-- README.md
-- hooks.json
-- services.xml
-- <other key files>
-
-### Recommendations
-<any suggestions for improvement>
+### Issues
+<list or "None found">
 ```
 
-## Step 10: Clean up extracted directory
-
-After inspection, remove the extracted directory:
-
+Cleanup:
 ```bash
-cd <domain>/<appName>/
-rm -rf commerce-<appName>-app-v<version>/
+cd <domain>/<app-name>/
+rm -rf commerce-<app-name>-app-v<version>/
 ```
 
-**Note:** Extracted directories are for inspection only - never commit them. Only ZIP and catalog.json belong in the app directory.
+## Related skills
 
-## Use cases
-
-**Common scenarios:** Code review, CI debugging, learning from reference apps, version comparison (see `/diff-versions`), or re-packaging with `/package-app`.
+- `/package-app` — repackage after modifications
+- `/diff-versions` — compare two app versions
+- `/validate-app` — full pre-submission validation

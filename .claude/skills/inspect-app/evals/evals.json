@@ -3,20 +3,32 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Hey, I need to see what's inside the avalara-tax app ZIP to understand how it's structured. Can you extract and show me the directory layout and key files?",
-      "expected_output": "Extracts avalara-tax ZIP from tax/avalara-tax/, shows directory tree, validates structure, reads commerce-app.json and key config files, then cleans up extracted directory",
+      "prompt": "Extract the avalara-tax app so I can make some changes to the hook implementations.",
+      "expected_output": "Extracts avalara-tax ZIP from tax/avalara-tax/, shows extracted path, reminds to delete before committing. Does NOT run full inspection since user wants to modify files.",
       "files": []
     },
     {
       "id": 2,
-      "prompt": "I'm getting CI validation errors on the loqate-address-verification app. Can you inspect the ZIP at address-verification/loqate-address-verification/ and check for any obvious issues like junk files or missing required files?",
-      "expected_output": "Extracts ZIP, runs validation checks for junk files (.DS_Store, __MACOSX), verifies required files (commerce-app.json, README.md, tasksList.json), checks for common issues, reports findings, cleans up",
+      "prompt": "I need to see what's inside the avalara-tax app. Show me the directory layout and key config files.",
+      "expected_output": "Extracts avalara-tax ZIP, shows directory tree, reads commerce-app.json and key config files, runs issue checks, generates inspection report, cleans up extracted directory.",
       "files": []
     },
     {
       "id": 3,
-      "prompt": "I want to learn how the stripe payment integration works. Can you extract the stripe-payment app and show me the hook implementations and service configurations?",
-      "expected_output": "Extracts stripe-payment ZIP from payment/stripe-payment/, locates and displays hooks.json, service configurations from impex/install/services.xml, shows hook implementation files, provides overview, cleans up",
+      "prompt": "I'm getting CI validation errors on loqate-address-verification. Can you inspect the ZIP and check for obvious issues like junk files or missing required files?",
+      "expected_output": "Extracts ZIP from address-verification/loqate-address-verification/, runs validation checks for junk files (.DS_Store, __MACOSX), verifies required files exist, checks for hardcoded secrets and absolute paths, reports findings, cleans up.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I want to learn how the stripe-payment integration hooks and services work.",
+      "expected_output": "Extracts stripe-payment ZIP from payment/stripe-payment/, shows hooks.json, reads service configurations from impex/install/services.xml, displays hook implementation files, provides overview, cleans up.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Extract tax/avalara-tax so I can look at the impex files and make some fixes.",
+      "expected_output": "Extracts avalara-tax ZIP to tax/avalara-tax/, shows extracted path. Stops after extraction since user wants to browse and edit files themselves. Reminds to use /package-app when done and delete before committing.",
       "files": []
     }
   ]
