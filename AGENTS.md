@@ -17,7 +17,7 @@ This is a **Commerce App Registry** for Salesforce Commerce Cloud B2C Commerce. 
 ## Directory Structure
 
 ```
-{domain}/{isv-name}/
+{domain}/{app-name}/
 ├── {app-name}-v{version}.zip    # COMMIT THIS - The packaged app
 ├── manifest.json                 # COMMIT THIS - App metadata + SHA256 hash
 └── catalog.json                  # COMMIT THIS - Version history (new apps only)
@@ -27,9 +27,8 @@ commerce-{app-name}-app-v{version}/  # Extracted directory (dev only)
 ```
 
 **Examples:**
-- `tax/avalara/avalara-tax-v0.2.8.zip`
-- `gift-cards/bazaarvoice/gift-cards-v1.0.0.zip`
-- `payment/stripe/stripe-payment-v1.0.0.zip`
+- `tax/avalara-tax/avalara-tax-v0.2.8.zip`
+- `address-verification/loqate-address-verification/loqate-address-verification-v1.0.1.zip`
 
 **Critical Rule:** Extracted app directories are for development only. Only ZIP, manifest.json, and catalog.json should be committed.
 
@@ -117,7 +116,7 @@ Your response:
 ## Critical Rules & Conventions
 
 ### 1. Directory Structure
-- **ALWAYS** use `{domain}/{isv-name}/` structure
+- **ALWAYS** use `{domain}/{app-name}/` structure where `{app-name}` matches the `id` field in the root manifest
 - **NEVER** commit extracted directories (`commerce-*-app-v*/`)
 - Only commit: ZIP, manifest.json, catalog.json
 
@@ -275,28 +274,28 @@ Suggest deprecation when:
 
 ### ❌ Wrong Directory Structure
 ```
-# WRONG - using app name instead of ISV name
-tax/avalara-tax/avalara-tax-v0.2.8.zip
-
-# RIGHT
+# WRONG - using ISV name instead of app name
 tax/avalara/avalara-tax-v0.2.8.zip
 
+# RIGHT - directory matches app id in manifest
+tax/avalara-tax/avalara-tax-v0.2.8.zip
+
 # WRONG - using different domain naming
-ratingsAndReviews/bazaarvoice/ratings-reviews-v1.0.0.zip
+ratingsAndReviews/bazaarvoice-reviews/ratings-reviews-v1.0.0.zip
 
 # RIGHT - domain uses hyphen-case
-ratings-and-reviews/bazaarvoice/ratings-reviews-v1.0.0.zip
+ratings-and-reviews/bazaarvoice-reviews/ratings-reviews-v1.0.0.zip
 ```
 
 ### ❌ Committing Extracted Directories
 ```
 # WRONG - DO NOT COMMIT
-tax/avalara/commerce-avalara-tax-app-v0.2.8/
+tax/avalara-tax/commerce-avalara-tax-app-v0.2.8/
 
 # RIGHT - Only commit these
-tax/avalara/avalara-tax-v0.2.8.zip
-tax/avalara/manifest.json
-tax/avalara/catalog.json
+tax/avalara-tax/avalara-tax-v0.2.8.zip
+tax/avalara-tax/manifest.json
+tax/avalara-tax/catalog.json
 ```
 
 ### ❌ Hardcoded Credentials
@@ -464,7 +463,7 @@ The `domain` field in manifest entries and `commerce-app.json` must be one of th
 Before suggesting `/submit-app-pr`, verify:
 
 **File Structure:**
-- [ ] Files at `{domain}/{isv-name}/` (correct path)
+- [ ] Files at `{domain}/{app-name}/` (correct path, `{app-name}` matches manifest `id`)
 - [ ] Only ZIP, manifest.json, catalog.json present
 - [ ] No extracted directories committed
 
@@ -546,14 +545,14 @@ A: Depends on what you're doing:
 - Anything else: NO - CI manages it
 
 **Q: "Where does my app go in the registry?"**
-A: `{domain}/{isv-name}/` where domain is one of: `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, or `approaching-discounts`. The domain uses hyphen-case and is specified directly in the manifest.
+A: `{domain}/{app-name}/` where `{app-name}` matches the `id` field in the root manifest, and domain is one of: `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, or `approaching-discounts`. The domain uses hyphen-case and is specified directly in the manifest.
 
 ## Key Files to Reference
 
 - **CONTRIBUTING.md** - Full submission requirements and guidelines
 - **README.md** - Repository overview and quick start
 - **.gitignore** - Already configured to exclude extracted directories
-- **tax/avalara/** - Reference implementation to study
+- **tax/avalara-tax/** - Reference implementation to study
 - **.claude/skills/** - All skill definitions and documentation
 
 ## Success Metrics
@@ -568,7 +567,7 @@ A successful AI assistant interaction:
 ## Remember
 
 - **Skills exist for a reason** - Use them instead of manual processes
-- **Structure matters** - `{domain}/{isv-name}/` is not optional
+- **Structure matters** - `{domain}/{app-name}/` is not optional
 - **Validation is critical** - Always validate before submission
 - **Security first** - No hardcoded credentials, ever
 - **Guide, don't just answer** - Help users through complete workflows
