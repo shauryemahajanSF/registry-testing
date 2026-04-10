@@ -51,22 +51,50 @@ jobs:
             echo "INJECTION_FOUND=true" >> "$GITHUB_ENV"
           fi
 
-      - name: Stage extracted files for diff analysis
+      - name: AI security review
         if: env.INJECTION_FOUND != 'true'
-        run: git add -A
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Collect extracted source files into a single payload
+          CODE=""
+          for f in $(find *-extracted/ -type f \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' -o -name '*.json' -o -name '*.xml' \) 2>/dev/null); do
+            CODE+="--- FILE: $f ---"$'\n'
+            CODE+="$(cat "$f")"$'\n\n'
+          done
 
-      - uses: anthropics/claude-code-security-review@main
-        if: env.INJECTION_FOUND != 'true'
-        with:
-          comment-pr: true
-          claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
-          custom-security-scan-instructions: |
-            The PR contains Commerce App Packages (CAPs) as ZIP files. The ZIPs
-            have been extracted into *-extracted/ directories. Focus your analysis
-            on the extracted contents, specifically:
-            - Hook scripts under cartridges/ that handle tax, payment, or shipping
-            - SFCC Script API misuse (dw.io.File, dw.net.HTTPClient, dw.system.System)
-            - Data exfiltration via service calls sending customer/basket PII to undeclared endpoints
-            - XSS in storefront-next components (dangerouslySetInnerHTML, unescaped user input)
-            - Impex XML with hardcoded credentials or overly permissive service configurations
-            - Hook contract violations: side effects outside the app's declared domain
+          if [ -z "$CODE" ]; then
+            echo "No source files found in extracted CAPs. Skipping AI review."
+            exit 0
+          fi
+
+          # Call Anthropic API
+          PROMPT=$(jq -n --arg code "$CODE" '{
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 4096,
+            messages: [{
+              role: "user",
+              content: ("You are a security reviewer for SFCC Commerce App Packages. Analyze the following source files for security vulnerabilities.\n\nFocus on:\n- XSS (dangerouslySetInnerHTML, unescaped user input, document.write)\n- SSRF (attacker-controlled URLs reaching HTTPClient or service calls)\n- Code injection (eval, new Function, dynamic require)\n- Path traversal (user input in File() or require())\n- Hardcoded secrets or credentials\n- Data exfiltration (PII sent to undeclared endpoints)\n- SFCC Script API misuse (dw.io.File, dw.net.HTTPClient, dw.system.System)\n- Hook contract violations (side effects outside declared domain)\n- Insecure deserialization\n- Prototype pollution\n\nFor each finding, respond in JSON format:\n{\"findings\": [{\"file\": \"path\", \"line\": number, \"severity\": \"critical|high|medium|low\", \"category\": \"string\", \"description\": \"string\", \"remediation\": \"string\"}]}\n\nIf no issues found, return {\"findings\": []}\n\nSource files:\n" + $code)
+            }]
+          }')
+
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "$PROMPT")
+
+          # Extract the text response
+          FINDINGS=$(echo "$RESPONSE" | jq -r '.content[0].text')
+          echo "$FINDINGS"
+
+          # Post findings as a PR comment if there are results
+          FINDING_COUNT=$(echo "$FINDINGS" | jq -r '.findings | length' 2>/dev/null || echo "0")
+          if [ "$FINDING_COUNT" -gt 0 ]; then
+            COMMENT="## 🔒 AI Security Review\n\nFound **$FINDING_COUNT** potential issue(s):\n\n"
+            COMMENT+=$(echo "$FINDINGS" | jq -r '.findings[] | "### \(.severity | ascii_upcase): \(.category)\n**File:** \(.file):\(.line)\n\(.description)\n\n**Remediation:** \(.remediation)\n\n---\n"')
+            echo -e "$COMMENT" | gh pr comment ${{ github.event.pull_request.number }} --body-file -
+          else
+            echo "No security findings."
+          fi
