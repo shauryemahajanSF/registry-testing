@@ -14,19 +14,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Extract Commerce App Packages
         run: |
-          for zip in $(git diff --diff-filter=A --name-only HEAD~1 -- '*.zip'); do
+          BASE=${{ github.event.pull_request.base.sha }}
+          > /tmp/extracted-dirs.txt
+          for zip in $(git diff --diff-filter=AM --name-only "$BASE" -- '*.zip'); do
             if [ -f "$zip" ]; then
               dir="${zip%.zip}-extracted"
               mkdir -p "$dir"
               unzip -o "$zip" -d "$dir"
+              echo "$dir" >> /tmp/extracted-dirs.txt
             fi
           done
 
-      - name: Scan for prompt injection patterns
+      - name: Static Security Scan
+        run: |
+          while IFS= read -r dir; do
+            bash .github/scripts/security-scan.sh "$dir"
+          done < /tmp/extracted-dirs.txt
+
+      - name: Prompt Injection Scan
         run: |
           INJECTION_PATTERNS=(
             'ignore previous instructions'
@@ -44,14 +53,17 @@ jobs:
             'A]:'
           )
           pattern=$(IFS='|'; echo "${INJECTION_PATTERNS[*]}")
-          matches=$(grep -r -i -n -E "$pattern" --include='*.js' --include='*.json' --include='*.xml' --include='*.ts' --include='*.jsx' --include='*.tsx' *-extracted/ 2>/dev/null || true)
+          matches=""
+          while IFS= read -r dir; do
+            matches+=$(grep -r -i -n -E "$pattern" --include='*.js' --include='*.json' --include='*.xml' --include='*.ts' --include='*.jsx' --include='*.tsx' "$dir" 2>/dev/null || true)
+          done < /tmp/extracted-dirs.txt
           if [ -n "$matches" ]; then
             echo "::error::Potential prompt injection detected. Skipping AI security review."
             echo "$matches"
             echo "INJECTION_FOUND=true" >> "$GITHUB_ENV"
           fi
 
-      - name: AI security review
+      - name: Claude Security Review
         if: env.INJECTION_FOUND != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -59,10 +71,12 @@ jobs:
         run: |
           # Collect extracted source files into a single payload
           CODE=""
-          for f in $(find *-extracted/ -type f \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' -o -name '*.json' -o -name '*.xml' \) 2>/dev/null); do
-            CODE+="--- FILE: $f ---"$'\n'
-            CODE+="$(cat "$f")"$'\n\n'
-          done
+          while IFS= read -r dir; do
+            while IFS= read -r f; do
+              CODE+="--- FILE: $f ---"$'\n'
+              CODE+="$(cat "$f")"$'\n\n'
+            done < <(find "$dir" -type f \( -name '*.js' -o -name '*.ts' -o -name '*.jsx' -o -name '*.tsx' -o -name '*.json' -o -name '*.xml' \))
+          done < /tmp/extracted-dirs.txt
 
           if [ -z "$CODE" ]; then
             echo "No source files found in extracted CAPs. Skipping AI review."
