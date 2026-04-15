@@ -74,9 +74,9 @@
             "domain": "address-verification",
             "type": "app",
             "provider": "thirdParty",
-            "version": "2.0.0",
-            "zip": "loqate-address-verification-v2.0.0.zip",
-            "sha256": "34a0a2a871566bd952a5e2f4c98d657f6b93bdae012f694cac41f7057455b5a3"
+            "version": "2.1.0",
+            "zip": "loqate-address-verification-v2.1.0.zip",
+            "sha256": "ea5105447d201ab4121ae5298f28f1fe9317892bceb87b0d760f8253ab16bdf3"
         }
     ],
     "additionalFeature": []
