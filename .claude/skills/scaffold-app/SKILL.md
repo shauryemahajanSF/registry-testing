@@ -129,7 +129,6 @@ Generate merchant-facing tasks that guide post-installation setup and verificati
   {
     "name": "Test Integration in Sandbox",
     "description": "Process a test order to verify the integration is working correctly.",
-    "link": "",
     "taskNumber": "2"
   }
 ]
