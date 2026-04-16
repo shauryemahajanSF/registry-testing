@@ -176,6 +176,7 @@ Every app's `domain` field must be one of these. Domains use hyphen-case. Provid
 | `address-verification` | Additional Setup | Address validation and standardization | Smarty, Google Address Validation |
 | `analytics` | Additional Setup | Analytics and reporting | Google Analytics, Segment |
 | `approaching-discounts` | Additional Setup | Approaching discount notifications | Salesforce Approaching Discounts |
+| `fraud` | Additional Setup | Fraud detection and prevention | Signifyd, Forter, Riskified |
 
 ## Tech Stack
 
