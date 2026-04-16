@@ -160,6 +160,13 @@ jobs:
             COMMENT="## 🔒 AI Security Review\n\nFound **$FINDING_COUNT** potential issue(s):\n\n"
             COMMENT+=$(echo "$FINDINGS_JSON" | jq -r '.findings[] | "### \(.severity | ascii_upcase): \(.category)\n**File:** \(.file):\(.line)\n\(.description)\n\n**Remediation:** \(.remediation)\n\n---\n"')
             echo -e "$COMMENT" | gh pr comment ${{ github.event.pull_request.number }} --body-file -
+
+            # Fail the check if any critical or high severity findings exist
+            BLOCKING_COUNT=$(echo "$FINDINGS_JSON" | jq '[.findings[] | select(.severity == "critical" or .severity == "high")] | length')
+            if [ "$BLOCKING_COUNT" -gt 0 ]; then
+              echo "::error::$BLOCKING_COUNT critical/high severity finding(s) detected. Failing security review."
+              exit 1
+            fi
           else
             echo "No security findings."
           fi
