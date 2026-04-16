@@ -120,11 +120,12 @@ jobs:
 
           # Build API request using file input (avoids argument list too long)
           jq -n --rawfile code /tmp/cap-source.txt '{
-            model: "claude-sonnet-4-20250514",
-            max_tokens: 4096,
+            model: "claude-opus-4-20250514",
+            max_tokens: 8192,
+            system: "Security reviewer for SFCC Commerce App Packages. Report ALL vulnerabilities found.\n\nCheck for: XSS, SSRF, code injection (eval/new Function/dynamic require), path traversal, hardcoded secrets, data exfiltration to undeclared endpoints, SFCC Script API misuse (dw.io.File, dw.net.HTTPClient), hook contract violations, insecure deserialization, prototype pollution.\n\nSAFE patterns — do NOT flag:\n- require() with static string literals, even inside functions\n- Service framework calls where URLs use site preferences or system config (SSRF requires attacker-controlled host/origin)\n- getCustomPreferenceValue() reads (trusted server-side config)\n- session.custom storage (standard SFCC session management)\n- URL paths using system-generated IDs (order numbers, transaction codes, company codes from site prefs)\n- Dynamic property access where key comes from site preferences/system config (only flag if key is from request params, form fields, or cookies)\n\nRespond with ONLY raw JSON: {\"findings\": [{\"file\": \"path\", \"line\": number, \"severity\": \"critical|high|medium|low\", \"category\": \"string\", \"description\": \"string\", \"remediation\": \"string\"}]}\nEmpty result: {\"findings\": []}",
             messages: [{
               role: "user",
-              content: ("You are a security reviewer for SFCC Commerce App Packages. Analyze the following source files for security vulnerabilities.\n\nFocus on:\n- XSS (dangerouslySetInnerHTML, unescaped user input, document.write)\n- SSRF (attacker-controlled URLs reaching HTTPClient or service calls)\n- Code injection (eval, new Function, dynamic require)\n- Path traversal (user input in File() or require())\n- Hardcoded secrets or credentials\n- Data exfiltration (PII sent to undeclared endpoints)\n- SFCC Script API misuse (dw.io.File, dw.net.HTTPClient, dw.system.System)\n- Hook contract violations (side effects outside declared domain)\n- Insecure deserialization\n- Prototype pollution\n\nIMPORTANT: Return ONLY the raw JSON object. Do NOT wrap it in markdown code fences or include any explanatory text before or after the JSON.\n\nFor each finding, respond in JSON format:\n{\"findings\": [{\"file\": \"path\", \"line\": number, \"severity\": \"critical|high|medium|low\", \"category\": \"string\", \"description\": \"string\", \"remediation\": \"string\"}]}\n\nIf no issues found, return {\"findings\": []}\n\nSource files:\n" + $code)
+              content: ("Review the following source files for security vulnerabilities:\n\n" + $code)
             }]
           }' > /tmp/cap-prompt.json
 
