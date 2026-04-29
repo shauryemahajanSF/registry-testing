@@ -56,7 +56,7 @@
         {
             "id": "zenkraft-rates",
             "name": "Zenkraft Shipping Rates",
-            "description": "Dynamic real-time shipping rate calculation via the sfcc.app.shipping.calculate hook.",
+            "description": "Dynamic real-time shipping rate calculation via Zenkraft API",
             "iconName": "zenkraft.png",
             "domain": "shipping",
             "type": "app",
