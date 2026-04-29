@@ -63,7 +63,7 @@
             "provider": "thirdParty",
             "version": "1.0.0",
             "zip": "zenkraft-rates-v1.0.0.zip",
-            "sha256": "b1b24b98801a3573f37e7b18e0fc051d4339b6aac9c241f68557caeabd847633"
+            "sha256": "71809de0a07cfe42f19acb858d207118ecb015dc91ec85a82090ed8605644271"
         }
     ],
     "payment": [
