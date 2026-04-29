@@ -26,5 +26,9 @@
     "loqate-address-verification": {
         "name": "Loqate Address Verification",
         "description": "Address Verification Application with GBG Loqate"
+    },
+    "zenkraft-rates": {
+        "name": "Zenkraft Shipping Rates",
+        "description": "Dynamic real-time shipping rate calculation via the sfcc.app.shipping.calculate hook."
     }
 }

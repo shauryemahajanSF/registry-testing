@@ -52,6 +52,18 @@
             "domain": "shipping",
             "type": "custom",
             "provider": "custom"
+        },
+        {
+            "id": "zenkraft-rates",
+            "name": "Zenkraft Shipping Rates",
+            "description": "Dynamic real-time shipping rate calculation via the sfcc.app.shipping.calculate hook.",
+            "iconName": "zenkraft.png",
+            "domain": "shipping",
+            "type": "app",
+            "provider": "thirdParty",
+            "version": "1.0.0",
+            "zip": "zenkraft-rates-v1.0.0.zip",
+            "sha256": "b1b24b98801a3573f37e7b18e0fc051d4339b6aac9c241f68557caeabd847633"
         }
     ],
     "payment": [
