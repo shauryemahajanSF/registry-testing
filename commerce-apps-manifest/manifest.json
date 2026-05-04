@@ -88,7 +88,7 @@
             "provider": "thirdParty",
             "version": "2.1.0",
             "zip": "loqate-address-verification-v2.1.0.zip",
-            "sha256": "ea5105447d201ab4121ae5298f28f1fe9317892bceb87b0d760f8253ab16bdf3"
+            "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
         },
         {
             "id": "experian-address-verification",
@@ -100,7 +100,7 @@
             "provider": "thirdParty",
             "version": "2.1.0",
             "zip": "loqate-address-verification-v2.1.0.zip",
-            "sha256": "ea5105447d201ab4121ae5298f28f1fe9317892bceb87b0d760f8253ab16bdf3"
+            "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
         },
         {
             "id": "postgrid-address-verification",
@@ -112,7 +112,7 @@
             "provider": "thirdParty",
             "version": "2.1.0",
             "zip": "loqate-address-verification-v2.1.0.zip",
-            "sha256": "ea5105447d201ab4121ae5298f28f1fe9317892bceb87b0d760f8253ab16bdf3"
+            "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
         }
     ],
     "additionalFeature": []
