@@ -99,7 +99,7 @@
             "type": "app",
             "provider": "thirdParty",
             "version": "2.1.0",
-            "zip": "loqate-address-verification-v2.1.0.zip",
+            "zip": "experian-address-verification-v2.1.0.zip",
             "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
         },
         {
@@ -111,7 +111,7 @@
             "type": "app",
             "provider": "thirdParty",
             "version": "2.1.0",
-            "zip": "loqate-address-verification-v2.1.0.zip",
+            "zip": "postgrid-address-verification-v2.1.0.zip",
             "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
         }
     ],
