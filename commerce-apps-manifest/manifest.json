@@ -86,9 +86,12 @@
             "domain": "address-verification",
             "type": "app",
             "provider": "thirdParty",
-            "version": "2.1.1",
-            "zip": "loqate-address-verification-v2.1.1.zip",
-            "sha256": "5c6a23a084658e43592fa4499db722bddf9050c2a55141367c4fabaa942b497d"
+            "version": "2.1.2",
+            "zip": "loqate-address-verification-v2.1.2.zip",
+            "sha256": "d8edb8e93b48f36bddabf0cfc514e579ba9f04ae76faf8672cdc295876ab5384",
+            "storefrontSupport": {
+                "sfnext": { "minVersion": "0.4.0-alpha.0" }
+            }
         },
         {
             "id": "experian-address-verification",
