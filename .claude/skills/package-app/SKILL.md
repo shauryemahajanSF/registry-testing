@@ -25,7 +25,9 @@ Build a registry-ready Commerce App Package (CAP) ZIP from an app directory.
 | Publisher name | `Avalara` | Yes |
 | Publisher URL | `https://developer.avalara.com/` | Yes |
 | SFNext min version | `1.0.0` | No |
+| SFNext max version | `2.0.0` | No |
 | SFRA min version | `7.0.0` | No |
+| SFRA max version | `8.0.0` | No |
 
 **Valid domains:** `tax`, `payment`, `shipping`, `gift-cards`, `ratings-and-reviews`, `loyalty`, `search`, `address-verification`, `analytics`, `approaching-discounts`, `fraud`
 
