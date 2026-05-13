@@ -126,6 +126,7 @@ Your response:
 - Semantic versioning: `major.minor.patch`
 - Version in `commerce-app.json` MUST match `manifest.json`
 - SHA256 in `manifest.json` MUST match actual ZIP hash
+- **When you modify any file inside a `commerce-{app-name}-app-v*/` directory, you MUST re-package the ZIP and update the SHA256 hash in `manifest.json` before finishing.** Do not wait for the user to ask — the ZIP is stale as soon as a source file changes.
 - Do NOT add new versions to `catalog.json` when updating (CI handles it)
 - You MAY add `"deprecated": true` to existing versions in `catalog.json`
 
