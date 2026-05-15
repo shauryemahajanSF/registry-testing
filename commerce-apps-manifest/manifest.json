@@ -86,11 +86,11 @@
             "domain": "address-verification",
             "type": "app",
             "provider": "thirdParty",
-            "version": "2.1.4",
-            "zip": "loqate-address-verification-v2.1.4.zip",
-            "sha256": "7a67a3b8a8d79b14c3c5a4ee2eafdc8178070881f4ffa836ed608a680631c48a",
+            "version": "2.1.5",
+            "zip": "loqate-address-verification-v2.1.5.zip",
+            "sha256": "aff3e13bfe4554376d6623eef442cedee96a2ec76e5bf728913360a6ef8ae0bf",
             "storefrontSupport": {
-                "sfnext": { "minVersion": "1.0.0" }
+                "sfnext": { "minVersion": "0.4.0" }
             }
         },
         {
