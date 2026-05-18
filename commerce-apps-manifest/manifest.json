@@ -116,6 +116,18 @@
             "version": "2.1.0",
             "zip": "postgrid-address-verification-v2.1.0.zip",
             "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
+        },
+        {
+            "id": "test-malformed-admin",
+            "name": "Test Malformed AdminComponents Fixture",
+            "description": "CI fixture: adminComponents.json declares storefrontComponentVisibility without an attributes[] array. Used to manually verify that verify-zip.yml Step 3 rejects the failure path. Do not install on a real instance.",
+            "iconName": "test-malformed-admin.png",
+            "domain": "address-verification",
+            "type": "app",
+            "provider": "thirdParty",
+            "version": "1.0.0",
+            "zip": "test-malformed-admin-v1.0.0.zip",
+            "sha256": "070f781b9b5941aae57bc4e4e3aa98ac982761c78d54b778887949e977361627"
         }
     ],
     "additionalFeature": []
