@@ -212,72 +212,17 @@ jobs:
 
             echo "  ✓ tasksList.json is valid ($(jq 'length' "$required_task_list") task(s))"
 
-            # Validate optional app-configuration/adminComponents.json. If present,
-            # it must be a non-empty JSON array. Any entry whose type is
-            # "storefrontComponentVisibility" must declare attributes[] with
-            # non-empty string id, non-empty string label, and boolean defaultValue.
+            # Validate optional app-configuration/adminComponents.json.
+            # See .github/scripts/validate-admin-components.sh for schema.
             admin_components="$root/app-configuration/adminComponents.json"
             if [[ -f "$admin_components" ]]; then
-              if ! jq empty "$admin_components" 2>/dev/null; then
-                echo "::error file=$zip_path::app-configuration/adminComponents.json is not valid JSON"
+              if ! admin_output="$(bash ".github/scripts/validate-admin-components.sh" "$admin_components" 2>&1)"; then
+                echo "::error file=$zip_path::app-configuration/adminComponents.json validation failed:"
+                printf '%s\n' "$admin_output"
                 rm -rf "$tmpdir"
                 exit 1
               fi
-
-              if ! jq -e 'type == "array" and length > 0' "$admin_components" >/dev/null 2>&1; then
-                echo "::error file=$zip_path::app-configuration/adminComponents.json must be a non-empty JSON array"
-                rm -rf "$tmpdir"
-                exit 1
-              fi
-
-              admin_errors=$(jq -r '
-                [to_entries[] |
-                 .key as $idx |
-                 .value as $component |
-                 (
-                   if ($component | type) != "object" then
-                     "Item at index \($idx): must be an object"
-                   elif ($component.type | type) != "string" or ($component.type | length) == 0 then
-                     "Item at index \($idx): \"type\" is required and must be a non-empty string"
-                   elif $component.type == "storefrontComponentVisibility" then
-                     (
-                       if ($component.attributes | type) != "array" or ($component.attributes | length) == 0 then
-                         "Item at index \($idx): storefrontComponentVisibility requires non-empty \"attributes\" array"
-                       else
-                         (
-                           [$component.attributes | to_entries[] |
-                            .key as $aidx |
-                            .value as $attr |
-                            (
-                              if ($attr | type) != "object" then
-                                "Item at index \($idx), attribute \($aidx): must be an object"
-                              elif ($attr.id | type) != "string" or ($attr.id | length) == 0 then
-                                "Item at index \($idx), attribute \($aidx): \"id\" is required and must be a non-empty string"
-                              elif ($attr.label | type) != "string" or ($attr.label | length) == 0 then
-                                "Item at index \($idx), attribute \($aidx): \"label\" is required and must be a non-empty string"
-                              elif ($attr.defaultValue | type) != "boolean" then
-                                "Item at index \($idx), attribute \($aidx): \"defaultValue\" is required and must be a boolean"
-                              else
-                                empty
-                              end
-                            )] | join("\n") | select(length > 0)
-                         )
-                       end
-                     )
-                   else
-                     empty
-                   end
-                 )] | join("\n")
-              ' "$admin_components" 2>/dev/null)
-
-              if [[ -n "$admin_errors" ]]; then
-                echo "::error file=$zip_path::app-configuration/adminComponents.json structure validation failed:"
-                echo "$admin_errors"
-                rm -rf "$tmpdir"
-                exit 1
-              fi
-
-              echo "  ✓ adminComponents.json is valid ($(jq 'length' "$admin_components") component(s))"
+              echo "  ✓ $admin_output"
             fi
 
             rm -rf "$tmpdir"

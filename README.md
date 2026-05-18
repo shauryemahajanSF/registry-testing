@@ -110,16 +110,18 @@ commerce-{app-name}-app-v{version}/
 
 ### `app-configuration/adminComponents.json` (optional)
 
-Declares Business Manager admin UI components that the merchant sees after installing the app. Today the only supported component type is `storefrontComponentVisibility`, which renders one boolean toggle per UI target the app registers — letting the merchant turn each target on or off without touching code. Toggling a target opens a PR against the merchant's Storefront Next repo to update `target-config.json`.
+Declares Business Manager admin UI components that the merchant sees after installing the app. The file is a JSON object with two optional top-level arrays — `connectionDetails` (read-only status panels) and `configuration` (interactive settings). Both are optional; include either or both as the app needs.
 
-The file is a JSON array of component entries. Each entry is one component shown in the BM admin UI.
+```json
+{
+  "connectionDetails": [ /* read-only status entries */ ],
+  "configuration":     [ /* interactive setting entries */ ]
+}
+```
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `type` | string | Yes | Component type. Currently only `"storefrontComponentVisibility"` is supported. |
-| `attributes` | array | Yes (for `storefrontComponentVisibility`) | One entry per surface area the merchant can toggle. |
+Every entry in either array must be an object with a non-empty string `type`. Other fields like `header` and `description` are free-form and not validated.
 
-Each `attributes[]` entry:
+**`storefrontComponentVisibility`** (under `configuration`) renders one boolean toggle per UI target the app registers, letting the merchant turn each target on or off without touching code. Toggling a target opens a PR against the merchant's Storefront Next repo to update `target-config.json`. When `type` is `storefrontComponentVisibility`, `attributes[]` is required:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -130,15 +132,26 @@ Each `attributes[]` entry:
 Example:
 
 ```json
-[
-  {
-    "type": "storefrontComponentVisibility",
-    "attributes": [
-      { "id": "sfcc.checkout.shippingAddress.after", "label": "Show on Checkout", "defaultValue": true },
-      { "id": "sfcc.orderSummary.adjustments",       "label": "Show on Order Summary", "defaultValue": false }
-    ]
-  }
-]
+{
+  "connectionDetails": [
+    {
+      "type": "healthCheck",
+      "header": "Connection Status",
+      "description": "Live health status of the API connection."
+    }
+  ],
+  "configuration": [
+    {
+      "type": "storefrontComponentVisibility",
+      "header": "Component Visibility",
+      "description": "Control where the component appears on the storefront.",
+      "attributes": [
+        { "id": "sfcc.checkout.shippingAddress.after", "label": "Show on Checkout", "defaultValue": true },
+        { "id": "sfcc.orderSummary.adjustments",       "label": "Show on Order Summary", "defaultValue": false }
+      ]
+    }
+  ]
+}
 ```
 
 CI validates this file's shape on PR. If the file is omitted, the merchant doesn't see a visibility section in BM and every registered target stays enabled.

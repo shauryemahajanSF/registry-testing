@@ -153,23 +153,29 @@ unzip -p <zip> "*/app-configuration/adminComponents.json" 2>/dev/null | jq .
 ```
 
 Required:
-- File is valid JSON and a non-empty array.
-- Every entry has a non-empty string `type`.
-- For entries with `type == "storefrontComponentVisibility"`:
+- File is valid JSON and a top-level object.
+- Top-level keys `connectionDetails` and `configuration` are both optional. When present, each must be an array.
+- Every entry in either array has a non-empty string `type`.
+- For `configuration` entries with `type == "storefrontComponentVisibility"`:
   - `attributes` is a non-empty array.
   - Each attribute has a non-empty string `id` (the `sfcc.*` UI target identifier the merchant can toggle), a non-empty string `label` (rendered next to the toggle in BM), and a boolean `defaultValue`.
 
-Example of a valid entry:
+Example:
 
 ```json
-[
-  {
-    "type": "storefrontComponentVisibility",
-    "attributes": [
-      { "id": "sfcc.checkout.shippingAddress.after", "label": "Show on Checkout", "defaultValue": true }
-    ]
-  }
-]
+{
+  "connectionDetails": [
+    { "type": "healthCheck", "header": "Connection Status", "description": "Live health status of the API connection." }
+  ],
+  "configuration": [
+    {
+      "type": "storefrontComponentVisibility",
+      "attributes": [
+        { "id": "sfcc.checkout.shippingAddress.after", "label": "Show on Checkout", "defaultValue": true }
+      ]
+    }
+  ]
+}
 ```
 
 Skip this step if the file isn't present — `adminComponents.json` is optional.
