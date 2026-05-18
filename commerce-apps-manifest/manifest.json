@@ -119,15 +119,15 @@
         },
         {
             "id": "test-malformed-admin",
-            "name": "Test Malformed AdminComponents Fixture",
-            "description": "CI fixture: adminComponents.json declares storefrontComponentVisibility without an attributes[] array. Used to manually verify that verify-zip.yml Step 3 rejects the failure path. Do not install on a real instance.",
+            "name": "Test AdminComponents Fixture",
+            "description": "CI fixture: ships a valid adminComponents.json so verify-zip.yml Step 3 emits the success log line. Mutate the file in-branch to test failure cases. Do not install on a real instance.",
             "iconName": "test-malformed-admin.png",
             "domain": "address-verification",
             "type": "app",
             "provider": "thirdParty",
             "version": "1.0.0",
             "zip": "test-malformed-admin-v1.0.0.zip",
-            "sha256": "070f781b9b5941aae57bc4e4e3aa98ac982761c78d54b778887949e977361627"
+            "sha256": "3af913f121777541612c0e41269efb32837326f058602062d0e6a2e12a61af9b"
         }
     ],
     "additionalFeature": []
