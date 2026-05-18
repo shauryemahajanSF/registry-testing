@@ -69,7 +69,8 @@ commerce-{app-name}-app-v{version}/
 ├── commerce-app.json                # App metadata
 ├── README.md                        # Documentation
 ├── app-configuration/
-│   └── tasksList.json              # Post-install merchant setup steps
+│   ├── tasksList.json              # Post-install merchant setup steps
+│   └── adminComponents.json        # Optional: BM admin UI components (e.g., storefrontComponentVisibility)
 ├── icons/                          # App icon (required)
 │   └── {icon-filename}.png         # CI extracts to commerce-apps-manifest/icons/
 ├── cartridges/                     # Backend-only or Fullstack apps
@@ -106,6 +107,41 @@ commerce-{app-name}-app-v{version}/
 - **UI-only**: Has `storefront-next/`, no `cartridges/` or `impex/`
 - **Backend-only**: Has `cartridges/` and `impex/`, no `storefront-next/`
 - **Fullstack**: Has all three: `storefront-next/`, `cartridges/`, and `impex/`
+
+### `app-configuration/adminComponents.json` (optional)
+
+Declares Business Manager admin UI components that the merchant sees after installing the app. Today the only supported component type is `storefrontComponentVisibility`, which renders one boolean toggle per UI target the app registers — letting the merchant turn each target on or off without touching code. Toggling a target opens a PR against the merchant's Storefront Next repo to update `target-config.json`.
+
+The file is a JSON array of component entries. Each entry is one component shown in the BM admin UI.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `type` | string | Yes | Component type. Currently only `"storefrontComponentVisibility"` is supported. |
+| `attributes` | array | Yes (for `storefrontComponentVisibility`) | One entry per surface area the merchant can toggle. |
+
+Each `attributes[]` entry:
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | string | Yes | The `sfcc.*` UI target ID this toggle controls. Must match a target the app registers in `storefront-next/src/extensions/{appName}/target-config.json`. |
+| `label` | string | Yes | Label shown next to the toggle in BM. |
+| `defaultValue` | boolean | Yes | Whether the surface area is enabled by default on install. |
+
+Example:
+
+```json
+[
+  {
+    "type": "storefrontComponentVisibility",
+    "attributes": [
+      { "id": "sfcc.checkout.shippingAddress.after", "label": "Show on Checkout", "defaultValue": true },
+      { "id": "sfcc.orderSummary.adjustments",       "label": "Show on Order Summary", "defaultValue": false }
+    ]
+  }
+]
+```
+
+CI validates this file's shape on PR. If the file is omitted, the merchant doesn't see a visibility section in BM and every registered target stays enabled.
 
 ## Published Apps
 
