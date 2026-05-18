@@ -110,18 +110,9 @@ commerce-{app-name}-app-v{version}/
 
 ### `app-configuration/adminComponents.json` (optional)
 
-Declares Business Manager admin UI components that the merchant sees after installing the app. The file is a JSON object with two optional top-level arrays — `connectionDetails` (read-only status panels) and `configuration` (interactive settings). Both are optional; include either or both as the app needs.
+Declares Business Manager admin UI components that the merchant sees after installing the app. The file is a JSON object with a `configuration` array of interactive setting entries. Every entry must be an object with a non-empty string `type`. Other fields like `header` and `description` are free-form and not validated.
 
-```json
-{
-  "connectionDetails": [ /* read-only status entries */ ],
-  "configuration":     [ /* interactive setting entries */ ]
-}
-```
-
-Every entry in either array must be an object with a non-empty string `type`. Other fields like `header` and `description` are free-form and not validated.
-
-**`storefrontComponentVisibility`** (under `configuration`) renders one boolean toggle per UI target the app registers, letting the merchant turn each target on or off without touching code. Toggling a target opens a PR against the merchant's Storefront Next repo to update `target-config.json`. When `type` is `storefrontComponentVisibility`, `attributes[]` is required:
+The currently supported component type is **`storefrontComponentVisibility`**, which renders one boolean toggle per UI target the app registers, letting the merchant turn each target on or off without touching code. Toggling a target opens a PR against the merchant's Storefront Next repo to update `target-config.json`. When `type` is `storefrontComponentVisibility`, `attributes[]` is required:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -133,13 +124,6 @@ Example:
 
 ```json
 {
-  "connectionDetails": [
-    {
-      "type": "healthCheck",
-      "header": "Connection Status",
-      "description": "Live health status of the API connection."
-    }
-  ],
   "configuration": [
     {
       "type": "storefrontComponentVisibility",
