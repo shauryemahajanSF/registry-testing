@@ -3,7 +3,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VALIDATE="$SCRIPT_DIR/validate-admin-components.sh"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 PASS=0
 FAIL=0
@@ -60,22 +59,28 @@ assert_rejects() {
 
 echo "=== adminComponents.json validator tests ==="
 
-# Real shipped file from the loqate CAP — the canonical valid shape.
-real_file="$REPO_ROOT/address-verification/loqate-address-verification/commerce-loqate-address-verification-app-v2.1.1/app-configuration/adminComponents.json"
-if [[ -f "$real_file" ]]; then
-  LAST_RC=0
-  LAST_OUTPUT="$(bash "$VALIDATE" "$real_file" 2>&1)" || LAST_RC=$?
-  if [[ "$LAST_RC" -eq 0 ]]; then
-    echo "  PASS: real loqate v2.1.1 file"
-    PASS=$((PASS + 1))
-  else
-    echo "  FAIL: real loqate v2.1.1 file (expected exit 0, got $LAST_RC)"
-    echo "    output: $LAST_OUTPUT"
-    FAIL=$((FAIL + 1))
-  fi
-fi
-
 # --- Passing shapes --------------------------------------------------------
+
+assert_passes "canonical full shape (connectionDetails + storefrontComponentVisibility)" '{
+  "connectionDetails": [
+    {
+      "type": "healthCheck",
+      "header": "Connection Status",
+      "description": "Live health status of the API connection."
+    }
+  ],
+  "configuration": [
+    {
+      "type": "storefrontComponentVisibility",
+      "header": "Component Visibility",
+      "description": "Control where the component appears on the storefront.",
+      "attributes": [
+        { "id": "sfcc.checkout.shippingAddress.after", "label": "Show on Checkout", "defaultValue": true },
+        { "id": "sfcc.myAccount.address.validation",   "label": "Show on My Account", "defaultValue": true }
+      ]
+    }
+  ]
+}'
 
 assert_passes "empty object (both sections optional)" '{}'
 
