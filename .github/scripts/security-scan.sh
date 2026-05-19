@@ -44,6 +44,12 @@ warn() {
   WARNINGS=$((WARNINGS + 1))
 }
 
+# Filter out lines that are comments. Works with grep -n output (N:// or N:  //)
+# and block comments (N: * or N:/*). Strips the line-number prefix before checking.
+strip_comments() {
+  grep -vE '^[0-9]+:\s*//' | grep -vE '^[0-9]+:\s*\*' | grep -vE '^[0-9]+:\s*/\*'
+}
+
 # Collect JS/DS files (cartridge server-side scripts + storefront-next TS)
 # Using while-read for macOS bash 3 compatibility (no mapfile)
 JS_FILES=()
@@ -100,11 +106,11 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "eval() detected — code injection risk: $line"
-  done < <(grep -nE '\beval\s*\(' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*' | head -5)
+  done < <(grep -nE '\beval\s*\(' "$f" 2>/dev/null | strip_comments | head -5)
 
   while IFS= read -r line; do
     block "$f" "new Function() detected — code injection risk: $line"
-  done < <(grep -nE '\bnew\s+Function\s*\(' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*' | head -5)
+  done < <(grep -nE '\bnew\s+Function\s*\(' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 # S2: Dynamic require() — non-literal string argument (BLOCK)
@@ -112,7 +118,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "Dynamic require() with concatenation detected: $line"
-  done < <(grep -nE 'require\s*\([^)]*\+' "$f" 2>/dev/null | grep -v '^\s*//' | head -5)
+  done < <(grep -nE 'require\s*\([^)]*\+' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 # S3: innerHTML assignment (BLOCK)
@@ -120,7 +126,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "innerHTML assignment detected — XSS risk: $line"
-  done < <(grep -nE '\.innerHTML\s*=' "$f" 2>/dev/null | grep -v '^\s*//' | head -5)
+  done < <(grep -nE '\.innerHTML\s*=' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 # S4: Hardcoded secret patterns (BLOCK)
@@ -138,7 +144,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   for pattern in "${SECRET_PATTERNS[@]}"; do
     while IFS= read -r line; do
       block "$f" "Possible hardcoded secret detected: $line"
-    done < <(grep -nE "$pattern" "$f" 2>/dev/null | grep -v '^\s*//' | head -3)
+    done < <(grep -nE -- "$pattern" "$f" 2>/dev/null | strip_comments | head -3)
   done
 done
 
@@ -155,7 +161,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     warn "$f" "Math.random() detected — not cryptographically secure: $line"
-  done < <(grep -nE 'Math\.random\s*\(' "$f" 2>/dev/null | grep -v '^\s*//' | head -3)
+  done < <(grep -nE 'Math\.random\s*\(' "$f" 2>/dev/null | strip_comments | head -3)
 done
 
 # S7: Credentials outside service framework (BLOCK)
@@ -171,15 +177,15 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "outerHTML assignment detected — XSS risk: $line"
-  done < <(grep -nE '\.outerHTML\s*=' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*' | head -5)
+  done < <(grep -nE '\.outerHTML\s*=' "$f" 2>/dev/null | strip_comments | head -5)
 
   while IFS= read -r line; do
     block "$f" "document.write() detected — XSS risk: $line"
-  done < <(grep -nE 'document\[?['\''"]?write(ln)?['\''"]?\]?\s*\(' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*' | head -5)
+  done < <(grep -nE 'document\[?['\''"]?write(ln)?['\''"]?\]?\s*\(' "$f" 2>/dev/null | strip_comments | head -5)
 
   while IFS= read -r line; do
     block "$f" "insertAdjacentHTML() detected — XSS risk: $line"
-  done < <(grep -nE '\.insertAdjacentHTML\s*\(' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*' | head -5)
+  done < <(grep -nE '\.insertAdjacentHTML\s*\(' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 # S9: ISML template injection — encoding="off" (BLOCK)
@@ -200,7 +206,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "Direct HTTPClient usage — must use service framework: $line"
-  done < <(grep -nE '\bHTTPClient\b' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*' | grep -v '^\s*/\*' | head -5)
+  done < <(grep -nE '\bHTTPClient\b' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 # S12: Sensitive data in logs — PII field names in Logger calls (WARN)
@@ -208,7 +214,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     warn "$f" "Possible PII in log statement: $line"
-  done < <(grep -nE '(Logger|log)\.(info|debug|error|warn|trace)\s*\(.*\b(creditCard|cardNumber|cvv|password|passwd|secret|ssn|socialSecurity|taxId|bankAccount)\b' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*' | head -5)
+  done < <(grep -nE '(Logger|log)\.(info|debug|error|warn|trace)\s*\(.*\b(creditCard|cardNumber|cvv|password|passwd|secret|ssn|socialSecurity|taxId|bankAccount)\b' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 # S13: Blocking/sleep in hook scripts — setTimeout/setInterval (BLOCK)
@@ -216,7 +222,7 @@ for f in ${HOOK_SCRIPT_FILES[@]+"${HOOK_SCRIPT_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "setTimeout/setInterval in hook script — blocking call: $line"
-  done < <(grep -nE '\b(setTimeout|setInterval)\s*\(' "$f" 2>/dev/null | grep -v '^\s*//' | head -5)
+  done < <(grep -nE '\b(setTimeout|setInterval)\s*\(' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 # S14: Unbounded loops — while(true)/for(;;) without break/return within 20 lines (BLOCK)
@@ -228,7 +234,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
     if ! sed -n "${line_num},${end_line}p" "$f" 2>/dev/null | grep -qE '\b(break|return)\b'; then
       block "$f" "Unbounded loop without break/return within 20 lines (line $line_num)"
     fi
-  done < <(grep -nE 'while\s*\(\s*true\s*\)|for\s*\(\s*;\s*;\s*\)' "$f" 2>/dev/null | grep -v '^\s*//' | grep -v '^\s*\*')
+  done < <(grep -nE 'while\s*\(\s*true\s*\)|for\s*\(\s*;\s*;\s*\)' "$f" 2>/dev/null | strip_comments)
 done
 
 # S15: Missing rate limiting and circuit breaker on service profiles (BLOCK)
@@ -402,7 +408,7 @@ for f in ${ALL_CODE_FILES[@]+"${ALL_CODE_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "Absolute path detected — use relative paths: $line"
-  done < <(grep -nE "['\"]/usr/|['\"]/tmp/|['\"]/home/|['\"]/var/|['\"]C:\\\\" "$f" 2>/dev/null | grep -v '^\s*//' | head -3)
+  done < <(grep -nE "['\"]/usr/|['\"]/tmp/|['\"]/home/|['\"]/var/|['\"]C:\\\\" "$f" 2>/dev/null | strip_comments | head -3)
 done
 
 # Q7: console.log in production cartridge code (BLOCK)
@@ -410,7 +416,7 @@ for f in ${JS_FILES[@]+"${JS_FILES[@]}"}; do
   [[ -z "$f" ]] && continue
   while IFS= read -r line; do
     block "$f" "console.log/debug statement in cartridge code — use dw.system.Logger: $line"
-  done < <(grep -nE 'console\.(log|debug|info|warn|error)\s*\(' "$f" 2>/dev/null | grep -v '^\s*//' | head -5)
+  done < <(grep -nE 'console\.(log|debug|info|warn|error)\s*\(' "$f" 2>/dev/null | strip_comments | head -5)
 done
 
 echo ""

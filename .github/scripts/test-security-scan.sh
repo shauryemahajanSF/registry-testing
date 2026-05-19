@@ -137,12 +137,11 @@ assert_blocks "eval() in code" "$cap"
 cap="$(mkcap)"; printf 'var fn = new Function("return x");\n' > "$cap/app.js"
 assert_blocks "new Function() in code" "$cap"
 
-# BUG: grep -n prefixes "1://" so grep -v '^\s*//' never matches the comment.
 cap="$(mkcap)"; printf '// eval(input);\n' > "$cap/app.js"
-assert_known_bug "S1-COMMENT" "eval in line comment should be ignored" "pass" "$cap"
+assert_passes "eval in line comment is ignored" "$cap"
 
 cap="$(mkcap)"; printf '// new Function("return x");\n' > "$cap/app.js"
-assert_known_bug "S1-COMMENT" "new Function in comment should be ignored" "pass" "$cap"
+assert_passes "new Function in line comment is ignored" "$cap"
 
 echo ""
 
@@ -192,12 +191,11 @@ assert_blocks "Slack token" "$cap"
 cap="$(mkcap)"; printf 'var x = "sk_live_abc123defgh";\n' > "$cap/app.js"
 assert_blocks "Stripe-style live key" "$cap"
 
-# BUG: grep parses "-----BEGIN" as --BEGIN flag; pattern never matches.
 cap="$(mkcap)"; printf 'var k = "-----BEGIN RSA PRIVATE KEY-----";\n' > "$cap/app.js"
-assert_known_bug "S4-PRIVKEY" "RSA private key header should block" "block" "$cap"
+assert_blocks "RSA private key header blocks" "$cap"
 
 cap="$(mkcap)"; printf 'var k = "-----BEGIN PRIVATE KEY-----";\n' > "$cap/app.js"
-assert_known_bug "S4-PRIVKEY" "generic private key header should block" "block" "$cap"
+assert_blocks "generic private key header blocks" "$cap"
 
 echo ""
 
@@ -258,10 +256,10 @@ cap="$(mkcap)"; printf 'el.insertAdjacentHTML("beforeend", data);\n' > "$cap/app
 assert_blocks "insertAdjacentHTML detected" "$cap"
 
 cap="$(mkcap)"; printf '// el.outerHTML = data;\n' > "$cap/app.js"
-assert_known_bug "S8-COMMENT" "outerHTML in comment should be ignored" "pass" "$cap"
+assert_passes "outerHTML in comment is ignored" "$cap"
 
 cap="$(mkcap)"; printf "// document['write'](html);\n" > "$cap/app.js"
-assert_known_bug "S8-COMMENT" "document write in comment should be ignored" "pass" "$cap"
+assert_passes "document write in comment is ignored" "$cap"
 
 echo ""
 
@@ -327,10 +325,10 @@ cap="$(mkcap)"; printf 'var c = new HTTPClient();\n' > "$cap/svc.js"
 assert_blocks "direct HTTPClient usage" "$cap"
 
 cap="$(mkcap)"; printf '// var c = new HTTPClient();\n' > "$cap/svc.js"
-assert_known_bug "S11-COMMENT" "HTTPClient in line comment should be ignored" "pass" "$cap"
+assert_passes "HTTPClient in line comment is ignored" "$cap"
 
 cap="$(mkcap)"; printf '/* HTTPClient docs */\n' > "$cap/svc.js"
-assert_known_bug "S11-BLOCK-COMMENT" "HTTPClient in block comment should be ignored" "pass" "$cap"
+assert_passes "HTTPClient in block comment is ignored" "$cap"
 
 cap="$(mkcap)"; printf 'LocalServiceRegistry.createService("my.svc", {});\n' > "$cap/svc.js"
 assert_passes "service framework usage is safe" "$cap"
@@ -360,17 +358,8 @@ assert_no_warning "no PII field names" "Possible PII" "$cap"
 cap="$(mkcap)"; printf 'Logger.info("password policy updated");\n' > "$cap/app.js"
 assert_warns "false positive acceptable — WARN only" "Possible PII" "$cap"
 
-# BUG: grep -n prefixes line number, so '^\s*//' never matches commented lines.
-# S12 in a comment will still warn — same class of bug as S1-COMMENT.
 cap="$(mkcap)"; printf '// Logger.info("password=" + pw);\n' > "$cap/app.js"
-run_scan "$cap"
-if [[ "$LAST_RC" -eq 0 ]] && echo "$LAST_OUTPUT" | grep -qF "Possible PII"; then
-  echo "  BUG:  S12 in line comment still warns [S12-COMMENT — grep -n prefix defeats comment filter]"
-  BUGS=$((BUGS + 1))
-else
-  echo "  FIXED? S12 comment detection [S12-COMMENT — behavior changed, review this test]"
-  FAIL=$((FAIL + 1))
-fi
+assert_no_warning "commented out is ignored" "Possible PII" "$cap"
 
 echo ""
 
@@ -420,7 +409,7 @@ cap="$(mkcap)"; printf 'for(;;) { if (x) return result; work(); }\n' > "$cap/app
 assert_passes "for-ever with return within 20 lines" "$cap"
 
 cap="$(mkcap)"; printf '// while(true) { }\n' > "$cap/app.js"
-assert_known_bug "S14-COMMENT" "loop in line comment should be ignored" "pass" "$cap"
+assert_passes "loop in line comment is ignored" "$cap"
 
 cap="$(mkcap)"; printf 'while (condition) { work(); }\n' > "$cap/app.js"
 assert_passes "bounded loop is not flagged" "$cap"
@@ -732,7 +721,7 @@ cap="$(mkcap)"; printf 'console.debug("test");\n' > "$cap/cart.js"
 assert_blocks "console.debug blocks" "$cap"
 
 cap="$(mkcap)"; printf '// console.log("commented out");\n' > "$cap/cart.js"
-assert_known_bug "Q7-COMMENT" "console.log in line comment should be ignored" "pass" "$cap"
+assert_passes "console.log in line comment is ignored" "$cap"
 
 echo ""
 
