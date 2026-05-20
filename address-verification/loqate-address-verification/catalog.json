@@ -1,7 +1,7 @@
 {
   "latest": {
-    "version": "2.1.5",
-    "tag": "loqate-address-verification-v2.1.5"
+    "version": "2.1.6",
+    "tag": "loqate-address-verification-v2.1.6"
   },
   "versions": [
     {
@@ -35,6 +35,10 @@
     {
       "version": "2.1.5",
       "tag": "loqate-address-verification-v2.1.5"
+    },
+    {
+      "version": "2.1.6",
+      "tag": "loqate-address-verification-v2.1.6"
     }
   ]
 }
