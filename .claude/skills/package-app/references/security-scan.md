@@ -8,24 +8,37 @@ Run before packaging any app to catch security issues early.
 bash .github/scripts/security-scan.sh <domain>/<appName>/commerce-<appName>-app-v<version>/
 ```
 
-## Blocking findings (exit code 1)
+## Blocking findings (21 checks — exit code 1)
 
 **Must fix before packaging:**
-- Dynamic code evaluation constructs — code injection sinks
-- Hardcoded secrets or credentials (API keys, AWS keys, GitHub PATs, Slack tokens, private keys)
-- Hook scripts referenced in hooks.json that don't exist on disk
-- Missing uninstall/services.xml or missing mode="delete" attributes
-- Unsafe HTML manipulation — XSS risk
+- S1: Dynamic code evaluation constructs — code injection sinks
+- S2: Dynamic module loading with concatenation
+- S3: Unsafe innerHTML assignment — XSS risk
+- S4: Hardcoded secrets (API keys, AWS keys, GitHub PATs, Slack tokens, private keys)
+- S5: Hardcoded credentials in impex XML
+- S7: Inline Authorization headers — must use service framework
+- S8: Additional DOM sinks — outerHTML assignment, document.write, insertAdjacentHTML
+- S9: ISML `<isprint>` with `encoding="off"` — template injection
+- S10: Secret files in package (.env, .key, .pem, .p12, .pfx, .jks)
+- S11: Direct HTTPClient usage — must use service framework
+- S13: setTimeout/setInterval in hook scripts — blocking calls
+- S14: Unbounded loops (while(true)/for(;;)) without break/return
+- S15: Service profiles missing rate-limit-enabled AND circuit-breaker-enabled
+- P1: Service profile XML missing timeout-millis
+- Q1: Hook scripts referenced in hooks.json that don't exist
+- Q2: Hook scripts missing expected function exports
+- Q3: Missing error handling (try/catch) in hook scripts
+- Q4: Missing uninstall/services.xml or missing mode="delete" (including service ID mismatches)
+- Q5: Hardcoded site-id instead of SITEID placeholder
+- Q6: Absolute file paths in code
+- Q7: Console logging in cartridge code — use dw.system.Logger
 
-## Warning findings (review recommended)
+## Warning findings (3 checks — review recommended)
 
 **Should fix but non-blocking:**
-- Console logging in cartridge code — use dw.system.Logger instead
-- HTTPClient without explicit timeout configuration
-- Service profile XML missing timeout-millis element
-- Hook scripts without try/catch error handling
-- Non-cryptographic random number generation
-- Inline Authorization headers instead of service framework
+- S6: Non-cryptographic random number generation (Math.random)
+- S12: PII field names in Logger calls (may be false positive — requires context)
+- S16: Session object access in hook scripts (dw.system.Session, session.privacy)
 
 ## Response to findings
 
