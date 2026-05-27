@@ -111,10 +111,22 @@ Optional fields (validate if present):
 
 **Skip if Backend-only.**
 
-Check for:
-- `storefront-next/src/extensions/<appName>/target-config.json`
-- `storefront-next/src/extensions/<appName>/index.ts`
-- Required locales: `en-US/`, `en-GB/`, `it-IT/`
+Required:
+- `storefront-next/src/extensions/<appName>/target-config.json` — entry point; declares `components[]`, `actionHooks[]`, etc., each pointing at a `path` under the extension directory.
+
+For each entry referenced from `target-config.json`, verify the file exists in the ZIP:
+
+```bash
+unzip -p <zip> "*/storefront-next/src/extensions/<appName>/target-config.json" \
+  | jq -r '[.components[]?.path, .actionHooks[]?.handler, .routes[]?.handler] | .[] | select(.)' \
+  | while read -r p; do
+      unzip -l <zip> | grep -q "storefront-next/src/$p" \
+        && echo "  ✓ $p" \
+        || echo "  ✗ MISSING: $p"
+    done
+```
+
+If the extension ships translations, they live under `storefront-next/src/extensions/<appName>/locales/<locale>/translations.json`. Locale set is app-specific — not a fixed allowlist.
 
 ## Step 9: Validate impex (Backend-only/Fullstack)
 
