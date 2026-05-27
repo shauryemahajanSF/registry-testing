@@ -144,40 +144,33 @@ See `references/impex-validation.md` for detailed rules:
 }
 ```
 
-## Step 10b: Validate adminComponents.json (optional)
+## Step 10b: Validate app-configuration/ JSON via CI scripts
 
-If the CAP includes `app-configuration/adminComponents.json`, verify it matches the schema CI enforces:
+Extract the CAP and run the same scripts CI runs. Each is the source of truth for its schema; the scripts print errors to stderr and exit non-zero on failure.
 
 ```bash
-unzip -p <zip> "*/app-configuration/adminComponents.json" 2>/dev/null | jq .
+EXTRACT_DIR="$(mktemp -d)"
+unzip -q <zip> -d "$EXTRACT_DIR"
+CAP_ROOT="$EXTRACT_DIR/commerce-<appName>-app-v<version>"
+
+# tasksList.json schema (required file)
+bash .github/scripts/validate-tasks-list.sh "$CAP_ROOT/app-configuration/tasksList.json"
+
+# adminComponents.json schema (optional file)
+[[ -f "$CAP_ROOT/app-configuration/adminComponents.json" ]] && \
+  bash .github/scripts/validate-admin-components.sh "$CAP_ROOT/app-configuration/adminComponents.json"
+
+# app-shipped translations (optional directory; cross-references the two files above)
+bash .github/scripts/validate-translations.sh "$CAP_ROOT"
+
+rm -rf "$EXTRACT_DIR"
 ```
 
-Required:
-- File is valid JSON and a top-level object.
-- The `configuration` key, when present, must be an array.
-- Every entry in `configuration` has a non-empty string `type`.
-- For entries with `type == "storefrontComponentVisibility"`:
-  - `attributes` is a non-empty array.
-  - Each attribute has a non-empty string `id` (the `sfcc.*` UI target identifier the merchant can toggle), a non-empty string `label` (rendered next to the toggle in BM), and a boolean `defaultValue`.
+Each script prints schema details and exits non-zero with errors on stderr. See the script header comments for the schema contract.
 
-Example:
+## Step 11: Validate manifest-level translations
 
-```json
-{
-  "configuration": [
-    {
-      "type": "storefrontComponentVisibility",
-      "attributes": [
-        { "id": "sfcc.checkout.shippingAddress.after", "label": "Show on Checkout", "defaultValue": true }
-      ]
-    }
-  ]
-}
-```
-
-Skip this step if the file isn't present — `adminComponents.json` is optional.
-
-## Step 11: Validate translations
+The CAP-internal translations live under `app-configuration/translations/` (validated in Step 10b). The **manifest-level** `commerce-apps-manifest/translations/en-US.json` holds the marketplace `name` / `description` shown on the app card:
 
 ```bash
 jq '."<appName>"' commerce-apps-manifest/translations/en-US.json
