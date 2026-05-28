@@ -75,6 +75,18 @@
             "domain": "payment",
             "type": "custom",
             "provider": "custom"
+        },
+        {
+            "id": "sf-payments",
+            "name": "SF Payments",
+            "description": "Salesforce Payments integration for Storefront Next — express checkout buttons powered by sfp.js SDK",
+            "iconName": "salesforce.svg",
+            "domain": "payment",
+            "type": "app",
+            "provider": "thirdParty",
+            "version": "1.0.0",
+            "zip": "sf-payments-v1.0.0.zip",
+            "sha256": "0395cd63d5513375c5f4750e6b214a6d61cb5b458fcf930278bb7546589def36"
         }
     ],
     "address-verification": [

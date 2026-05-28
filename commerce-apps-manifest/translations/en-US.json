@@ -23,6 +23,10 @@
         "name": "Custom Payment",
         "description": "Configure a custom payment integration by providing your own APIs."
     },
+    "sf-payments": {
+        "name": "SF Payments",
+        "description": "Salesforce Payments integration for Storefront Next — express checkout buttons powered by sfp.js SDK"
+    },
     "loqate-address-verification": {
         "name": "Loqate Address Verification",
         "description": "Address Verification Application with GBG Loqate"
