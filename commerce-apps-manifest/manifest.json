@@ -118,6 +118,17 @@
             "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
         }
     ],
+    "analytics": [
+        {
+            "id": "custom-analytics",
+            "name": "Custom Analytics",
+            "description": "Configure a custom analytics integration.",
+            "iconName": "custom.svg",
+            "domain": "analytics",
+            "type": "custom",
+            "provider": "custom"
+        }
+    ],
     "custom-app": [
         {
             "id": "custom-app",
