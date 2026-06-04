@@ -128,17 +128,6 @@
             "type": "custom",
             "provider": "custom"
         }
-    ],
-    "custom-app": [
-        {
-            "id": "custom-app",
-            "name": "Custom App",
-            "description": "Configure custom app.",
-            "iconName": "custom.svg",
-            "domain": "custom-app",
-            "type": "custom",
-            "provider": "custom"
-        }
-    ],
+    ]
     "additionalFeature": []
 }
