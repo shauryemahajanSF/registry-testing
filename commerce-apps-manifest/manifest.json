@@ -118,5 +118,16 @@
             "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
         }
     ],
+    "custom-app": [
+        {
+            "id": "custom-app",
+            "name": "Custom App",
+            "description": "Configure custom app.",
+            "iconName": "custom.svg",
+            "domain": "custom-app",
+            "type": "custom",
+            "provider": "custom"
+        }
+    ],
     "additionalFeature": []
 }
