@@ -1,10 +1,12 @@
 {
-  "id": "salesforce-payments",
+  "latest": {
+    "version": "1.0.0",
+    "tag": "salesforce-payments-v1.0.0"
+  },
   "versions": [
     {
       "version": "1.0.0",
-      "zip": "salesforce-payments-v1.0.0.zip",
-      "sha256": "6df6e8b7a0ebd06d4fd69c1cb040bff8e4d249a47567ab172b48562d58c32b9d"
+      "tag": "salesforce-payments-v1.0.0"
     }
   ]
 }
