@@ -58,6 +58,9 @@ If the user's description clearly indicates type, proceed directly. Otherwise as
 - Maximum SFRA version (optional - semver, inclusive; same guidance as above)
 
 > When provided, add `storefrontSupport` to both `commerce-app.json` (inside the ZIP) and the root manifest entry. Values must match. Each storefront key (`sfnext`, `sfra`) accepts `minVersion` (required when the key is present) and an optional `maxVersion`.
+- Required feature toggle (optional - string, name of a platform feature toggle that must be enabled for this app to install; used for license-gated Salesforce apps, e.g., `"SalesforcePaymentsAllowed"`)
+
+> When provided, add `"requiredFeatureToggle": "<ToggleName>"` to the root manifest entry only. The installer checks this toggle before proceeding — if disabled, installation fails with a license-required error. Only Salesforce-internal apps should use this field.
 - Additional context (optional - docs, requirements, API details)
 
 **Folder Structure:** Apps must be at `{domain}/{appName}/` where `{appName}` matches the "id" field. Installation URL: `https://raw.githubusercontent.com/{owner}/{repo}/{tag}/{domain}/{appName}/{zipFileName}`

@@ -80,6 +80,7 @@ Check `commerce-apps-manifest/manifest.json` has all required fields:
 - `sha256` - matches computed hash
 
 Optional fields (validate if present):
+- `requiredFeatureToggle` - non-empty string if present; must be a valid platform feature toggle name (no spaces, PascalCase convention)
 - `storefrontSupport.sfnext.minVersion` - valid semver (`X.Y.Z` or `X.Y.Z-prerelease`)
 - `storefrontSupport.sfnext.maxVersion` - valid semver, optional (`X.Y.Z` or `X.Y.Z-prerelease`)
 - `storefrontSupport.sfra.minVersion` - valid semver (`X.Y.Z` or `X.Y.Z-prerelease`)
