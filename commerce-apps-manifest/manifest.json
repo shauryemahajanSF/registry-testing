@@ -68,6 +68,19 @@
     ],
     "payment": [
         {
+            "id": "salesforce-payments",
+            "name": "Salesforce Payments",
+            "description": "Accept payments with Salesforce Payments powered by Stripe.",
+            "iconName": "salesforce.svg",
+            "domain": "payment",
+            "type": "app",
+            "provider": "salesforce",
+            "version": "1.0.0",
+            "zip": "salesforce-payments-v1.0.0.zip",
+            "sha256": "6df6e8b7a0ebd06d4fd69c1cb040bff8e4d249a47567ab172b48562d58c32b9d",
+            "requiredFeatureToggle": "SalesforcePaymentsAllowed"
+        },
+        {
             "id": "custom-payment",
             "name": "Custom Payment",
             "description": "Configure a custom payment integration by providing your own APIs.",
