@@ -144,6 +144,8 @@ Find your app’s entry in the appropriate domain array (e.g., `tax`, `shipping`
 
 #### Optional Fields
 
+- `requiredFeatureToggle` - (String) Name of a platform feature toggle that must be enabled for this app to install. When present, the installer checks the toggle value before proceeding. If the toggle is disabled, installation fails with a license-required error. Use this for apps that require a specific license or entitlement (e.g., `"SalesforcePaymentsAllowed"`). If absent, no feature toggle gating is applied.
+
 - `storefrontSupport` - (Object) Declares storefront version compatibility. If absent, no version gating is applied at install time.
   - `sfnext` - (Object) Storefront Next compatibility
     - `minVersion` - (String) Minimum SFNext version the app requires (semver format: `X.Y.Z` or `X.Y.Z-prerelease`)
@@ -188,6 +190,27 @@ On **Linux**, the equivalent is usually `sha256sum /path/to/zip`.
       "storefrontSupport": {
         "sfnext": { "minVersion": "1.0.0" }
       }
+    }
+  ]
+}
+```
+
+**App with required feature toggle (license-gated):**
+```json
+{
+  "payment": [
+    {
+      "id": "salesforce-payments",
+      "name": "Salesforce Payments",
+      "description": "Accept payments with Salesforce Payments.",
+      "iconName": "salesforce.svg",
+      "domain": "payment",
+      "type": "app",
+      "provider": "salesforce",
+      "version": "1.0.0",
+      "zip": "salesforce-payments-v1.0.0.zip",
+      "sha256": "6df6e8b7...",
+      "requiredFeatureToggle": "SalesforcePaymentsAllowed"
     }
   ]
 }
