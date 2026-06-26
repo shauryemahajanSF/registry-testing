@@ -82,6 +82,7 @@
             "type": "app",
             "provider": "salesforce",
             "badge": "new",
+            "requiredFeatureToggles": ["SalesforcePaymentsAllowed"],
             "isFeatured": true,
             "featuredTagline": "One unified checkout for cards, wallets, and local payment methods.",
             "featuredLearnMoreUrl": "https://help.salesforce.com/s/articleView?id=cc.b2c_commerce_payments.htm",
