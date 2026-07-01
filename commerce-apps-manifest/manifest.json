@@ -74,9 +74,18 @@
     ],
     "payment": [
         {
-            "id": "salesforce-payments",
+            "id": "custom-payment",
+            "name": "Custom Payment",
+            "description": "Configure a custom payment integration by providing your own APIs.",
+            "iconName": "custom.svg",
+            "domain": "payment",
+            "type": "custom",
+            "provider": "custom"
+        },
+        {
+            "id": "sf-payments",
             "name": "Salesforce Payments",
-            "description": "Accept credit cards, digital wallets, and local payment methods with a unified checkout experience powered by Salesforce.",
+            "description": "Salesforce Payments integration for Storefront Next — checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK.",
             "iconName": "salesforce.svg",
             "domain": "payment",
             "type": "app",
@@ -86,16 +95,19 @@
             "isFeatured": true,
             "featuredTagline": "One unified checkout for cards, wallets, and local payment methods.",
             "featuredLearnMoreUrl": "https://help.salesforce.com/s/articleView?id=cc.b2c_commerce_payments.htm",
-            "featuredImageName": "sf-payments-featured.png"
-        },
-        {
-            "id": "custom-payment",
-            "name": "Custom Payment",
-            "description": "Configure a custom payment integration by providing your own APIs.",
-            "iconName": "custom.svg",
-            "domain": "payment",
-            "type": "custom",
-            "provider": "custom"
+            "featuredImageName": "sf-payments-featured.png",
+            "version": "1.0.0",
+            "zip": "sf-payments-v1.0.0.zip",
+            "sha256": "920861bdf7559b518e9cb0fdc756abbec01080eb528c29c562f89f0f3e42e737",
+            "configurationComponents": [
+                "ccbm_payments/multiStepPaymentMethods",
+                "ccbm_payments/expressPaymentMethods",
+                "ccbm_payments/expressCheckoutDisplay",
+                "ccbm_payments/paymentAdvancedSettings"
+            ],
+            "connectionDetailsComponents": [
+                "ccbm_payments/merchantAccountDetails"
+            ]
         }
     ],
     "address-verification": [
