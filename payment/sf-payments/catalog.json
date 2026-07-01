@@ -1,12 +1,4 @@
 {
-  "latest": {
-    "version": "1.0.0",
-    "tag": "amittapalli/sf-payments-cap-testing"
-  },
-  "versions": [
-    {
-      "version": "1.0.0",
-      "tag": "amittapalli/sf-payments-cap-testing"
-    }
-  ]
+  "latest": {"version": "INIT", "tag": "INIT"},
+  "versions": []
 }
