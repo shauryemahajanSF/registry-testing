@@ -19,9 +19,14 @@
             "domain": "tax",
             "type": "app",
             "provider": "thirdParty",
-            "version": "1.1.2",
-            "zip": "avalara-tax-v1.1.2.zip",
-            "sha256": "5c1581c2902664a8a11c6861e9b313cd0acc2d7abc8ed5d985e9ce93b6e5ffa8"
+            "companyName": "Avalara",
+            "version": "1.1.3",
+            "zip": "avalara-tax-v1.1.3.zip",
+            "sha256": "4b07f4726f8cb4bee0f3c5aa931d3e73840799f280b6acd5f55c1e62e1f32f7d",
+            "badge": "popular",
+            "isFeatured": true,
+            "featuredTagline": "Automated tax compliance trusted by 30,000+ businesses worldwide.",
+            "featuredLearnMoreUrl": "https://www.avalara.com/us/en/products/sales-and-use-tax/tax-calculation.html"
         },
         {
             "id": "custom-tax",
@@ -61,12 +66,28 @@
             "domain": "shipping",
             "type": "app",
             "provider": "thirdParty",
+            "companyName": "Zenkraft",
             "version": "1.0.0",
             "zip": "zenkraft-rates-v1.0.0.zip",
             "sha256": "cb343122a310028230dc55a8dde7e431ad7ab67edf46eee4e890a7c3f85cf542"
         }
     ],
     "payment": [
+        {
+            "id": "salesforce-payments",
+            "name": "Salesforce Payments",
+            "description": "Accept credit cards, digital wallets, and local payment methods with a unified checkout experience powered by Salesforce.",
+            "iconName": "salesforce.svg",
+            "domain": "payment",
+            "type": "app",
+            "provider": "salesforce",
+            "badge": "new",
+            "requiredFeatureToggle": "SalesforcePaymentsAllowed",
+            "isFeatured": true,
+            "featuredTagline": "One unified checkout for cards, wallets, and local payment methods.",
+            "featuredLearnMoreUrl": "https://help.salesforce.com/s/articleView?id=cc.b2c_commerce_payments.htm",
+            "featuredImageName": "sf-payments-featured.png"
+        },
         {
             "id": "custom-payment",
             "name": "Custom Payment",
@@ -98,6 +119,7 @@
             "domain": "address-verification",
             "type": "app",
             "provider": "thirdParty",
+            "companyName": "Loqate",
             "version": "2.1.6",
             "zip": "loqate-address-verification-v2.1.6.zip",
             "sha256": "4e2028566c6f08fd1fc890282881392168d04f8dcb7e321db6e511895b468772",
@@ -113,6 +135,7 @@
             "domain": "address-verification",
             "type": "app",
             "provider": "thirdParty",
+            "companyName": "Experian",
             "version": "2.1.0",
             "zip": "experian-address-verification-v2.1.0.zip",
             "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
@@ -125,9 +148,21 @@
             "domain": "address-verification",
             "type": "app",
             "provider": "thirdParty",
+            "companyName": "Postgrid",
             "version": "2.1.0",
             "zip": "postgrid-address-verification-v2.1.0.zip",
             "sha256": "0a3691d6b6cb79604f9fe5d5bc96227283b1c4f8d8323f341d8cb862e61590ca"
+        }
+    ],
+    "analytics": [
+        {
+            "id": "custom-analytics",
+            "name": "Custom Analytics",
+            "description": "Configure a custom analytics integration.",
+            "iconName": "custom.svg",
+            "domain": "analytics",
+            "type": "custom",
+            "provider": "custom"
         }
     ],
     "additionalFeature": []

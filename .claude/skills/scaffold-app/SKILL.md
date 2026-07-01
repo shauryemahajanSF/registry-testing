@@ -13,6 +13,8 @@ description: >-
 
 Generate a complete starter structure for commerce apps with architecture-appropriate files and templates.
 
+> **Cross-tool note:** References to `/skill-name` (e.g., `/package-app`, `/generate-service-impex`) are Claude Code invocation syntax. If using another assistant, read and follow the corresponding `.claude/skills/<skill-name>/SKILL.md` file instead.
+
 ## Architecture Types
 
 Three patterns optimize for different integration needs:
@@ -58,6 +60,9 @@ If the user's description clearly indicates type, proceed directly. Otherwise as
 - Maximum SFRA version (optional - semver, inclusive; same guidance as above)
 
 > When provided, add `storefrontSupport` to both `commerce-app.json` (inside the ZIP) and the root manifest entry. Values must match. Each storefront key (`sfnext`, `sfra`) accepts `minVersion` (required when the key is present) and an optional `maxVersion`.
+- Required feature toggle (optional - string, name of a platform feature toggle that must be enabled for this app to install; used for license-gated Salesforce apps, e.g., `"SalesforcePaymentsAllowed"`)
+
+> When provided, add `"requiredFeatureToggle": "<ToggleName>"` to the root manifest entry only. The installer checks this toggle before proceeding — if disabled, installation fails with a license-required error. Only Salesforce-internal apps should use this field.
 - Additional context (optional - docs, requirements, API details)
 
 **Folder Structure:** Apps must be at `{domain}/{appName}/` where `{appName}` matches the "id" field. Installation URL: `https://raw.githubusercontent.com/{owner}/{repo}/{tag}/{domain}/{appName}/{zipFileName}`
@@ -187,12 +192,34 @@ See `references/storefront-plugin-templates.md` for complete extension templates
 ### 5. Domain-Specific Hooks
 
 Configure hooks.json based on domain:
-- **Tax:** `app.tax.calculate`, `app.tax.commit`, `app.tax.cancel`
-- **Payment:** `app.payment.processor.<appName>`
-- **Shipping:** `app.shipping.calculate`
-- **Loyalty:** `app.loyalty.calculate`, `app.loyalty.points`
-- **Gift Cards:** `app.payment.processor.<appName>`, `app.giftcard.balance`
-- **Ratings/Reviews:** `app.data.enrich`
+- **Tax:** `sfcc.app.tax.calculate`, `sfcc.app.tax.commit`, `sfcc.app.tax.cancel`
+- **Payment:** `sfcc.app.payment.processor.<appName>`
+- **Shipping:** `sfcc.app.shipping.calculate`
+- **Loyalty:** `sfcc.app.loyalty.calculate`, `sfcc.app.loyalty.points`
+- **Gift Cards:** `sfcc.app.payment.processor.<appName>`, `sfcc.app.giftcard.balance`
+- **Ratings/Reviews:** `sfcc.app.data.enrich`
+
+**Connection health check (optional, any app with an external dependency):**
+
+Any app that depends on an external connection should also register `sfcc.app.<domain>.checkConnectionHealth`. This enables a real-time health badge on the app's Checkout Hub tile in Business Manager. How the app defines "connection" is up to the developer — an API ping, credential validation, third-party service check, etc.
+
+Add to hooks.json:
+```json
+{
+  "name": "sfcc.app.<domain>.checkConnectionHealth",
+  "script": "./hooks/checkConnectionHealth.js"
+}
+```
+
+Generate the hook from template: `assets/templates/checkConnectionHealth.js.tmpl`. The hook must:
+- Export a `checkConnectionHealth` function
+- Return a `dw.system.Status` (OK for healthy, ERROR with code `DEGRADED` or `UNHEALTHY`)
+- Use `status.addDetail('message', ...)` for a brief description of state
+- Use `status.addDetail('remediation', ...)` for actionable fix steps (include BM nav path)
+- Be wrapped in try/catch (unhandled exceptions produce an "Unknown" badge)
+- Be lightweight — the platform applies a CPU timeout
+
+To localize the message/remediation strings, use `dw.web.Resource.msg()` from cartridge resource bundles — the hook runs in the BM session locale. Hardcoded English is acceptable if localization is not needed.
 
 ### 6. Validate and Guide
 
@@ -204,6 +231,7 @@ Check:
 - [ ] Backend apps: cartridge files, hooks.json (with explicit script paths), **both install/ and uninstall/ impex directories**
 - [ ] Backend apps: package.json includes `"hooks": "cartridge/scripts/hooks.json"` field
 - [ ] Backend apps: Hook implementations use `require()` not `importPackage()`, always return dw.system.Status
+- [ ] All apps: If app depends on an external connection, `checkConnectionHealth` hook is registered and implemented (optional but recommended)
 - [ ] UI apps: storefront-next structure with target-config.json, TypeScript components, tests
 - [ ] UI apps: index.ts barrel file, **all three locale files** (en-US, en-GB, it-IT), i18n usage with useTranslation
 - [ ] UI apps: Configuration uses `useConfig<AppConfig>()` with **direct property access** (never `.get()` method), PUBLIC__ env vars

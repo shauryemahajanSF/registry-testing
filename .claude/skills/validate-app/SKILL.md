@@ -12,6 +12,8 @@ description: >-
 
 Run comprehensive validation checks on a commerce app before submitting a PR.
 
+> **Cross-tool note:** References to `/skill-name` (e.g., `/submit-app`) are Claude Code invocation syntax. If using another assistant, read and follow the corresponding `.claude/skills/<skill-name>/SKILL.md` file instead.
+
 ## Step 1: Identify app and resolve input
 
 Gather:
@@ -80,6 +82,7 @@ Check `commerce-apps-manifest/manifest.json` has all required fields:
 - `sha256` - matches computed hash
 
 Optional fields (validate if present):
+- `requiredFeatureToggle` - non-empty string if present; must be a valid platform feature toggle name (no spaces, PascalCase convention)
 - `storefrontSupport.sfnext.minVersion` - valid semver (`X.Y.Z` or `X.Y.Z-prerelease`)
 - `storefrontSupport.sfnext.maxVersion` - valid semver, optional (`X.Y.Z` or `X.Y.Z-prerelease`)
 - `storefrontSupport.sfra.minVersion` - valid semver (`X.Y.Z` or `X.Y.Z-prerelease`)
