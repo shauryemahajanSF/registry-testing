@@ -25,8 +25,8 @@
         "description": "Configure a custom payment integration by providing your own APIs."
     },
     "sf-payments": {
-        "name": "SF Payments",
-        "description": "Salesforce Payments integration for Storefront Next — express checkout buttons powered by sfp.js SDK"
+        "name": "Salesforce Payments",
+        "description": "Salesforce Payments integration for Storefront Next — checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK."
     },
     "loqate-address-verification": {
         "name": "Loqate Address Verification",
