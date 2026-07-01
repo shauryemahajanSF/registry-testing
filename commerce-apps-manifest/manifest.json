@@ -153,5 +153,16 @@
             "provider": "custom"
         }
     ],
+    "loyalty": [
+        {
+            "id": "custom-loyalty",
+            "name": "Custom Loyalty",
+            "description": "Configure a custom loaylty integration.",
+            "iconName": "custom.svg",
+            "domain": "loyalty",
+            "type": "custom",
+            "provider": "custom"
+        }
+    ],
     "additionalFeature": []
 }
