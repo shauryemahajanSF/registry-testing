@@ -35,5 +35,9 @@
     "zenkraft-rates": {
         "name": "Zenkraft Shipping Rates",
         "description": "Dynamic real-time shipping rate calculation via Zenkraft API"
+    },
+    "cds-shipping": {
+        "name": "CDS Shipping",
+        "description": "Dynamic delivery estimates and shipping metadata powered by Commerce Delivery Service."
     }
 }
