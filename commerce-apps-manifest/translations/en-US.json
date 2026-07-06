@@ -5,8 +5,7 @@
     },
     "avalara-tax": {
         "name": "Avalara",
-        "description": "Automate your sales tax compliance with Avalara.",
-        "featuredTagline": "Automated tax compliance trusted by 30,000+ businesses worldwide."
+        "description": "Automate your sales tax compliance with Avalara."
     },
     "custom-tax": {
         "name": "Custom Tax",
