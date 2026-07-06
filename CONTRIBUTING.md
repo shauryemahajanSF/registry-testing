@@ -166,9 +166,8 @@ The commerce apps workspace can highlight select apps as **featured**, giving th
 - `featuredTagline` - (String) Short marketing tagline shown on the featured placement (e.g., `"Automated tax compliance trusted by 30,000+ businesses worldwide."`). Also add it to `commerce-apps-manifest/translations/en-US.json` under your app's key so it can be localized.
 - `featuredLearnMoreUrl` - (String) Absolute URL to a page where merchants can learn more about the app (e.g., a product landing page).
 - `featuredImageName` - (String) Filename of a promotional image committed to `commerce-apps-manifest/featured-images/` (e.g., `"acme-featured.png"`).
-- `badge` - (String) Optional marketing badge shown on the app card. Supported values: `"new"`, `"popular"`.
 
-> **`isFeatured` is reserved for Salesforce.** Do **not** set `isFeatured` in your submission — it is controlled by Salesforce curation, and PRs that set it will be asked to remove it. To be **considered** for featured placement, include `companyName` (required) plus the featured fields above (`featuredTagline`, `featuredLearnMoreUrl`, `featuredImageName`) so your app is ready to promote if selected.
+> **`isFeatured` and `badge` are reserved for Salesforce.** Do **not** set `isFeatured` or `badge` (`"new"`, `"popular"`) in your submission — both are controlled by Salesforce curation, and PRs that set them will be asked to remove them. To be **considered** for featured placement, include `companyName` (required) plus the featured fields above (`featuredTagline`, `featuredLearnMoreUrl`, `featuredImageName`) so your app is ready to promote if selected.
 
 #### Computing `sha256`
 
@@ -641,7 +640,7 @@ Before submitting your PR, please verify:
 - [ ] ZIP contains single root folder: `commerce-[appName]-app-v[version]/`
 - [ ] `manifest.json` includes all required fields (name, displayName, domain, description, companyName, version, zip, sha256)
 - [ ] `catalog.json` is included for new apps only (with INIT values)
-- [ ] `isFeatured` is **not** set in the submission (reserved for Salesforce curation)
+- [ ] `isFeatured` and `badge` are **not** set in the submission (reserved for Salesforce curation)
 - [ ] If featured fields are provided, `featuredImageName` refers to an image committed under `commerce-apps-manifest/featured-images/`
 
 ### Version and Hash Validation

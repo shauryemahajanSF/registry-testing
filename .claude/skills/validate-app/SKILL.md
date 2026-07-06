@@ -95,8 +95,7 @@ Featured app fields (optional; validate if present):
 - `featuredTagline` - non-empty string; should also appear under the app's key in `commerce-apps-manifest/translations/en-US.json`
 - `featuredLearnMoreUrl` - non-empty string; must be an absolute URL (`https://…`)
 - `featuredImageName` - non-empty string; the named file must exist under `commerce-apps-manifest/featured-images/`
-- `badge` - if present, must be one of `"new"` or `"popular"`
-- **`isFeatured` must NOT be present in a submission** — it is reserved for Salesforce curation. **FAIL** validation if `isFeatured` is set and instruct the developer to remove it.
+- **`isFeatured` and `badge` must NOT be present in a submission** — both are reserved for Salesforce curation (`badge` supports `"new"`, `"popular"`). **FAIL** validation if either is set and instruct the developer to remove it.
 
 ## Step 5: Validate package contents
 
@@ -246,11 +245,13 @@ Icon filename must match `iconName` field exactly. CI extracts automatically.
 ## Step 12b: Validate featured app fields (if present)
 
 ```bash
-# isFeatured is reserved for Salesforce — reject it in submissions
-jq -e '[.[] | select(type=="array")] | flatten | .[] | select(.id == "<appName>") | has("isFeatured")' \
-  commerce-apps-manifest/manifest.json >/dev/null 2>&1 \
-  && echo "  ✗ isFeatured is set — remove it (reserved for Salesforce curation)" \
-  || echo "  ✓ isFeatured not set"
+# isFeatured and badge are reserved for Salesforce — reject them in submissions
+for FIELD in isFeatured badge; do
+  jq -e --arg f "$FIELD" '[.[] | select(type=="array")] | flatten | .[] | select(.id == "<appName>") | has($f)' \
+    commerce-apps-manifest/manifest.json >/dev/null 2>&1 \
+    && echo "  ✗ $FIELD is set — remove it (reserved for Salesforce curation)" \
+    || echo "  ✓ $FIELD not set"
+done
 
 # If featuredImageName is present, the image must be committed under featured-images/
 FEATURED_IMG=$(jq -r '[.[] | select(type=="array")] | flatten | .[] | select(.id == "<appName>") | .featuredImageName // empty' \
@@ -262,7 +263,7 @@ if [[ -n "$FEATURED_IMG" ]]; then
 fi
 ```
 
-**FAIL** if `isFeatured` is present, or if `featuredImageName` is set but the referenced file is missing. If `featuredTagline` is set, confirm it also appears under the app's key in `commerce-apps-manifest/translations/en-US.json`.
+**FAIL** if `isFeatured` or `badge` is present, or if `featuredImageName` is set but the referenced file is missing. If `featuredTagline` is set, confirm it also appears under the app's key in `commerce-apps-manifest/translations/en-US.json`.
 
 ## Step 13: Security scan
 

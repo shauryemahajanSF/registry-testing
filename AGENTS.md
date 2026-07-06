@@ -197,8 +197,7 @@ Your response:
   - `featuredTagline` - short marketing tagline; also add it to `commerce-apps-manifest/translations/en-US.json` under the app's key for localization
   - `featuredLearnMoreUrl` - absolute URL to a "learn more" page
   - `featuredImageName` - filename of a promotional image committed to `commerce-apps-manifest/featured-images/`
-  - `badge` - optional marketing badge; supported values: `"new"`, `"popular"`
-- **`isFeatured` is reserved for Salesforce and must NOT be set by app developers.** It is controlled by Salesforce curation. If a submission sets `isFeatured`, flag it and remove it. To pursue featured status, ensure `companyName` is present and include the featured fields above so the app is ready to promote if selected.
+- **`isFeatured` and `badge` are reserved for Salesforce and must NOT be set by app developers.** Both are controlled by Salesforce curation (`badge` supports `"new"`, `"popular"`). If a submission sets `isFeatured` or `badge`, flag it and remove it. To pursue featured status, ensure `companyName` is present and include the featured fields above so the app is ready to promote if selected.
 
 **Icon validation examples:**
 ```
