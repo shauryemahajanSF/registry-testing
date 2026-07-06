@@ -74,6 +74,7 @@ Check `commerce-apps-manifest/manifest.json` has all required fields:
 - `name` - display name
 - `description`
 - `iconName` - matches icon in ZIP `icons/` directory
+- `companyName` - non-empty string; publishing company/ISV name (required for third-party apps)
 - `domain` - valid domain (hyphen-case)
 - `type` - must be `"app"`
 - `provider` - must be `"thirdParty"`
@@ -89,6 +90,13 @@ Optional fields (validate if present):
 - `storefrontSupport.sfra.maxVersion` - valid semver, optional (`X.Y.Z` or `X.Y.Z-prerelease`)
 - Only `sfnext` and `sfra` keys allowed inside `storefrontSupport`; only `minVersion` and `maxVersion` allowed inside each
 - `storefrontSupport` must be present in **both** the root manifest and `commerce-app.json` with matching values
+
+Featured app fields (optional; validate if present):
+- `featuredTagline` - non-empty string; should also appear under the app's key in `commerce-apps-manifest/translations/en-US.json`
+- `featuredLearnMoreUrl` - non-empty string; must be an absolute URL (`https://…`)
+- `featuredImageName` - non-empty string; the named file must exist under `commerce-apps-manifest/featured-images/`
+- `badge` - if present, must be one of `"new"` or `"popular"`
+- **`isFeatured` must NOT be present in a submission** — it is reserved for Salesforce curation. **FAIL** validation if `isFeatured` is set and instruct the developer to remove it.
 
 ## Step 5: Validate package contents
 
@@ -234,6 +242,27 @@ ICON_NAME=$(jq -r '[.[] | select(type=="array")] | flatten | .[] | select(.id ==
 ```
 
 Icon filename must match `iconName` field exactly. CI extracts automatically.
+
+## Step 12b: Validate featured app fields (if present)
+
+```bash
+# isFeatured is reserved for Salesforce — reject it in submissions
+jq -e '[.[] | select(type=="array")] | flatten | .[] | select(.id == "<appName>") | has("isFeatured")' \
+  commerce-apps-manifest/manifest.json >/dev/null 2>&1 \
+  && echo "  ✗ isFeatured is set — remove it (reserved for Salesforce curation)" \
+  || echo "  ✓ isFeatured not set"
+
+# If featuredImageName is present, the image must be committed under featured-images/
+FEATURED_IMG=$(jq -r '[.[] | select(type=="array")] | flatten | .[] | select(.id == "<appName>") | .featuredImageName // empty' \
+  commerce-apps-manifest/manifest.json)
+if [[ -n "$FEATURED_IMG" ]]; then
+  [[ -f "commerce-apps-manifest/featured-images/$FEATURED_IMG" ]] \
+    && echo "  ✓ featured image in registry" \
+    || echo "  ✗ MISSING featured image: commerce-apps-manifest/featured-images/$FEATURED_IMG"
+fi
+```
+
+**FAIL** if `isFeatured` is present, or if `featuredImageName` is set but the referenced file is missing. If `featuredTagline` is set, confirm it also appears under the app's key in `commerce-apps-manifest/translations/en-US.json`.
 
 ## Step 13: Security scan
 
