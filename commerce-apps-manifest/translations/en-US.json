@@ -38,5 +38,9 @@
     "cds-shipping": {
         "name": "CDS Shipping",
         "description": "Dynamic delivery estimates and shipping metadata powered by Commerce Delivery Service."
+    },
+    "noibu": {
+        "name": "Noibu",
+        "description": "Loads Noibu session monitoring script on every storefront page"
     }
 }
