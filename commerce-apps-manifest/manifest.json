@@ -161,6 +161,18 @@
             "domain": "analytics",
             "type": "custom",
             "provider": "custom"
+        },
+        {
+            "id": "noibu",
+            "name": "Noibu",
+            "description": "Loads Noibu session monitoring script on every storefront page",
+            "iconName": "noibu.png",
+            "domain": "analytics",
+            "type": "app",
+            "provider": "thirdParty",
+            "version": "1.0.0",
+            "zip": "noibu-v1.0.0.zip",
+            "sha256": "3ea92b5050258c9f5e40f63d5878804dfd4bdc2886ce98c6a84e9a9a2a65482e"
         }
     ],
     "additionalFeature": []
