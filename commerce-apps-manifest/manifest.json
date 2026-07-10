@@ -73,9 +73,9 @@
             "domain": "shipping",
             "type": "app",
             "provider": "salesforce",
-            "version": "1.0.1",
-            "zip": "cds-shipping-v1.0.1.zip",
-            "sha256": "8741e5287396d199fbd8021bb149083ba9331593de434eae5d6ce3e6afaeaf18"
+            "version": "1.0.3",
+            "zip": "cds-shipping-v1.0.3.zip",
+            "sha256": "51ee222f25988123c321330ef9fc8ec0f20de0257fff2ab79234cbfb091bbcb6"
         }
     ],
     "payment": [
