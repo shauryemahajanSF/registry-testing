@@ -25,7 +25,7 @@
     },
     "sf-payments": {
         "name": "Salesforce Payments",
-        "description": "Salesforce Payments integration for Storefront Next — checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK."
+        "description": "Process payments natively in Storefront Next. Salesforce Payments supports multiple payment gateways and methods."
     },
     "loqate-address-verification": {
         "name": "Loqate Address Verification",
