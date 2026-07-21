@@ -80,9 +80,9 @@
             "type": "app",
             "provider": "salesforce",
             "companyName": "Salesforce",
-            "version": "1.0.4",
-            "zip": "cds-shipping-v1.0.4.zip",
-            "sha256": "d5278262a5693551137b89bea9775446a15fe45d705705f1c9e09a0d1e829e6a"
+            "version": "1.0.5",
+            "zip": "cds-shipping-v1.0.5.zip",
+            "sha256": "c45c255b8d5149930d6356f015546d5791325e7f7be07b8e29c6046e992528c0"
         }
     ],
     "payment": [
