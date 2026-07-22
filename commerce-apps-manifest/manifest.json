@@ -80,6 +80,7 @@
             "type": "app",
             "provider": "salesforce",
             "companyName": "Salesforce",
+            "requiredFeatureToggle": "Order360IntegrationEnabled",
             "version": "1.0.5",
             "zip": "cds-shipping-v1.0.5.zip",
             "sha256": "c45c255b8d5149930d6356f015546d5791325e7f7be07b8e29c6046e992528c0"
