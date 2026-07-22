@@ -2,7 +2,9 @@ name: Update Catalog.json w New App Version PR
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'release/**'
     paths:
       - '**/*.zip'
 
@@ -15,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main
+      - name: Checkout pushed branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -31,7 +33,7 @@ jobs:
           manifest_path="commerce-apps-manifest/manifest.json"
           validate_manifest "$manifest_path"
 
-          # 1) Find ZIP files changed in this push to main (merge commit)
+          # 1) Find ZIP files changed in this push to the target branch (merge commit)
           mapfile -t changed_zips < <(git diff --name-only "$BEFORE_SHA" "$AFTER_SHA" -- '**/*.zip')
 
           if [[ ${#changed_zips[@]} -eq 0 ]]; then
@@ -75,20 +77,33 @@ jobs:
             # 3) Tag name = zip filename without .zip
             tag_name="${zip_file%.zip}"
 
-            # Create + push tag (skip if already exists)
-            if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
+            # Tags are immutable and shared across branches: a given app version
+            # maps to exactly one artifact, so the tag is created once and never
+            # moved. The remote is the source of truth (the CI checkout is shallow
+            # per branch and may not have the tag locally). If it already exists on
+            # the remote, this is a promotion of an already-published version -
+            # leave the tag pinned to its original commit.
+            if git ls-remote --exit-code --tags origin "refs/tags/$tag_name" >/dev/null 2>&1; then
+              echo "Tag $tag_name already exists on remote; leaving it pinned (immutable, shared)."
+            else
               git tag -a "$tag_name" -m "Release $tag_name"
-            fi
-            if ! git ls-remote --exit-code --tags origin "refs/tags/$tag_name" >/dev/null 2>&1; then
               git push origin "refs/tags/$tag_name"
             fi
 
-            # 4) Update latest and 5) Append a new versions entry
+            # 4) Update latest and 5) Append a new versions entry (idempotent).
+            # Appends only when this version/tag is not already present, so
+            # re-publishing or promoting the same ZIP does not create duplicate
+            # entries in this branch's catalog.json.
             tmp="$(mktemp)"
             jq --arg v "$version" --arg t "$tag_name" '
               .versions = (.versions // []) |
               .latest = {"version": $v, "tag": $t} |
-              .versions = (.versions + [{"version": $v, "tag": $t}])
+              .versions = (
+                if any(.versions[]?; .version == $v and .tag == $t)
+                then .versions
+                else .versions + [{"version": $v, "tag": $t}]
+                end
+              )
             ' "$catalog_path" > "$tmp"
 
             mv "$tmp" "$catalog_path"
@@ -155,12 +170,13 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: CI/update-catalog-${{ github.run_id }}
+          base: ${{ github.ref_name }}
+          branch: CI/update-catalog-${{ github.ref_name }}-${{ github.run_id }}
           delete-branch: true
           commit-message: "CI: update catalog.json after ZIP merge"
-          title: "CI: update catalog.json after ZIP merge"
+          title: "CI: update catalog.json after ZIP merge into ${{ github.ref_name }}"
           body: |
-            This PR was auto-generated after a ZIP file was merged into `main`.
+            This PR was auto-generated after a ZIP file was merged into `${{ github.ref_name }}`.
 
             - Creates a tag matching the ZIP filename (without `.zip`)
             - Updates `catalog.json` `latest`
