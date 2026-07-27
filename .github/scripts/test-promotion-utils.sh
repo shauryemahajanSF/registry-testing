@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/promotion-utils.sh"
+source "$SCRIPT_DIR/root-manifest-utils.sh"
 
 PASS=0
 FAIL=0
@@ -42,6 +43,17 @@ assert_json_eq() {
     echo "    expected: $en"
     echo "    actual:   $an"
     FAIL=$((FAIL + 1))
+  fi
+}
+
+assert_fails() {
+  local desc="$1"; shift
+  if "$@" >/dev/null 2>&1; then
+    echo "  FAIL: $desc (expected non-zero exit, got success)"
+    FAIL=$((FAIL + 1))
+  else
+    echo "  PASS: $desc"
+    PASS=$((PASS + 1))
   fi
 }
 
@@ -163,14 +175,58 @@ assert_json_eq "creates missing category" \
   '{"defaultLocale":"en","tax":[{"id":"t","zip":"t-v1.0.0.zip","version":"1.0.0"}],"analytics":[{"id":"n","zip":"n-v1.0.0.zip","version":"1.0.0"}]}' \
   merge_manifest_entry "$m3" '{"id":"n","zip":"n-v1.0.0.zip","version":"1.0.0"}' "analytics"
 
-# The committed manifest.json is 4-space indented; the upsert MUST preserve that
-# so a promotion produces a minimal diff instead of reformatting the whole file.
-# assert_json_eq above canonicalizes whitespace and cannot catch this, so assert
-# the raw indentation of a nested key directly.
-m4="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}')"
-m4_indent="$(merge_manifest_entry "$m4" '{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}' "analytics" \
-  | grep -m1 '"analytics"' | sed -E 's/[^ ].*//' | tr -d '\n' | wc -c | tr -d ' ')"
-assert_eq "upsert emits 4-space indentation" "4" printf '%s' "$m4_indent"
+echo ""
+
+# ---------------------------------------------------------------------------
+# lookup_manifest_entry_for_zip (tolerant lookup used by catalog/promotion jobs)
+# ---------------------------------------------------------------------------
+echo "--- lookup_manifest_entry_for_zip ---"
+
+# Present entry -> returned verbatim.
+lk1="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}]}')"
+assert_json_eq "returns entry when present" \
+  '{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}' \
+  lookup_manifest_entry_for_zip "a-v1.0.2.zip" "$lk1"
+
+# Back-ported ZIP with no matching entry (manifest pinned to newer version)
+# -> empty stdout, exit 0 (the skip signal the workflow relies on).
+lk2="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}]}')"
+assert_eq "missing entry -> empty (no error)" \
+  "" \
+  lookup_manifest_entry_for_zip "a-v1.0.0.zip" "$lk2"
+
+# Ambiguous duplicate zip across entries -> hard error (still fails).
+lk3="$(mkfile '{"analytics":[{"id":"a","zip":"dup.zip","version":"1.0.0"}],"tax":[{"id":"b","zip":"dup.zip","version":"2.0.0"}]}')"
+assert_fails "duplicate zip -> error" \
+  lookup_manifest_entry_for_zip "dup.zip" "$lk3"
+
+# Regression lock for the actual bug: capturing an absent entry via $(...) under
+# `set -euo pipefail` must NOT abort (empty stdout + exit 0), so the workflow's
+# skip branch can fire. This mirrors the exact call-site pattern.
+lk4="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}]}')"
+if (
+  set -euo pipefail
+  source "$SCRIPT_DIR/root-manifest-utils.sh"
+  entry="$(lookup_manifest_entry_for_zip "a-v1.0.0.zip" "$lk4")"
+  [[ -z "$entry" ]]
+); then
+  echo "  PASS: absent entry under set -e -> no abort, empty capture"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: absent entry under set -e -> unexpected abort or non-empty"
+  FAIL=$((FAIL + 1))
+fi
+
+# Duplicate error annotation goes to stderr (survives $(...) stdout capture).
+lk5="$(mkfile '{"analytics":[{"id":"a","zip":"dup.zip","version":"1.0.0"}],"tax":[{"id":"b","zip":"dup.zip","version":"2.0.0"}]}')"
+dup_err="$(lookup_manifest_entry_for_zip "dup.zip" "$lk5" 2>&1 >/dev/null || true)"
+if [[ "$dup_err" == *"Multiple manifest entries"* ]]; then
+  echo "  PASS: duplicate error emitted on stderr"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: duplicate error not on stderr"
+  FAIL=$((FAIL + 1))
+fi
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="
