@@ -188,9 +188,9 @@
             "domain": "analytics",
             "type": "app",
             "provider": "thirdParty",
-            "version": "1.0.2",
-            "zip": "e2e-promo-test-v1.0.2.zip",
-            "sha256": "27fae5071b78c8070e3ce4b81867477afab86404544428dbdba4bc07a0bb1f15"
+            "version": "1.0.0",
+            "zip": "e2e-promo-test-v1.0.0.zip",
+            "sha256": "09b9aec20240f3cdcae79de2ca7ffb28f40d60ed73ff108ecc4b08d289af5447"
         }
     ],
     "loyalty": [
