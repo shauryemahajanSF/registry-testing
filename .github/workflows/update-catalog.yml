@@ -311,7 +311,7 @@ jobs:
             cp "$stash/zips/$zip_path" "$zip_path"
             git add "$zip_path"
 
-            # 5b) Manifest entry (idempotent upsert by zip filename).
+            # 5b) Manifest entry (monotonic upsert keyed by app id).
             tmp="$(mktemp)"
             merge_manifest_entry "$manifest_path" "$entry" "$category" > "$tmp"
             mv "$tmp" "$manifest_path"
@@ -377,7 +377,7 @@ jobs:
             Carries the promoted artifacts, already merged, into `${{ steps.prepare.outputs.next_branch }}`:
 
             - The app ZIP(s)
-            - The matching `commerce-apps-manifest/manifest.json` entry (idempotent upsert by ZIP filename)
+            - The matching `commerce-apps-manifest/manifest.json` entry (monotonic upsert keyed by app id)
             - The merged `catalog.json` (union `versions`, monotonic `latest`)
             - Any app icons under `commerce-apps-manifest/icons/`
 
