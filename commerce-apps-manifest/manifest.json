@@ -179,18 +179,6 @@
             "domain": "analytics",
             "type": "custom",
             "provider": "custom"
-        },
-        {
-            "id": "e2e-promo-test",
-            "name": "E2E Promo Test",
-            "description": "Disposable app used to exercise the forward-integration auto-promotion workflow across release branches.",
-            "iconName": "e2e-promo-test.png",
-            "domain": "analytics",
-            "type": "app",
-            "provider": "thirdParty",
-            "version": "1.0.1",
-            "zip": "e2e-promo-test-v1.0.1.zip",
-            "sha256": "e23875874eb8c0a69328bf7b64216878d19c05f4dd964f9feed49e3de57b7491"
         }
     ],
     "loyalty": [
