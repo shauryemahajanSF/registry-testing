@@ -66,7 +66,17 @@ jobs:
             fi
 
             zip_file="$(basename "$zip_path")"
-            entry="$(get_manifest_entry_for_zip "$zip_file" "$manifest_path")"
+            entry="$(lookup_manifest_entry_for_zip "$zip_file" "$manifest_path")"
+
+            # No manifest entry: this is a back-ported (older) ZIP that the
+            # monotonic manifest guard deliberately left unreferenced on this
+            # branch - the manifest stays pinned to the newer version. It has no
+            # version/sha256 contract here and nothing installs it, so skip it
+            # (the newer version already carries this branch's catalog/tag).
+            if [[ -z "$entry" ]]; then
+              echo "No manifest entry for $zip_file on this branch; skipping (back-ported/unpinned artifact)."
+              continue
+            fi
 
             # Version from manifest entry (expects .version)
             version="$(jq -r '.version // empty' <<< "$entry")"
@@ -266,7 +276,17 @@ jobs:
           for zip_path in "${changed_zips[@]}"; do
             [[ -f "$zip_path" ]] || continue   # skip deletions
             zip_file="$(basename "$zip_path")"
-            entry="$(get_manifest_entry_for_zip "$zip_file" "$stash/source-manifest.json")"
+            entry="$(lookup_manifest_entry_for_zip "$zip_file" "$stash/source-manifest.json")"
+
+            # No manifest entry on the source branch: a back-ported (older) ZIP
+            # the monotonic guard left unreferenced. It is not the pinned
+            # artifact here and the newer version already cascaded forward on its
+            # own, so do not carry it to the next branch.
+            if [[ -z "$entry" ]]; then
+              echo "No manifest entry for $zip_file on $SOURCE_REF; not promoting (back-ported/unpinned artifact)."
+              continue
+            fi
+
             version="$(jq -r '.version // empty' <<< "$entry")"
             category="$(jq -r --arg z "$zip_file" '
               to_entries[]
