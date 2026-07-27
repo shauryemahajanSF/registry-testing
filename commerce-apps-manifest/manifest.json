@@ -138,7 +138,9 @@
             "zip": "loqate-address-verification-v2.1.6.zip",
             "sha256": "4e2028566c6f08fd1fc890282881392168d04f8dcb7e321db6e511895b468772",
             "storefrontSupport": {
-                "sfnext": { "minVersion": "0.4.0" }
+                "sfnext": {
+                    "minVersion": "0.4.0"
+                }
             }
         },
         {
@@ -177,6 +179,18 @@
             "domain": "analytics",
             "type": "custom",
             "provider": "custom"
+        },
+        {
+            "id": "e2e-promo-test",
+            "name": "E2E Promo Test",
+            "description": "Disposable app used to exercise the forward-integration auto-promotion workflow across release branches.",
+            "iconName": "e2e-promo-test.png",
+            "domain": "analytics",
+            "type": "app",
+            "provider": "thirdParty",
+            "version": "1.0.0",
+            "zip": "e2e-promo-test-v1.0.0.zip",
+            "sha256": "f7d6ba4903e4dd886c9571c824f1f7bc3fbf8eea35d3199bc361a0472d829ed9"
         }
     ],
     "loyalty": [
