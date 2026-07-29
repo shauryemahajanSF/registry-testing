@@ -1,0 +1,30 @@
+{
+  "tasks": {
+    "setup_approaching_discounts": {
+      "name": "在 Business Manager 中設定 Approaching Discounts",
+      "description": "在 Business Manager 中設定 Approaching Discounts 的促銷活動。"
+    },
+    "verify_integration": {
+      "name": "在本機環境中驗證整合",
+      "description": "確認橫幅顯示在您的商店櫥窗上。"
+    }
+  },
+  "adminComponents": {
+    "approaching_discounts_visibility": {
+      "attributes": {
+        "sfcc.checkout.orderSummary.body.before": {
+          "label": "在結帳時顯示"
+        },
+        "sfcc.cart.orderSummary.body.before": {
+          "label": "在購物車訂單摘要中顯示"
+        },
+        "sfcc.cart.promotions.approachingDiscounts": {
+          "label": "在購物車商品上顯示"
+        },
+        "sfcc.miniCart.promotions.approachingDiscounts": {
+          "label": "在迷你購物車中顯示"
+        }
+      }
+    }
+  }
+}

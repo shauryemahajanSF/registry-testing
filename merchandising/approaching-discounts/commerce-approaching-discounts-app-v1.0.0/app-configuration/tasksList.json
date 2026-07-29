@@ -1,0 +1,15 @@
+[
+  {
+    "taskKey": "setup_approaching_discounts",
+    "name": "Set Up Approaching Discounts in Business Manager",
+    "description": "Configure promotions for approaching discounts in Business Manager.",
+    "link": "https://developer.salesforce.com/docs/commerce/b2c-commerce/guide/b2c-promotions-for-developers.html#alert-on-approaching-discounts",
+    "taskNumber": "1"
+  },
+  {
+    "taskKey": "verify_integration",
+    "name": "Verify the Integration in Your Local Environment",
+    "description": "Confirm that the banner appears on your storefront.",
+    "taskNumber": "2"
+  }
+]

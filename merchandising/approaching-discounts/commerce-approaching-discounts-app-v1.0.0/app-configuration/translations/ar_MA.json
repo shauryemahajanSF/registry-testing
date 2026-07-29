@@ -1,0 +1,30 @@
+{
+  "tasks": {
+    "setup_approaching_discounts": {
+      "name": "إعداد Approaching Discounts في Business Manager",
+      "description": "قم بتكوين العروض الترويجية لـ Approaching Discounts في Business Manager."
+    },
+    "verify_integration": {
+      "name": "التحقق من التكامل في بيئتك المحلية",
+      "description": "تأكد من ظهور البانر على واجهة متجرك."
+    }
+  },
+  "adminComponents": {
+    "approaching_discounts_visibility": {
+      "attributes": {
+        "sfcc.checkout.orderSummary.body.before": {
+          "label": "العرض عند الدفع"
+        },
+        "sfcc.cart.orderSummary.body.before": {
+          "label": "العرض في ملخص طلب سلة التسوق"
+        },
+        "sfcc.cart.promotions.approachingDiscounts": {
+          "label": "العرض على عناصر سلة التسوق"
+        },
+        "sfcc.miniCart.promotions.approachingDiscounts": {
+          "label": "العرض في سلة التسوق المصغرة"
+        }
+      }
+    }
+  }
+}

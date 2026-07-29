@@ -1,0 +1,30 @@
+{
+  "tasks": {
+    "setup_approaching_discounts": {
+      "name": "Configurer Approaching Discounts dans Business Manager",
+      "description": "Configurez les promotions pour Approaching Discounts dans Business Manager."
+    },
+    "verify_integration": {
+      "name": "Vérifier l'intégration dans votre environnement local",
+      "description": "Confirmez que la bannière apparaît sur votre vitrine."
+    }
+  },
+  "adminComponents": {
+    "approaching_discounts_visibility": {
+      "attributes": {
+        "sfcc.checkout.orderSummary.body.before": {
+          "label": "Afficher au moment du paiement"
+        },
+        "sfcc.cart.orderSummary.body.before": {
+          "label": "Afficher dans le récapitulatif du panier"
+        },
+        "sfcc.cart.promotions.approachingDiscounts": {
+          "label": "Afficher sur les articles du panier"
+        },
+        "sfcc.miniCart.promotions.approachingDiscounts": {
+          "label": "Afficher dans le mini-panier"
+        }
+      }
+    }
+  }
+}

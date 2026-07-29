@@ -1,0 +1,16 @@
+{
+  "id": "approaching-discounts",
+  "name": "Approaching Discounts",
+  "description": "Show shoppers how close their basket is to unlocking order and shipping promotions.",
+  "domain": "merchandising",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "Salesforce",
+    "url": "https://www.salesforce.com/",
+    "support": "https://help.salesforce.com/"
+  },
+  "dependencies": {},
+  "storefrontSupport": {
+    "sfnext": { "minVersion": "1.2.0" }
+  }
+}
