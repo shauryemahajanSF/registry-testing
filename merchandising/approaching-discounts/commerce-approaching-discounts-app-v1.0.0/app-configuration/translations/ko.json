@@ -1,0 +1,30 @@
+{
+  "tasks": {
+    "setup_approaching_discounts": {
+      "name": "Business Manager에서 Approaching Discounts 설정",
+      "description": "Business Manager에서 Approaching Discounts에 대한 프로모션을 구성합니다."
+    },
+    "verify_integration": {
+      "name": "로컬 환경에서 통합 확인",
+      "description": "배너가 스토어프론트에 표시되는지 확인합니다."
+    }
+  },
+  "adminComponents": {
+    "approaching_discounts_visibility": {
+      "attributes": {
+        "sfcc.checkout.orderSummary.body.before": {
+          "label": "결제 시 표시"
+        },
+        "sfcc.cart.orderSummary.body.before": {
+          "label": "장바구니 주문 요약에 표시"
+        },
+        "sfcc.cart.promotions.approachingDiscounts": {
+          "label": "장바구니 항목에 표시"
+        },
+        "sfcc.miniCart.promotions.approachingDiscounts": {
+          "label": "미니 장바구니에 표시"
+        }
+      }
+    }
+  }
+}

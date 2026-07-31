@@ -1,0 +1,30 @@
+{
+  "tasks": {
+    "setup_approaching_discounts": {
+      "name": "Business Manager で Approaching Discounts をセットアップ",
+      "description": "Business Manager で Approaching Discounts のプロモーションを設定します。"
+    },
+    "verify_integration": {
+      "name": "ローカル環境で統合を確認",
+      "description": "バナーがストアフロントに表示されることを確認します。"
+    }
+  },
+  "adminComponents": {
+    "approaching_discounts_visibility": {
+      "attributes": {
+        "sfcc.checkout.orderSummary.body.before": {
+          "label": "チェックアウトに表示"
+        },
+        "sfcc.cart.orderSummary.body.before": {
+          "label": "カートの注文概要に表示"
+        },
+        "sfcc.cart.promotions.approachingDiscounts": {
+          "label": "カート商品に表示"
+        },
+        "sfcc.miniCart.promotions.approachingDiscounts": {
+          "label": "ミニカートに表示"
+        }
+      }
+    }
+  }
+}

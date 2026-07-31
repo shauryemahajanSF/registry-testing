@@ -1,0 +1,30 @@
+{
+  "tasks": {
+    "setup_approaching_discounts": {
+      "name": "Set Up Approaching Discounts in Business Manager",
+      "description": "Configure promotions for approaching discounts in Business Manager."
+    },
+    "verify_integration": {
+      "name": "Verify the Integration in Your Local Environment",
+      "description": "Confirm that the banner appears on your storefront."
+    }
+  },
+  "adminComponents": {
+    "approaching_discounts_visibility": {
+      "attributes": {
+        "sfcc.checkout.orderSummary.body.before": {
+          "label": "Show on Checkout"
+        },
+        "sfcc.cart.orderSummary.body.before": {
+          "label": "Show on Cart Order Summary"
+        },
+        "sfcc.cart.promotions.approachingDiscounts": {
+          "label": "Show on Cart Items"
+        },
+        "sfcc.miniCart.promotions.approachingDiscounts": {
+          "label": "Show on Mini-Cart"
+        }
+      }
+    }
+  }
+}

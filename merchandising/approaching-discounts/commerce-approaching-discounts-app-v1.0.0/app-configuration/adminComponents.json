@@ -1,0 +1,16 @@
+{
+  "configuration": [
+    {
+      "componentKey": "approaching_discounts_visibility",
+      "type": "storefrontComponentVisibility",
+      "header": "Component Visibility",
+      "description": "Control where the approaching-discounts banner appears on the storefront.",
+      "attributes": [
+        { "id": "sfcc.checkout.orderSummary.body.before", "label": "Show on Checkout", "defaultValue": false },
+        { "id": "sfcc.cart.orderSummary.body.before", "label": "Show on Cart Order Summary", "defaultValue": true },
+        { "id": "sfcc.cart.promotions.approachingDiscounts", "label": "Show on Cart Items", "defaultValue": false },
+        { "id": "sfcc.miniCart.promotions.approachingDiscounts", "label": "Show on Mini-Cart", "defaultValue": true }
+      ]
+    }
+  ]
+}

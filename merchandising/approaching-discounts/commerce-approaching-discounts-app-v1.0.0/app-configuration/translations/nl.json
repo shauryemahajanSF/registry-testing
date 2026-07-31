@@ -1,0 +1,30 @@
+{
+  "tasks": {
+    "setup_approaching_discounts": {
+      "name": "Approaching Discounts instellen in Business Manager",
+      "description": "Configureer promoties voor Approaching Discounts in Business Manager."
+    },
+    "verify_integration": {
+      "name": "De integratie verifiëren in uw lokale omgeving",
+      "description": "Controleer of de banner op uw storefront verschijnt."
+    }
+  },
+  "adminComponents": {
+    "approaching_discounts_visibility": {
+      "attributes": {
+        "sfcc.checkout.orderSummary.body.before": {
+          "label": "Weergeven bij afrekenen"
+        },
+        "sfcc.cart.orderSummary.body.before": {
+          "label": "Weergeven in winkelwagenoverzicht"
+        },
+        "sfcc.cart.promotions.approachingDiscounts": {
+          "label": "Weergeven bij winkelwagenartikelen"
+        },
+        "sfcc.miniCart.promotions.approachingDiscounts": {
+          "label": "Weergeven in mini-winkelwagen"
+        }
+      }
+    }
+  }
+}
