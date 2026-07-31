@@ -189,5 +189,24 @@
             "sha256": "27fae5071b78c8070e3ce4b81867477afab86404544428dbdba4bc07a0bb1f15"
         }
     ],
+    "merchandising": [
+        {
+            "id": "approaching-discounts",
+            "name": "Approaching Discounts",
+            "description": "Show shoppers how close their basket is to unlocking order and shipping promotions.",
+            "iconName": "salesforce.svg",
+            "domain": "merchandising",
+            "type": "app",
+            "provider": "salesforce",
+            "version": "1.0.0",
+            "zip": "approaching-discounts-v1.0.0.zip",
+            "sha256": "db5d7454ce0430d30fc43cd486877fc2850ab67e1d2a2938dedad9b9abb99c04",
+            "storefrontSupport": {
+                "sfnext": {
+                    "minVersion": "1.2.0"
+                }
+            }
+        }
+    ],
     "additionalFeature": []
 }
