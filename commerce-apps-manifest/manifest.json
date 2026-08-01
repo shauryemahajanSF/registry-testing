@@ -198,9 +198,9 @@
             "domain": "merchandising",
             "type": "app",
             "provider": "salesforce",
-            "version": "1.0.0",
-            "zip": "approaching-discounts-v1.0.0.zip",
-            "sha256": "db5d7454ce0430d30fc43cd486877fc2850ab67e1d2a2938dedad9b9abb99c04",
+            "version": "1.0.1",
+            "zip": "approaching-discounts-v1.0.1.zip",
+            "sha256": "9fe307f7b5d4d30f4ca969c3ac8c8f44d4a86f6caf3d58e63cebe45cf4014e87",
             "storefrontSupport": {
                 "sfnext": {
                     "minVersion": "1.2.0"
