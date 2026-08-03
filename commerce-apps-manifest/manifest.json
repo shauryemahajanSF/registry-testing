@@ -67,9 +67,10 @@
             "type": "app",
             "provider": "salesforce",
             "companyName": "Salesforce",
-            "version": "1.0.1",
-            "zip": "cds-shipping-v1.0.1.zip",
-            "sha256": "8741e5287396d199fbd8021bb149083ba9331593de434eae5d6ce3e6afaeaf18"
+            "requiredFeatureToggle": "Order360IntegrationEnabled",
+            "version": "1.0.5",
+            "zip": "cds-shipping-v1.0.5.zip",
+            "sha256": "c45c255b8d5149930d6356f015546d5791325e7f7be07b8e29c6046e992528c0"
         },
         {
             "id": "zenkraft-rates",
