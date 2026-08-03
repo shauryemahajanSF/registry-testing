@@ -67,9 +67,9 @@
             "type": "app",
             "provider": "thirdParty",
             "companyName": "Zenkraft",
-            "version": "1.0.0",
-            "zip": "zenkraft-rates-v1.0.0.zip",
-            "sha256": "cb343122a310028230dc55a8dde7e431ad7ab67edf46eee4e890a7c3f85cf542"
+            "version": "1.0.1",
+            "zip": "zenkraft-rates-v1.0.1.zip",
+            "sha256": "976b9a1cf095c3cc392ba8eed1bd799d33db67fc800b158edd4e3264d03a2377"
         },
         {
             "id": "cds-shipping",
