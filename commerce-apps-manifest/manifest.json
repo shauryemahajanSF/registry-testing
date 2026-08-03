@@ -54,18 +54,6 @@
             "provider": "custom"
         },
         {
-            "id": "zenkraft-rates",
-            "name": "Zenkraft Shipping Rates",
-            "description": "Dynamic real-time shipping rate calculation via Zenkraft API",
-            "iconName": "zenkraft.png",
-            "domain": "shipping",
-            "type": "app",
-            "provider": "thirdParty",
-            "version": "1.0.0",
-            "zip": "zenkraft-rates-v1.0.0.zip",
-            "sha256": "cb343122a310028230dc55a8dde7e431ad7ab67edf46eee4e890a7c3f85cf542"
-        },
-        {
             "id": "cds-shipping",
             "name": "CDS Shipping",
             "description": "Dynamic delivery estimates powered by Commerce Delivery Service.",
