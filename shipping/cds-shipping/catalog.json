@@ -1,7 +1,7 @@
 {
   "latest": {
-    "version": "1.0.3",
-    "tag": "cds-shipping-v1.0.3"
+    "version": "1.0.5",
+    "tag": "cds-shipping-v1.0.5"
   },
   "versions": [
     {
@@ -15,6 +15,10 @@
     {
       "version": "1.0.3",
       "tag": "cds-shipping-v1.0.3"
+    },
+    {
+      "version": "1.0.5",
+      "tag": "cds-shipping-v1.0.5"
     }
   ]
 }
