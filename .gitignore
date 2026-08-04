@@ -79,8 +79,3 @@ $RECYCLE.BIN/
 # Only commit ZIP files, manifest.json, and catalog.json
 **/commerce-*-app-v*/
 **/commerce-*-app-*/
-
-# ==========================================
-# Local agent run-logs (build-it / spec-to-pr / pr-build-doctor)
-# ==========================================
-docs/superpowers/
