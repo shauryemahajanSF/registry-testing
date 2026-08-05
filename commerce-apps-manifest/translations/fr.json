@@ -22,10 +22,13 @@
     "custom-payment": {
         "name": "Paiement personnalisé",
         "description": "Configurez une intégration de paiement personnalisée en fournissant vos propres API."
-    }
     },
     "loqate-address-verification": {
         "name": "Loqate Address Verification",
         "description": "Address Verification Application with GBG Loqate"
+    },
+    "approaching-discounts": {
+        "name": "Approaching Discounts",
+        "description": "Montrez aux acheteurs à quel point leur panier est proche de débloquer des promotions sur la commande et la livraison."
     }
 }
