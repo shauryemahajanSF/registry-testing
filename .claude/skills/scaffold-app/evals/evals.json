@@ -103,6 +103,10 @@
         {
           "name": "no console statements",
           "description": "ESLint rule: no console.log, console.error in production code"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -144,6 +148,10 @@
         {
           "name": "commerce-app.json exists with correct metadata",
           "description": "All apps need manifest"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -229,6 +237,10 @@
         {
           "name": "no hardcoded Tailwind colors",
           "description": "ESLint rule: use theme colors not hardcoded color utilities"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -282,6 +294,10 @@
         {
           "name": "uses 4-space indentation",
           "description": "All TypeScript, JSX, and JSON files use 4-space indentation (1 level = 4 spaces)"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -335,6 +351,10 @@
         {
           "name": "uses 4-space indentation",
           "description": "All TypeScript, JSX, and JSON files use 4-space indentation (1 level = 4 spaces)"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -360,6 +380,10 @@
         {
           "name": "hooks.json for payment domain",
           "description": "app.payment.processor.<appName> hook configured"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -429,6 +453,10 @@
         {
           "name": "uses 4-space indentation",
           "description": "All TypeScript, JSX, and JSON files use 4-space indentation (1 level = 4 spaces)"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -458,6 +486,10 @@
         {
           "name": "lists common target IDs",
           "description": "Should reference common slots available"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -495,6 +527,10 @@
         {
           "name": "explains test coverage enforcement",
           "description": "Should mention why tests required"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -548,6 +584,10 @@
         {
           "name": "uses 4-space indentation",
           "description": "All TypeScript, JSX, and JSON files use 4-space indentation (1 level = 4 spaces)"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -581,6 +621,10 @@
         {
           "name": "doesn't create files prematurely",
           "description": "Should wait for complete info before generating"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -622,6 +666,10 @@
         {
           "name": "uses 4-space indentation",
           "description": "All TypeScript, JSX, and JSON files use 4-space indentation (1 level = 4 spaces)"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -651,6 +699,10 @@
         {
           "name": "cartridge follows naming convention",
           "description": "int_fedex_ship format"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -675,7 +727,7 @@
         },
         {
           "name": "explains PUBLIC__ double underscore syntax",
-          "description": "Should explain how __ maps to nested paths (PUBLIC__app__extension__loqate__apiKey → config.app.extension.loqate.apiKey)"
+          "description": "Should explain how __ maps to nested paths (PUBLIC__app__extension__loqate__apiKey \u2192 config.app.extension.loqate.apiKey)"
         },
         {
           "name": "provides example env var name",
@@ -708,6 +760,10 @@
         {
           "name": "uses 4-space indentation",
           "description": "All TypeScript, JSX, and JSON files use 4-space indentation (1 level = 4 spaces)"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     },
@@ -805,6 +861,10 @@
         {
           "name": "target-config.json uses sfcc.header.before.cart",
           "description": "Uses correct targetId with sfcc. prefix from Complete Target ID Reference"
+        },
+        {
+          "name": "cartridge roots have .project files",
+          "description": "cartridges/site_cartridges/<cartridgeName>/.project and cartridges/bm_cartridges/bm_<appName>/.project must exist (empty is fine)"
         }
       ]
     }
