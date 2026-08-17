@@ -223,5 +223,16 @@
             }
         }
     ],
+    "translations": [
+        {
+            "id": "custom-translations",
+            "name": "Custom Translations",
+            "description": "Configure a custom translations integration by providing your own APIs.",
+            "iconName": "custom.svg",
+            "domain": "translations",
+            "type": "custom",
+            "provider": "custom"
+        }
+    ],
     "additionalFeature": []
 }
