@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/promotion-utils.sh"
+source "$SCRIPT_DIR/root-manifest-utils.sh"
 
 PASS=0
 FAIL=0
@@ -45,10 +46,25 @@ assert_json_eq() {
   fi
 }
 
-_FC=0
+assert_fails() {
+  local desc="$1"; shift
+  if "$@" >/dev/null 2>&1; then
+    echo "  FAIL: $desc (expected non-zero exit, got success)"
+    FAIL=$((FAIL + 1))
+  else
+    echo "  PASS: $desc"
+    PASS=$((PASS + 1))
+  fi
+}
+
 mkfile() {
-  _FC=$((_FC + 1))
-  local f="$TMPDIR_ROOT/file_${_FC}.json"
+  # mktemp (not a shared counter) so each call yields a distinct path even
+  # though mkfile always runs in a subshell via $(mkfile ...) - a counter
+  # variable's increment can't survive back to the parent shell, so every
+  # call would otherwise collide on the same path (silently breaking any
+  # test that needs two live files at once, e.g. a target + a source).
+  local f
+  f="$(mktemp "$TMPDIR_ROOT/file.XXXXXX")"
   printf '%s\n' "$1" > "$f"
   printf '%s' "$f"
 }
@@ -110,7 +126,7 @@ echo "--- next_release_branch ---"
 
 assert_eq "26.8 -> 26.9"                 "release/26.9" next_release_branch "release/26.8" "$BRANCHES"
 assert_eq "26.9 -> 27.0"                 "release/27.0" next_release_branch "release/26.9" "$BRANCHES"
-assert_eq "highest release -> main"      "main"         next_release_branch "release/27.0" "$BRANCHES"
+assert_eq "highest release terminates"   ""             next_release_branch "release/27.0" "$BRANCHES"
 assert_eq "refs/heads/ prefix accepted"  "release/26.9" next_release_branch "refs/heads/release/26.8" "$BRANCHES"
 assert_eq "major rollover picks minimal" "release/27.0" next_release_branch "release/26.9" \
   "$(printf '%s\n' refs/heads/release/27.5 refs/heads/release/27.0 refs/heads/release/28.0)"
@@ -168,6 +184,96 @@ assert_json_eq "empty catalog seeds first entry" \
 echo ""
 
 # ---------------------------------------------------------------------------
+# seed_init_catalog_if_absent (auto-promo: INIT only for brand-new apps)
+# ---------------------------------------------------------------------------
+echo "--- seed_init_catalog_if_absent ---"
+
+# Brand-new app: no catalog.json on the target -> write INIT, do not invent a version.
+new_cat="$TMPDIR_ROOT/new-app/catalog.json"
+seeded_result="$(seed_init_catalog_if_absent "$new_cat")"
+assert_eq "absent catalog is seeded" "seeded" printf '%s' "$seeded_result"
+assert_json_eq "seeded catalog is INIT template" \
+  '{"latest":{"version":"INIT","tag":"INIT"},"versions":[]}' \
+  cat "$new_cat"
+
+# Version bump: catalog.json already exists -> leave it untouched (no merge, no INIT overwrite).
+existing_cat="$(mkfile '{"latest":{"version":"1.0.0","tag":"app-v1.0.0"},"versions":[{"version":"1.0.0","tag":"app-v1.0.0"}]}')"
+skipped_result="$(seed_init_catalog_if_absent "$existing_cat")"
+assert_eq "existing catalog is skipped" "skipped" printf '%s' "$skipped_result"
+assert_json_eq "existing catalog content is untouched" \
+  '{"latest":{"version":"1.0.0","tag":"app-v1.0.0"},"versions":[{"version":"1.0.0","tag":"app-v1.0.0"}]}' \
+  cat "$existing_cat"
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# collect_promotable_zips + apply_promoted_zip_onto_target
+# (workflow wiring: only changed ZIPs are copied; unlisted apps stay put)
+# ---------------------------------------------------------------------------
+echo "--- collect_promotable_zips / apply_promoted_zip_onto_target ---"
+
+src="$TMPDIR_ROOT/src-26.8"
+tgt="$TMPDIR_ROOT/tgt-26.9"
+mkdir -p \
+  "$src/tax/avalara-tax" \
+  "$src/merchandising/approaching-discounts" \
+  "$tgt/tax/avalara-tax" \
+  "$tgt/commerce-apps-manifest"
+printf 'AVALARA-100' > "$src/tax/avalara-tax/avalara-tax-v1.0.0.zip"
+printf 'AVALARA-OLD' > "$src/tax/avalara-tax/avalara-tax-v0.9.0.zip"
+printf 'AD-100' > "$src/merchandising/approaching-discounts/approaching-discounts-v1.0.0.zip"
+printf 'AVALARA-101' > "$tgt/tax/avalara-tax/avalara-tax-v1.0.1.zip"
+printf '%s\n' '{"latest":{"version":"1.0.1","tag":"avalara-tax-v1.0.1"},"versions":[{"version":"1.0.1","tag":"avalara-tax-v1.0.1"}]}' \
+  > "$tgt/tax/avalara-tax/catalog.json"
+printf '%s\n' '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.1.zip","version":"1.0.1","isFeatured":true,"badge":"popular"}],"merchandising":[]}' \
+  > "$tgt/commerce-apps-manifest/manifest.json"
+src_manifest="$(mkfile '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.0.zip","version":"1.0.0"}],"merchandising":[{"id":"approaching-discounts","zip":"approaching-discounts-v1.0.0.zip","version":"1.0.0"}]}')"
+
+# Push analog: only the new Approaching Discounts ZIP changed.
+only_ad="$(mkfile "merchandising/approaching-discounts/approaching-discounts-v1.0.0.zip")"
+assert_eq "only changed new-app ZIP is selected" \
+  "$(printf '%s\t%s\t%s\n' merchandising/approaching-discounts/approaching-discounts-v1.0.0.zip 1.0.0 merchandising)" \
+  collect_promotable_zips "$src" "$src_manifest" "$only_ad"
+
+# A ZIP that exists on source but is not the pinned manifest entry (back-port)
+# plus a deletion (missing file) must not appear in the TSV.
+mixed="$(mkfile "$(printf '%s\n' \
+  merchandising/approaching-discounts/approaching-discounts-v1.0.0.zip \
+  tax/avalara-tax/avalara-tax-v0.9.0.zip \
+  tax/avalara-tax/does-not-exist.zip)")"
+assert_eq "unpinned and missing ZIPs are not selected" \
+  "$(printf '%s\t%s\t%s\n' merchandising/approaching-discounts/approaching-discounts-v1.0.0.zip 1.0.0 merchandising)" \
+  collect_promotable_zips "$src" "$src_manifest" "$mixed"
+
+# Apply the selected ZIP onto 26.9, then whole-file merge (manifest_changed).
+tsv="$(collect_promotable_zips "$src" "$src_manifest" "$only_ad")"
+while IFS=$'\t' read -r zip_path version category; do
+  [[ -z "$zip_path" ]] && continue
+  apply_promoted_zip_onto_target "$tgt" "$src/$zip_path" "$zip_path" "$src_manifest" "$category" >/dev/null
+done <<< "$tsv"
+tmp="$(mktemp)"
+merge_manifest_file "$tgt/commerce-apps-manifest/manifest.json" "$src_manifest" > "$tmp"
+mv "$tmp" "$tgt/commerce-apps-manifest/manifest.json"
+
+assert_eq "new-app ZIP is copied onto the target" "AD-100" \
+  cat "$tgt/merchandising/approaching-discounts/approaching-discounts-v1.0.0.zip"
+assert_json_eq "new-app catalog is INIT" \
+  '{"latest":{"version":"INIT","tag":"INIT"},"versions":[]}' \
+  cat "$tgt/merchandising/approaching-discounts/catalog.json"
+assert_eq "avalara 1.0.1 ZIP bytes are unchanged" "AVALARA-101" \
+  cat "$tgt/tax/avalara-tax/avalara-tax-v1.0.1.zip"
+assert_eq "avalara 1.0.0 ZIP is not copied" "absent" \
+  bash -c "if [[ -f '$tgt/tax/avalara-tax/avalara-tax-v1.0.0.zip' ]]; then echo present; else echo absent; fi"
+assert_json_eq "avalara catalog.json is untouched" \
+  '{"latest":{"version":"1.0.1","tag":"avalara-tax-v1.0.1"},"versions":[{"version":"1.0.1","tag":"avalara-tax-v1.0.1"}]}' \
+  cat "$tgt/tax/avalara-tax/catalog.json"
+assert_json_eq "avalara pin stays 1.0.1 with extras; new app is appended" \
+  '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.1.zip","version":"1.0.1","isFeatured":true,"badge":"popular"}],"merchandising":[{"id":"approaching-discounts","zip":"approaching-discounts-v1.0.0.zip","version":"1.0.0"}]}' \
+  cat "$tgt/commerce-apps-manifest/manifest.json"
+
+echo ""
+
+# ---------------------------------------------------------------------------
 # merge_manifest_entry
 # ---------------------------------------------------------------------------
 echo "--- merge_manifest_entry ---"
@@ -178,7 +284,7 @@ assert_json_eq "appends new app to category" \
   '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"},{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}]}' \
   merge_manifest_entry "$m1" '{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}' "shipping"
 
-# Same app id, newer version -> replace the single pinned entry (no dup, zip advances).
+# Same app id, newer version -> overlay onto the single pinned entry (no dup, zip advances).
 m2="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}')"
 assert_json_eq "replaces pinned entry with newer version" \
   '{"shipping":[{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0"}]}' \
@@ -189,6 +295,20 @@ m2b="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0","sh
 assert_json_eq "idempotent upsert at equal version" \
   '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0","sha256":"new"}]}' \
   merge_manifest_entry "$m2b" '{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0","sha256":"new"}' "shipping"
+
+# Same app id, same version, target has extra keys the source lacks (e.g. 26.9
+# carousel fields, 26.8 entry without them) -> extras are preserved, not wiped.
+m2d="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0","sha256":"old","isFeatured":true,"badge":"popular"}]}')"
+assert_json_eq "equal-version overlay preserves target-only keys" \
+  '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0","sha256":"new","isFeatured":true,"badge":"popular"}]}' \
+  merge_manifest_entry "$m2d" '{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0","sha256":"new"}' "shipping"
+
+# Same app id, NEWER version, target has extra keys -> version/zip advance and
+# extras are still preserved. Also stays in its original array position.
+m2e="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0","isFeatured":true},{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}]}')"
+assert_json_eq "newer-version overlay preserves target-only keys and position" \
+  '{"shipping":[{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0","isFeatured":true},{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}]}' \
+  merge_manifest_entry "$m2e" '{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0"}' "shipping"
 
 # Same app id, OLDER version (back-port hop) -> target's newer pin is untouched.
 m2c="$(mkfile '{"shipping":[{"id":"a","zip":"a-v2.0.0.zip","version":"2.0.0"}]}')"
@@ -210,6 +330,319 @@ m4="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}'
 m4_indent="$(merge_manifest_entry "$m4" '{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}' "analytics" \
   | grep -m1 '"analytics"' | sed -E 's/[^ ].*//' | tr -d '\n' | wc -c | tr -d ' ')"
 assert_eq "upsert emits 4-space indentation" "4" printf '%s' "$m4_indent"
+
+# Byte-identical re-upsert must be a true no-op: it must NOT rewrite or move
+# the entry (which would reorder every other entry for zero effect on a
+# fully-idempotent re-promotion).
+m5="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"},{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}]}')"
+assert_json_eq "byte-identical re-upsert does not reorder" \
+  '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"},{"id":"b","zip":"b-v1.0.0.zip","version":"1.0.0"}]}' \
+  merge_manifest_entry "$m5" '{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}' "shipping"
+m5_order="$(merge_manifest_entry "$m5" '{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}' "shipping" | jq -r '.shipping[0].id')"
+assert_eq "byte-identical re-upsert keeps original position" "a" printf '%s' "$m5_order"
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# lookup_manifest_entry_for_zip (tolerant lookup used by catalog/promotion jobs)
+# ---------------------------------------------------------------------------
+echo "--- lookup_manifest_entry_for_zip ---"
+
+# Present entry -> returned verbatim.
+lk1="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}]}')"
+assert_json_eq "returns entry when present" \
+  '{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}' \
+  lookup_manifest_entry_for_zip "a-v1.0.2.zip" "$lk1"
+
+# Back-ported ZIP with no matching entry (manifest pinned to newer version)
+# -> empty stdout, exit 0 (the skip signal the workflow relies on).
+lk2="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}]}')"
+assert_eq "missing entry -> empty (no error)" \
+  "" \
+  lookup_manifest_entry_for_zip "a-v1.0.0.zip" "$lk2"
+
+# Ambiguous duplicate zip across entries -> hard error (still fails).
+lk3="$(mkfile '{"analytics":[{"id":"a","zip":"dup.zip","version":"1.0.0"}],"tax":[{"id":"b","zip":"dup.zip","version":"2.0.0"}]}')"
+assert_fails "duplicate zip -> error" \
+  lookup_manifest_entry_for_zip "dup.zip" "$lk3"
+
+# Regression lock for the actual bug: capturing an absent entry via $(...) under
+# `set -euo pipefail` must NOT abort (empty stdout + exit 0), so the workflow's
+# skip branch can fire. This mirrors the exact call-site pattern.
+lk4="$(mkfile '{"analytics":[{"id":"a","zip":"a-v1.0.2.zip","version":"1.0.2"}]}')"
+if (
+  set -euo pipefail
+  source "$SCRIPT_DIR/root-manifest-utils.sh"
+  entry="$(lookup_manifest_entry_for_zip "a-v1.0.0.zip" "$lk4")"
+  [[ -z "$entry" ]]
+); then
+  echo "  PASS: absent entry under set -e -> no abort, empty capture"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: absent entry under set -e -> unexpected abort or non-empty"
+  FAIL=$((FAIL + 1))
+fi
+
+# Duplicate error annotation goes to stderr (survives $(...) stdout capture).
+lk5="$(mkfile '{"analytics":[{"id":"a","zip":"dup.zip","version":"1.0.0"}],"tax":[{"id":"b","zip":"dup.zip","version":"2.0.0"}]}')"
+dup_err="$(lookup_manifest_entry_for_zip "dup.zip" "$lk5" 2>&1 >/dev/null || true)"
+if [[ "$dup_err" == *"Multiple manifest entries"* ]]; then
+  echo "  PASS: duplicate error emitted on stderr"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: duplicate error not on stderr"
+  FAIL=$((FAIL + 1))
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# merge_manifest_file (whole-manifest merge for manual manifest.json edits
+# promoted with no ZIP)
+# ---------------------------------------------------------------------------
+echo "--- merge_manifest_file ---"
+
+# Source has a newer entry for an app the target already pins -> overlays it,
+# same monotonic guard as merge_manifest_entry, applied across every category.
+mf1_target="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}')"
+mf1_source="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0"}]}')"
+assert_json_eq "newer entry from source replaces target's pin" \
+  '{"shipping":[{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0"}]}' \
+  merge_manifest_file "$mf1_target" "$mf1_source"
+
+# Source has an OLDER entry than target already pins -> target wins (monotonic).
+mf2_target="$(mkfile '{"shipping":[{"id":"a","zip":"a-v2.0.0.zip","version":"2.0.0"}]}')"
+mf2_source="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}')"
+assert_json_eq "older source entry does not regress target's pin" \
+  '{"shipping":[{"id":"a","zip":"a-v2.0.0.zip","version":"2.0.0"}]}' \
+  merge_manifest_file "$mf2_target" "$mf2_source"
+
+# Realistic 26.8 → 26.9 hop: source adds a brand-new app (approaching-discounts)
+# AND still pins avalara at an OLDER version than the target. Whole-file merge
+# must append the new app and must NOT roll avalara back (or drop 26.9 extras).
+mf2b_target="$(mkfile '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.1.zip","version":"1.0.1","isFeatured":true,"badge":"popular"}],"merchandising":[]}')"
+mf2b_source="$(mkfile '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.0.zip","version":"1.0.0"}],"merchandising":[{"id":"approaching-discounts","zip":"approaching-discounts-v1.0.0.zip","version":"1.0.0"}]}')"
+assert_json_eq "new-app promote does not regress a newer target pin" \
+  '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.1.zip","version":"1.0.1","isFeatured":true,"badge":"popular"}],"merchandising":[{"id":"approaching-discounts","zip":"approaching-discounts-v1.0.0.zip","version":"1.0.0"}]}' \
+  merge_manifest_file "$mf2b_target" "$mf2b_source"
+
+# Source introduces a brand-new app in an existing category -> appended.
+mf3_target="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}')"
+mf3_source="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}],"tax":[{"id":"t","zip":"t-v1.0.0.zip","version":"1.0.0"}]}')"
+assert_json_eq "new category/app from source is added" \
+  '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}],"tax":[{"id":"t","zip":"t-v1.0.0.zip","version":"1.0.0"}]}' \
+  merge_manifest_file "$mf3_target" "$mf3_source"
+
+# Re-merging the same source into an already-merged target is idempotent.
+mf4_target="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0"}]}')"
+mf4_source="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0"}]}')"
+assert_json_eq "idempotent re-merge (no dup)" \
+  '{"shipping":[{"id":"a","zip":"a-v1.1.0.zip","version":"1.1.0"}]}' \
+  merge_manifest_file "$mf4_target" "$mf4_source"
+
+# Whole-file promote of an equal-version source that lacks target-only keys
+# must not wipe them (the #113 26.8→26.9 carousel-field regression).
+mf4b_target="$(mkfile '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.0.zip","version":"1.0.0","isFeatured":true,"badge":"popular","featuredLearnMoreUrl":"https://example.com"}]}')"
+mf4b_source="$(mkfile '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.0.zip","version":"1.0.0"}]}')"
+assert_json_eq "whole-file equal-version merge preserves target-only keys" \
+  '{"tax":[{"id":"avalara-tax","zip":"avalara-tax-v1.0.0.zip","version":"1.0.0","isFeatured":true,"badge":"popular","featuredLearnMoreUrl":"https://example.com"}]}' \
+  merge_manifest_file "$mf4b_target" "$mf4b_source"
+
+# A scalar top-level field (e.g. defaultLocale) has no per-entry version to
+# compare, so it must still carry forward verbatim rather than being silently
+# dropped by a merge that only knows how to walk category arrays.
+mf5_target="$(mkfile '{"defaultLocale":"en","shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}')"
+mf5_source="$(mkfile '{"defaultLocale":"fr","shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}')"
+assert_json_eq "scalar field carries forward from source" \
+  '{"defaultLocale":"fr","shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}]}' \
+  merge_manifest_file "$mf5_target" "$mf5_source"
+
+# A single malformed entry (e.g. missing/non-semver version) must not abort the
+# whole merge under `set -e` - every other, well-formed entry in the same
+# source manifest still merges normally.
+mf6_target="$(mkfile '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}],"tax":[{"id":"t","zip":"t-v1.0.0.zip","version":"1.0.0"}]}')"
+mf6_source="$(mkfile '{"shipping":[{"id":"a","zip":"a-vBAD.zip","version":"not-a-semver"}],"tax":[{"id":"t","zip":"t-v1.1.0.zip","version":"1.1.0"}]}')"
+assert_json_eq "malformed entry is skipped, other entries still merge" \
+  '{"shipping":[{"id":"a","zip":"a-v1.0.0.zip","version":"1.0.0"}],"tax":[{"id":"t","zip":"t-v1.1.0.zip","version":"1.1.0"}]}' \
+  merge_manifest_file "$mf6_target" "$mf6_source"
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# merge_translations_file (additive per-key merge for locale files)
+# ---------------------------------------------------------------------------
+echo "--- merge_translations_file ---"
+
+# New app id in source, absent on target -> added.
+tr1_target="$(mkfile '{"app-a":{"name":"App A","description":"desc a"}}')"
+tr1_source="$(mkfile '{"app-b":{"name":"App B","description":"desc b"}}')"
+assert_json_eq "adds new app id from source" \
+  '{"app-a":{"name":"App A","description":"desc a"},"app-b":{"name":"App B","description":"desc b"}}' \
+  merge_translations_file "$tr1_target" "$tr1_source"
+
+# App id present on both, with different content -> target's key wins
+# (additive-only: never overwrite an existing target key).
+tr2_target="$(mkfile '{"app-a":{"name":"Target Name","description":"target desc"}}')"
+tr2_source="$(mkfile '{"app-a":{"name":"Source Name","description":"source desc"}}')"
+assert_json_eq "existing target key is never overwritten" \
+  '{"app-a":{"name":"Target Name","description":"target desc"}}' \
+  merge_translations_file "$tr2_target" "$tr2_source"
+
+# Re-merging the same source is idempotent (no change on second pass).
+tr3_target="$(mkfile '{"app-a":{"name":"App A","description":"desc a"}}')"
+tr3_source="$(mkfile '{"app-b":{"name":"App B","description":"desc b"}}')"
+merge_translations_file "$tr3_target" "$tr3_source" > "$tr3_target.tmp1"
+assert_json_eq "idempotent re-merge (no dup/no change)" \
+  '{"app-a":{"name":"App A","description":"desc a"},"app-b":{"name":"App B","description":"desc b"}}' \
+  merge_translations_file "$tr3_target.tmp1" "$tr3_source"
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# apply_non_cap_patch (plain-content promotion for docs/skills/.github/etc.)
+# ---------------------------------------------------------------------------
+echo "--- apply_non_cap_patch ---"
+
+# Empty patch (no non-CAP files changed) -> no-op, exit 0.
+empty_patch="$(mkfile '')"
+: > "$empty_patch"
+assert_eq "empty patch is a no-op" "no-op" apply_non_cap_patch "$empty_patch"
+
+# A patch that applies cleanly onto the current working tree -> "applied",
+# and the file content changes and is staged.
+np_dir="$(mktemp -d -p "$TMPDIR_ROOT")"
+(
+  cd "$np_dir"
+  git init -q
+  git config user.email test@example.com
+  git config user.name test
+  mkdir -p docs
+  printf 'line1\n' > docs/readme.md
+  git add -A && git commit -qm init
+  before="$(git rev-parse HEAD)"
+  printf 'line1\nline2\n' > docs/readme.md
+  git add -A && git commit -qm change
+  after="$(git rev-parse HEAD)"
+  git diff "$before" "$after" -- docs/readme.md > "$TMPDIR_ROOT/apply.patch"
+  git checkout -q "$before" -- docs/readme.md
+)
+result="$(cd "$np_dir" && apply_non_cap_patch "$TMPDIR_ROOT/apply.patch")"
+assert_eq "clean patch applies" "applied" printf '%s' "$result"
+applied_content="$(cat "$np_dir/docs/readme.md")"
+assert_eq "applied patch content matches" "$(printf 'line1\nline2')" printf '%s' "$applied_content"
+
+# Re-applying the SAME patch onto a tree that already has the change
+# (reverse-check succeeds) -> idempotent no-op, not an error and not a
+# duplicate/conflicting apply.
+result2="$(cd "$np_dir" && apply_non_cap_patch "$TMPDIR_ROOT/apply.patch")"
+assert_eq "already-applied patch is idempotent no-op" "no-op" printf '%s' "$result2"
+
+# A patch that conflicts with intentional target-only divergence -> skipped,
+# never forced, and does not abort the caller (still exit 0).
+conflict_dir="$(mktemp -d -p "$TMPDIR_ROOT")"
+(
+  cd "$conflict_dir"
+  git init -q
+  git config user.email test@example.com
+  git config user.name test
+  mkdir -p docs
+  printf 'shared-base\n' > docs/readme.md
+  git add -A && git commit -qm init
+  # Target-only divergence: a change the patch does not know about, on the
+  # exact same line the (unrelated) source-side patch also touches.
+  printf 'target-only-change\n' > docs/readme.md
+  git add -A && git commit -qm "target diverges"
+)
+conflict_result="$(cd "$conflict_dir" && apply_non_cap_patch "$TMPDIR_ROOT/apply.patch")"
+assert_eq "conflicting patch is skipped, not forced" "skipped" printf '%s' "$conflict_result"
+conflict_content="$(cat "$conflict_dir/docs/readme.md")"
+assert_eq "target-only divergence is preserved on skip" "target-only-change" printf '%s' "$conflict_content"
+
+# A patch that ADDS a brand-new file (source created it, target never had it)
+# must apply and stage the new file, not just modify existing content.
+add_dir="$(mktemp -d -p "$TMPDIR_ROOT")"
+(
+  cd "$add_dir"
+  git init -q
+  git config user.email test@example.com
+  git config user.name test
+  printf 'seed\n' > seed.txt
+  git add -A && git commit -qm init
+  before="$(git rev-parse HEAD)"
+  mkdir -p docs
+  printf 'new file\n' > docs/new.md
+  git add -A && git commit -qm add
+  after="$(git rev-parse HEAD)"
+  git diff --binary "$before" "$after" -- docs/new.md > "$TMPDIR_ROOT/add.patch"
+  git reset --hard -q "$before"
+)
+add_result="$(cd "$add_dir" && apply_non_cap_patch "$TMPDIR_ROOT/add.patch")"
+assert_eq "patch adding a new file applies" "applied" printf '%s' "$add_result"
+assert_eq "new file content matches" "new file" printf '%s' "$(cat "$add_dir/docs/new.md")"
+
+# A patch that DELETES a file (present on target, removed on source) must
+# apply and stage the deletion, not error.
+del_dir="$(mktemp -d -p "$TMPDIR_ROOT")"
+(
+  cd "$del_dir"
+  git init -q
+  git config user.email test@example.com
+  git config user.name test
+  mkdir -p docs
+  printf 'to be removed\n' > docs/gone.md
+  git add -A && git commit -qm init
+  before="$(git rev-parse HEAD)"
+  git rm -q docs/gone.md
+  git commit -qm remove
+  after="$(git rev-parse HEAD)"
+  git diff --binary "$before" "$after" -- docs/gone.md > "$TMPDIR_ROOT/del.patch"
+  git checkout -q "$before" -- docs/gone.md
+)
+del_result="$(cd "$del_dir" && apply_non_cap_patch "$TMPDIR_ROOT/del.patch")"
+assert_eq "patch deleting a file applies" "applied" printf '%s' "$del_result"
+if [[ ! -f "$del_dir/docs/gone.md" ]]; then
+  echo "  PASS: deleted file removed from working tree"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: deleted file removed from working tree"
+  FAIL=$((FAIL + 1))
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# NON_CAP_PATHSPEC
+# ---------------------------------------------------------------------------
+echo "--- NON_CAP_PATHSPEC ---"
+
+pathspec_dir="$(mktemp -d -p "$TMPDIR_ROOT")"
+(
+  cd "$pathspec_dir"
+  git init -q
+  git config user.email test@example.com
+  git config user.name test
+  mkdir -p .github/workflows docs commerce-apps-manifest/translations
+  printf 'a\n' > .github/workflows/ci.yml
+  printf 'b\n' > docs/readme.md
+  printf '{}\n' > commerce-apps-manifest/manifest.json
+  printf '{}\n' > commerce-apps-manifest/translations/en.json
+  git add -A && git commit -qm init
+)
+non_cap_out="$(cd "$pathspec_dir" && git ls-files -- "${NON_CAP_PATHSPEC[@]}")"
+if grep -qx '.github/workflows/ci.yml' <<< "$non_cap_out"; then
+  echo "  FAIL: .github/workflows/** excluded from NON_CAP_PATHSPEC"
+  FAIL=$((FAIL + 1))
+else
+  echo "  PASS: .github/workflows/** excluded from NON_CAP_PATHSPEC"
+  PASS=$((PASS + 1))
+fi
+if grep -qx 'docs/readme.md' <<< "$non_cap_out"; then
+  echo "  PASS: plain docs file included in NON_CAP_PATHSPEC"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: plain docs file included in NON_CAP_PATHSPEC"
+  FAIL=$((FAIL + 1))
+fi
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="
