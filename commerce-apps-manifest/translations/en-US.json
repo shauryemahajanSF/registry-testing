@@ -32,8 +32,8 @@
         "description": "Address Verification Application with GBG Loqate"
     },
     "cds-shipping": {
-        "name": "CDS Shipping",
-        "description": "Dynamic delivery estimates and shipping metadata powered by Commerce Delivery Service."
+        "name": "Commerce Delivery Service",
+        "description": "Show shoppers estimated delivery dates for products and during checkout"
     },
     "noibu": {
         "name": "Noibu",

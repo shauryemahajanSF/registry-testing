@@ -55,17 +55,17 @@
         },
         {
             "id": "cds-shipping",
-            "name": "CDS Shipping",
-            "description": "Dynamic delivery estimates powered by Commerce Delivery Service.",
+            "name": "Commerce Delivery Service",
+            "description": "Show shoppers estimated delivery dates for products and during checkout",
             "iconName": "salesforce.svg",
             "domain": "shipping",
             "type": "app",
             "provider": "salesforce",
             "companyName": "Salesforce",
             "requiredFeatureToggle": "Order360IntegrationEnabled",
-            "version": "1.0.5",
-            "zip": "cds-shipping-v1.0.5.zip",
-            "sha256": "c45c255b8d5149930d6356f015546d5791325e7f7be07b8e29c6046e992528c0"
+            "version": "1.0.6",
+            "zip": "cds-shipping-v1.0.6.zip",
+            "sha256": "3f268f6d9d1f3dc24a9c4c35a2427bd57ef293883a36f239c6d02e97d0af6cc7"
         }
     ],
     "payment": [
