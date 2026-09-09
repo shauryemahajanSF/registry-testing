@@ -246,5 +246,16 @@
       "provider": "custom"
     }
   ],
+  "giftcard": [
+    {
+      "id": "custom-giftcard",
+      "name": "Custom Gift Card",
+      "description": "Configure a custom gift card integration.",
+      "iconName": "custom.svg",
+      "domain": "giftcard",
+      "type": "custom",
+      "provider": "custom"
+    }
+  ],
   "additionalFeature": []
 }
