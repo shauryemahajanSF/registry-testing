@@ -81,9 +81,9 @@
       "type": "app",
       "provider": "thirdParty",
       "companyName": "Zenkraft",
-      "version": "1.0.1",
-      "zip": "zenkraft-rates-v1.0.1.zip",
-      "sha256": "976b9a1cf095c3cc392ba8eed1bd799d33db67fc800b158edd4e3264d03a2377"
+      "version": "1.0.2",
+      "zip": "zenkraft-rates-v1.0.2.zip",
+      "sha256": "ccdccb262386abc10ef728a9c6af78d269129452c0dcd03009512f14fea240e8"
     }
   ],
   "payment": [
