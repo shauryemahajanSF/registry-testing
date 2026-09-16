@@ -1,12 +1,16 @@
 {
   "latest": {
-    "version": "1.0.1",
-    "tag": "zenkraft-rates-v1.0.1"
+    "version": "1.0.2",
+    "tag": "zenkraft-rates-v1.0.2"
   },
   "versions": [
     {
       "version": "1.0.1",
       "tag": "zenkraft-rates-v1.0.1"
+    },
+    {
+      "version": "1.0.2",
+      "tag": "zenkraft-rates-v1.0.2"
     }
   ]
 }
