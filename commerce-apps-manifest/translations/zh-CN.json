@@ -23,6 +23,10 @@
     "name": "自定义支付",
     "description": "通过提供您自己的 API 来配置自定义支付集成。"
   },
+  "givex-gift-cards": {
+    "name": "Givex 礼品卡",
+    "description": "在结账时接受 Givex 储值礼品卡，支持余额查询、扣款、退款以及 Storefront Next 的应用和展示界面。"
+  },
   "loqate-address-verification": {
     "name": "Loqate Address Verification",
     "description": "Address Verification Application with GBG Loqate"
