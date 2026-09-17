@@ -28,6 +28,10 @@
     "name": "Salesforce Payments",
     "description": "Salesforce Payments integration for Storefront Next — checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK."
   },
+  "givex-gift-cards": {
+    "name": "Givex Gift Cards",
+    "description": "Accept Givex stored-value gift cards at checkout with balance lookup, capture, refund, and Storefront Next apply/applied UI."
+  },
   "loqate-address-verification": {
     "name": "Loqate Address Verification",
     "description": "Address Verification Application with GBG Loqate"

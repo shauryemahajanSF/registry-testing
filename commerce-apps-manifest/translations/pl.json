@@ -23,6 +23,10 @@
     "name": "Płatność niestandardowa",
     "description": "Skonfiguruj niestandardową integrację płatności, podając własne interfejsy API."
   },
+  "givex-gift-cards": {
+    "name": "Karty podarunkowe Givex",
+    "description": "Akceptuj karty podarunkowe Givex z zapisanym saldem przy realizacji zakupu, z wyszukiwaniem salda, pobraniem, zwrotem środków oraz interfejsem Storefront Next do stosowania i wyświetlania."
+  },
   "loqate-address-verification": {
     "name": "Loqate Address Verification",
     "description": "Address Verification Application with GBG Loqate"
