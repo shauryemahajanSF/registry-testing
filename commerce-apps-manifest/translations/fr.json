@@ -23,6 +23,10 @@
     "name": "Paiement personnalisé",
     "description": "Configurez une intégration de paiement personnalisée en fournissant vos propres API."
   },
+  "givex-gift-cards": {
+    "name": "Cartes cadeaux Givex",
+    "description": "Acceptez les cartes cadeaux à valeur stockée Givex au moment du paiement avec consultation du solde, capture, remboursement et interface d'application et d'affichage Storefront Next."
+  },
   "loqate-address-verification": {
     "name": "Loqate Address Verification",
     "description": "Address Verification Application with GBG Loqate"

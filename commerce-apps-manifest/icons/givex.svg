@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Givex">
+  <rect width="512" height="512" rx="96" fill="#0B3D2E"/>
+  <rect x="72" y="148" width="368" height="216" rx="28" fill="#F4F7F5"/>
+  <rect x="72" y="196" width="368" height="48" fill="#1F8A5B"/>
+  <circle cx="156" cy="300" r="28" fill="#0B3D2E"/>
+  <rect x="220" y="280" width="160" height="18" rx="9" fill="#0B3D2E"/>
+  <rect x="220" y="312" width="110" height="14" rx="7" fill="#7A8F86"/>
+</svg>
