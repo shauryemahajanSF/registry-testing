@@ -24,6 +24,10 @@
     "name": "Custom Payment",
     "description": "Configure a custom payment integration by providing your own APIs."
   },
+  "custom-giftcard": {
+    "name": "Custom Gift Card",
+    "description": "Configure a custom gift card integration."
+  },
   "sf-payments": {
     "name": "Salesforce Payments",
     "description": "Salesforce Payments integration for Storefront Next — checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK."
