@@ -38,5 +38,13 @@
   "custom-translations": {
     "name": "カスタム翻訳",
     "description": "独自のAPIを使用してカスタム翻訳統合を設定します。"
+  },
+  "mock-payment": {
+    "name": "Mock Payment",
+    "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims BANK_TRANSFER, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud."
+  },
+  "mock-fraud": {
+    "name": "Mock Fraud",
+    "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. Email-driven pre-auth and post-auth decisions with no storefront UI."
   }
 }
