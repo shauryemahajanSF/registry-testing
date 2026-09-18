@@ -38,5 +38,9 @@
   "custom-translations": {
     "name": "Benutzerdefinierte Übersetzungen",
     "description": "Konfigurieren Sie eine benutzerdefinierte Übersetzungsintegration mit Ihren eigenen APIs."
+  },
+  "mock-payment": {
+    "name": "Mock-Zahlung",
+    "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims BANK_TRANSFER, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud."
   }
 }
