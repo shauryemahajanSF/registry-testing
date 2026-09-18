@@ -122,6 +122,24 @@
       "connectionDetailsComponents": [
         "ccbm_payments/merchantAccountDetails"
       ]
+    },
+    {
+      "id": "mock-payment",
+      "name": "Mock Payment",
+      "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims BANK_TRANSFER, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud.",
+      "iconName": "mock-payment.svg",
+      "companyName": "Salesforce",
+      "domain": "payment",
+      "type": "app",
+      "provider": "thirdParty",
+      "version": "1.0.0",
+      "zip": "mock-payment-v1.0.0.zip",
+      "sha256": "c9c5e72cff061a02d1a884d5234e1e5b4e4d1e4f18661ffeaa7ea74ed40a03ec",
+      "storefrontSupport": {
+        "sfnext": {
+          "minVersion": "1.0.0"
+        }
+      }
     }
   ],
   "address-verification": [
@@ -275,5 +293,20 @@
       }
     }
   ],
-  "additionalFeature": []
+  "additionalFeature": [],
+  "fraud": [
+    {
+      "id": "mock-fraud",
+      "name": "Mock Fraud",
+      "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. Email-driven pre-auth and post-auth decisions with no storefront UI.",
+      "iconName": "mock-fraud.svg",
+      "companyName": "Salesforce",
+      "domain": "fraud",
+      "type": "app",
+      "provider": "thirdParty",
+      "version": "1.0.0",
+      "zip": "mock-fraud-v1.0.0.zip",
+      "sha256": "e101eb06af6d5da2ee96a1e8434211f0b221cd42332723e4235e2e394ba7467a"
+    }
+  ]
 }
