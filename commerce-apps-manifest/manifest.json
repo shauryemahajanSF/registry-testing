@@ -124,26 +124,7 @@
       ]
     }
   ],
-  "gift-cards": [
-    {
-      "id": "givex-gift-cards",
-      "name": "Givex Gift Cards",
-      "description": "Accept Givex stored-value gift cards at checkout with balance lookup, capture, refund, and Storefront Next apply/applied UI.",
-      "iconName": "givex.svg",
-      "domain": "gift-cards",
-      "type": "app",
-      "provider": "thirdParty",
-      "companyName": "Givex",
-      "version": "1.0.2",
-      "zip": "givex-gift-cards-v1.0.2.zip",
-      "sha256": "fac6401b69f5d2605a3f0e12c0dd4e546ffd7f3422fb597dc2fe1591672740d7",
-      "storefrontSupport": {
-        "sfnext": {
-          "minVersion": "1.0.0"
-        }
-      }
-    }
-  ],
+  "gift-cards": [],
   "address-verification": [
     {
       "id": "loqate-address-verification",
