@@ -142,6 +142,21 @@
       }
     }
   ],
+  "fraud": [
+    {
+      "id": "mock-fraud",
+      "name": "Mock Fraud",
+      "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. Email-driven pre-auth and post-auth decisions with no storefront UI.",
+      "iconName": "mock-fraud.svg",
+      "companyName": "Salesforce",
+      "domain": "fraud",
+      "type": "app",
+      "provider": "thirdParty",
+      "version": "1.0.0",
+      "zip": "mock-fraud-v1.0.0.zip",
+      "sha256": "e101eb06af6d5da2ee96a1e8434211f0b221cd42332723e4235e2e394ba7467a"
+    }
+  ],
   "address-verification": [
     {
       "id": "loqate-address-verification",
