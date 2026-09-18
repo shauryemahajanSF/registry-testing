@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mock Payment">
+  <rect width="512" height="512" rx="96" fill="#0B3A5B"/>
+  <rect x="72" y="148" width="368" height="216" rx="28" fill="#F4F7FB"/>
+  <rect x="72" y="196" width="368" height="48" fill="#1B7FBF"/>
+  <rect x="108" y="280" width="160" height="18" rx="9" fill="#0B3A5B"/>
+  <rect x="108" y="312" width="110" height="14" rx="7" fill="#7A93A6"/>
+  <circle cx="372" cy="308" r="28" fill="#1B7FBF"/>
+</svg>
