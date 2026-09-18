@@ -55,5 +55,9 @@
   "custom-translations": {
     "name": "Custom Translations",
     "description": "Configure a custom translations integration by providing your own APIs."
+  },
+  "custom-giftcard": {
+    "name": "Custom Gift Card",
+    "description": "Configure a custom gift card integration."
   }
 }
