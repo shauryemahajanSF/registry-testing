@@ -99,7 +99,7 @@
     {
       "id": "sf-payments",
       "name": "Salesforce Payments",
-      "description": "Salesforce Payments integration for Storefront Next — checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK.",
+      "description": "Salesforce Payments integration for Storefront Next \u2014 checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK.",
       "iconName": "salesforce.svg",
       "domain": "payment",
       "type": "app",
@@ -134,9 +134,9 @@
       "type": "app",
       "provider": "thirdParty",
       "companyName": "Givex",
-      "version": "1.0.1",
-      "zip": "givex-gift-cards-v1.0.1.zip",
-      "sha256": "9df45937f3866ee2efb3cf378143f157f5bef6808bce2b8f7e9db93d1e04e23b",
+      "version": "1.0.2",
+      "zip": "givex-gift-cards-v1.0.2.zip",
+      "sha256": "fac6401b69f5d2605a3f0e12c0dd4e546ffd7f3422fb597dc2fe1591672740d7",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
