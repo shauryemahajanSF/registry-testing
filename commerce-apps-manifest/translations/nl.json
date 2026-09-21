@@ -38,5 +38,13 @@
   "custom-translations": {
     "name": "Aangepaste vertalingen",
     "description": "Configureer een aangepaste vertalingsintegratie met uw eigen API's."
+  },
+  "mock-payment": {
+    "name": "Mock Payment",
+    "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims BANK_TRANSFER, keys payment outcomes off last-4, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud."
+  },
+  "mock-fraud": {
+    "name": "Mock Fraud",
+    "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. Email-driven pre-auth and post-auth decisions with no storefront UI."
   }
 }
