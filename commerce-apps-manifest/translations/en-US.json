@@ -62,7 +62,7 @@
   },
   "mock-payment": {
     "name": "Mock Payment",
-    "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims BANK_TRANSFER, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud."
+    "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims BANK_TRANSFER, keys payment outcomes off last-4, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud."
   },
   "mock-fraud": {
     "name": "Mock Fraud",
