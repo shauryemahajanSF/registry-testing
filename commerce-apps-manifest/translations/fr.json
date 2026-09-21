@@ -45,6 +45,6 @@
   },
   "mock-fraud": {
     "name": "Fraude fictive",
-    "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. Last-4-driven pre-auth and post-auth decisions with a PENDING resolver job and no storefront UI."
+    "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. paymentDetails.last4-driven pre-auth and post-auth decisions with a PENDING resolver job and no storefront UI."
   }
 }
