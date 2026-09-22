@@ -122,7 +122,8 @@ echo "--- next_release_branch ---"
 
 assert_eq "26.8 -> 26.9"                 "release/26.9" next_release_branch "release/26.8" "$BRANCHES"
 assert_eq "26.9 -> 27.0"                 "release/27.0" next_release_branch "release/26.9" "$BRANCHES"
-assert_eq "highest release -> main"      "main"         next_release_branch "release/27.0" "$BRANCHES"
+# Newest release is the end of the forward-integration chain — never hop to main.
+assert_eq "highest release terminates"   ""             next_release_branch "release/27.0" "$BRANCHES"
 assert_eq "refs/heads/ prefix accepted"  "release/26.9" next_release_branch "refs/heads/release/26.8" "$BRANCHES"
 assert_eq "major rollover picks minimal" "release/27.0" next_release_branch "release/26.9" \
   "$(printf '%s\n' refs/heads/release/27.5 refs/heads/release/27.0 refs/heads/release/28.0)"
