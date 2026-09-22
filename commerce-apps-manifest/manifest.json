@@ -132,9 +132,9 @@
       "domain": "payment",
       "type": "app",
       "provider": "thirdParty",
-      "version": "1.0.2",
-      "zip": "mock-payment-v1.0.2.zip",
-      "sha256": "e47a8588ba6fa0e8c239888ae1a3b3490db0bcb82ae4a1e498c025d98048dc08",
+      "version": "1.0.4",
+      "zip": "mock-payment-v1.0.4.zip",
+      "sha256": "b515c1d82bd9ea4aa302990bdf298ed422f1e7bfb99936f15a4d25d22c63fda7",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
@@ -283,9 +283,9 @@
       "type": "app",
       "provider": "thirdParty",
       "companyName": "Givex",
-      "version": "1.0.0",
-      "zip": "givex-gift-cards-v1.0.0.zip",
-      "sha256": "1dfa2c724d25f65fad9939834caf3323c949729fce0d6b3b9d29e01a7ad25c7d",
+      "version": "1.0.2",
+      "zip": "givex-gift-cards-v1.0.2.zip",
+      "sha256": "a83b9a3c84f968cb27f258c4eb0b792addae3c8c956ff3dc91d49ea79d2c9463",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
@@ -304,9 +304,9 @@
       "domain": "fraud",
       "type": "app",
       "provider": "thirdParty",
-      "version": "1.0.2",
-      "zip": "mock-fraud-v1.0.2.zip",
-      "sha256": "095d93a06569cf153a783274cb25574ebd50d3f77b515a0cb9799d196a1cec4f"
+      "version": "1.0.3",
+      "zip": "mock-fraud-v1.0.3.zip",
+      "sha256": "14d7b9091cc102c40ab5f0967e39138077dcc3882b13126a3efadeb7c2b312be"
     }
   ]
 }
