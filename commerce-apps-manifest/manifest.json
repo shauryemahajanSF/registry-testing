@@ -298,9 +298,9 @@
       "type": "app",
       "provider": "thirdParty",
       "companyName": "Givex",
-      "version": "1.0.0",
-      "zip": "givex-gift-cards-v1.0.0.zip",
-      "sha256": "1dfa2c724d25f65fad9939834caf3323c949729fce0d6b3b9d29e01a7ad25c7d",
+      "version": "1.0.1",
+      "zip": "givex-gift-cards-v1.0.1.zip",
+      "sha256": "285a76aef8c042530b72b46203866cd956340acd9233bae09df2182b17e94d21",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
