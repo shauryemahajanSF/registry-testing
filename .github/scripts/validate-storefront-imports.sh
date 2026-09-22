@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Fail if a CAP's Storefront Next extension imports @salesforce/storefront-ui.
 #
-# Customer / 3PP mirrored Storefront Next builds inline UI primitives into
+# Mirrored merchant Storefront Next builds inline UI primitives into
 # @/components/ui/... and remove the @salesforce/storefront-ui package.
 # Imports from that package resolve in the monorepo but fail Vite/Rollup in
-# the mirrored merchant build.
+# those merchant builds.
 #
 # Usage: validate-storefront-imports.sh <cap-root>
 #
@@ -45,7 +45,7 @@ matches="$(
 
 if [[ -n "$matches" ]]; then
   echo "Forbidden @salesforce/storefront-ui import(s) in storefront-next/:" >&2
-  echo "Mirrored 3PP Storefront Next builds remove that package; use @/components/ui/... instead." >&2
+  echo "Mirrored merchant Storefront Next builds remove that package; use @/components/ui/... instead." >&2
   echo "$matches" >&2
   exit 1
 fi

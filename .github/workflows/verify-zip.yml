@@ -197,7 +197,7 @@ jobs:
             echo "  ✓ $project_output"
 
             # Storefront Next extensions must not import @salesforce/storefront-ui
-            # (mirrored 3PP builds remove that package). See
+            # (mirrored merchant builds remove that package). See
             # .github/scripts/validate-storefront-imports.sh. Skips gracefully
             # if the CAP has no storefront-next/ directory (Backend-only apps).
             if ! sf_imports_output="$(bash ".github/scripts/validate-storefront-imports.sh" "$root" 2>&1)"; then

@@ -695,14 +695,14 @@ import { useNavigate } from '@/hooks/use-navigate';
 import { Link } from 'react-router';
 ```
 
-**UI primitive imports (REQUIRED for mirrored 3PP builds):**
+**UI primitive imports (REQUIRED for mirrored merchant Storefront Next builds):**
 ```typescript
 // ✅ Correct - host aliases (mirrored Storefront Next inlines UI into @/components/ui/)
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem } from '@/components/ui/accordion';
 import { Form, FormField } from '@/components/ui/form';
 
-// ❌ Wrong - @salesforce/storefront-ui is removed in customer/3PP mirrored builds;
+// ❌ Wrong - @salesforce/storefront-ui is removed in mirrored merchant builds;
 // Vite/Rollup fails with "failed to resolve import"
 import { Button } from '@salesforce/storefront-ui/components/ui/button';
 ```

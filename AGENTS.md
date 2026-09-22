@@ -150,7 +150,7 @@ Your response:
 - NO `setTimeout`/`setInterval` in hook scripts
 - NO unbounded loops (`while(true)` / `for(;;)`) without break/return
 - NO ISML `<isprint>` with `encoding="off"`
-- NO `@salesforce/storefront-ui` imports in Storefront Next extensions — use `@/components/ui/...` (mirrored 3PP builds remove that package; Vite/Rollup fails otherwise). Runtime APIs stay on `@salesforce/storefront-next-runtime/...`.
+- NO `@salesforce/storefront-ui` imports in Storefront Next extensions — use `@/components/ui/...` (mirrored merchant builds remove that package; Vite/Rollup fails otherwise). Runtime APIs stay on `@salesforce/storefront-next-runtime/...`.
 - ALL apps with services MUST have rate limiting AND circuit breaker enabled on service profiles
 
 ### 5. Impex Rules

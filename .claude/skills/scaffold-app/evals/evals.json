@@ -812,7 +812,7 @@
         },
         {
           "name": "no @salesforce/storefront-ui imports",
-          "description": "UI primitives import from @/components/ui/... only; never @salesforce/storefront-ui (mirrored 3PP builds remove that package)"
+          "description": "UI primitives import from @/components/ui/... only; never @salesforce/storefront-ui (mirrored merchant builds remove that package)"
         },
         {
           "name": "no array index used as React key",

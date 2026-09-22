@@ -188,7 +188,7 @@ If the extension ships translations, they live under `storefront-next/src/extens
 
 **Skip if Backend-only** (`HAS_UI=0`).
 
-Mirrored 3PP / customer Storefront Next builds inline UI primitives into `@/components/ui/...` and remove the `@salesforce/storefront-ui` package. CAP code that still imports that package builds in the monorepo but fails Vite/Rollup in merchant installs (`Rollup failed to resolve import "@salesforce/storefront-ui/..."`).
+Mirrored merchant Storefront Next builds inline UI primitives into `@/components/ui/...` and remove the `@salesforce/storefront-ui` package. CAP code that still imports that package builds in the monorepo but fails Vite/Rollup in merchant installs (`Rollup failed to resolve import "@salesforce/storefront-ui/..."`).
 
 **FAIL** if any storefront source file imports or requires `@salesforce/storefront-ui` (package root or any subpath). Allowed alternatives: `@/components/ui/...` for UI primitives; `@salesforce/storefront-next-runtime/...` for runtime APIs.
 
