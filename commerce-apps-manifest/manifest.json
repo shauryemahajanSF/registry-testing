@@ -152,9 +152,9 @@
       "domain": "fraud",
       "type": "app",
       "provider": "thirdParty",
-      "version": "1.0.2",
-      "zip": "mock-fraud-v1.0.2.zip",
-      "sha256": "095d93a06569cf153a783274cb25574ebd50d3f77b515a0cb9799d196a1cec4f"
+      "version": "1.0.3",
+      "zip": "mock-fraud-v1.0.3.zip",
+      "sha256": "14d7b9091cc102c40ab5f0967e39138077dcc3882b13126a3efadeb7c2b312be"
     }
   ],
   "address-verification": [
