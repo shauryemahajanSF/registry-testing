@@ -126,15 +126,15 @@
     {
       "id": "mock-payment",
       "name": "Mock Payment",
-      "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims BANK_TRANSFER, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud.",
+      "description": "Sample payment Commerce App for ECOM 26.10 checkout orchestration. Claims CREDIT_CARD and SEPA_DIRECT_DEBIT, keys payment outcomes off paymentDetails.last4, authorizes on create or after a fake 3DS challenge, and works with Mock Fraud.",
       "iconName": "mock-payment.svg",
       "companyName": "Salesforce",
       "domain": "payment",
       "type": "app",
       "provider": "thirdParty",
-      "version": "1.0.0",
-      "zip": "mock-payment-v1.0.0.zip",
-      "sha256": "c9c5e72cff061a02d1a884d5234e1e5b4e4d1e4f18661ffeaa7ea74ed40a03ec",
+      "version": "1.0.2",
+      "zip": "mock-payment-v1.0.2.zip",
+      "sha256": "e47a8588ba6fa0e8c239888ae1a3b3490db0bcb82ae4a1e498c025d98048dc08",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
@@ -298,15 +298,15 @@
     {
       "id": "mock-fraud",
       "name": "Mock Fraud",
-      "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. Email-driven pre-auth and post-auth decisions with no storefront UI.",
+      "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. paymentDetails.last4-driven pre-auth and post-auth decisions with a PENDING resolver job and no storefront UI.",
       "iconName": "mock-fraud.svg",
       "companyName": "Salesforce",
       "domain": "fraud",
       "type": "app",
       "provider": "thirdParty",
-      "version": "1.0.0",
-      "zip": "mock-fraud-v1.0.0.zip",
-      "sha256": "e101eb06af6d5da2ee96a1e8434211f0b221cd42332723e4235e2e394ba7467a"
+      "version": "1.0.2",
+      "zip": "mock-fraud-v1.0.2.zip",
+      "sha256": "095d93a06569cf153a783274cb25574ebd50d3f77b515a0cb9799d196a1cec4f"
     }
   ]
 }
