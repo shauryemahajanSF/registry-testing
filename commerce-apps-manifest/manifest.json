@@ -300,7 +300,7 @@
       "companyName": "Givex",
       "version": "1.0.4",
       "zip": "givex-gift-cards-v1.0.4.zip",
-      "sha256": "8d647b7d9f5d459a6f9dafce97b2adcc0f9e221e3b8567113b071ae237eba934",
+      "sha256": "f35bc84b02d7a3be6056bcab68bc9ec49b657378cf4be98842ce160491b2d347",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
