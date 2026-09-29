@@ -134,7 +134,7 @@
       "provider": "thirdParty",
       "version": "1.0.5",
       "zip": "mock-payment-v1.0.5.zip",
-      "sha256": "a64513a97689c36bfe9cd697804e64ee601db6b84a79b389f5b2345c9e370de4",
+      "sha256": "d84d30060bcd30f2a94f5399ab8f1058243dc711bb1b7212b365f96890ab8164",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
