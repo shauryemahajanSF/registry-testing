@@ -1,7 +1,7 @@
 {
   "latest": {
-    "version": "1.0.4",
-    "tag": "mock-payment-v1.0.4"
+    "version": "1.0.5",
+    "tag": "mock-payment-v1.0.5"
   },
   "versions": [
     {
@@ -23,6 +23,10 @@
     {
       "version": "1.0.4",
       "tag": "mock-payment-v1.0.4"
+    },
+    {
+      "version": "1.0.5",
+      "tag": "mock-payment-v1.0.5"
     }
   ]
 }
