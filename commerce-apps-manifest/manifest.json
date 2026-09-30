@@ -87,9 +87,9 @@
             "type": "app",
             "provider": "salesforce",
             "requiredFeatureToggle": "SalesforcePaymentsAllowed",
-            "version": "1.0.1",
-            "zip": "sf-payments-v1.0.1.zip",
-            "sha256": "7d358026f1c3009707961f11b9b951b9f3e7b528ae8b7dccd36a01a08ed3d8dd",
+            "version": "1.0.2",
+            "zip": "sf-payments-v1.0.2.zip",
+            "sha256": "a6daf59737949af1f3106a82700f2738593068c1df5c65bafb0a807978da81bc",
             "configurationComponents": [
                 "ccbm_payments/multiStepPaymentMethods",
                 "ccbm_payments/expressPaymentMethods",
