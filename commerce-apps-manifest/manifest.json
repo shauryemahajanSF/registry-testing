@@ -110,9 +110,9 @@
       "featuredTagline": "Collect payments fast with a seamless end-to-end solution for Adyen, Stripe, and PayPal.",
       "featuredLearnMoreUrl": "https://help.salesforce.com/s/articleView?id=cc.b2c_salesforce_payments.htm",
       "featuredImageName": "sf-payments-featured.png",
-      "version": "1.0.0",
-      "zip": "sf-payments-v1.0.0.zip",
-      "sha256": "920861bdf7559b518e9cb0fdc756abbec01080eb528c29c562f89f0f3e42e737",
+      "version": "1.0.3",
+      "zip": "sf-payments-v1.0.3.zip",
+      "sha256": "c7436658d58db54a13446190a4d8b2f398a85b6111f0f2c3080aae4e1570d6e1",
       "configurationComponents": [
         "ccbm_payments/multiStepPaymentMethods",
         "ccbm_payments/expressPaymentMethods",
@@ -132,9 +132,9 @@
       "domain": "payment",
       "type": "app",
       "provider": "thirdParty",
-      "version": "1.0.4",
-      "zip": "mock-payment-v1.0.4.zip",
-      "sha256": "b515c1d82bd9ea4aa302990bdf298ed422f1e7bfb99936f15a4d25d22c63fda7",
+      "version": "1.0.6",
+      "zip": "mock-payment-v1.0.6.zip",
+      "sha256": "0f28ce62488a86a14cc1a57a6db0f87c6677e5fa2b4a35c8fb9f4e8f5dafffc2",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
@@ -283,9 +283,9 @@
       "type": "app",
       "provider": "thirdParty",
       "companyName": "Givex",
-      "version": "1.0.5",
-      "zip": "givex-gift-cards-v1.0.5.zip",
-      "sha256": "8b9f8cff4d7378526f0928cb551ccbc82164d04d7be51501fd2c91dd439275a1",
+      "version": "1.0.6",
+      "zip": "givex-gift-cards-v1.0.6.zip",
+      "sha256": "540adb70e18d36b4d5cd05845b6dd56550a9d02a1cce488e7e8f9e0a2d7b70c1",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
