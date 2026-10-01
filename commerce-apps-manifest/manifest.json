@@ -132,9 +132,9 @@
       "domain": "payment",
       "type": "app",
       "provider": "thirdParty",
-      "version": "1.0.7",
-      "zip": "mock-payment-v1.0.7.zip",
-      "sha256": "6304e8ce00dab41bc798c338107d1ae14e3d3b479428237f2db215ea8afcba0e",
+      "version": "1.0.8",
+      "zip": "mock-payment-v1.0.8.zip",
+      "sha256": "a12c020e4ac97db0f7589ebd4aadcd20c0b23dce55937260c1c893a308b22247",
       "storefrontSupport": {
         "sfnext": {
           "minVersion": "1.0.0"
