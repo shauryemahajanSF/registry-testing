@@ -110,9 +110,9 @@
       "featuredTagline": "Collect payments fast with a seamless end-to-end solution for Adyen, Stripe, and PayPal.",
       "featuredLearnMoreUrl": "https://help.salesforce.com/s/articleView?id=cc.b2c_salesforce_payments.htm",
       "featuredImageName": "sf-payments-featured.png",
-      "version": "1.0.0",
-      "zip": "sf-payments-v1.0.0.zip",
-      "sha256": "920861bdf7559b518e9cb0fdc756abbec01080eb528c29c562f89f0f3e42e737",
+      "version": "1.0.2",
+      "zip": "sf-payments-v1.0.2.zip",
+      "sha256": "ac96e1b3be602839686a261cb93b40fade5d610a02b0a0ca7817e9761c6227ee",
       "configurationComponents": [
         "ccbm_payments/multiStepPaymentMethods",
         "ccbm_payments/expressPaymentMethods",
