@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mock Fraud">
+  <rect width="512" height="512" rx="96" fill="#3A1652"/>
+  <path fill="#F4F0FA" d="M256 72c-78 52-132 60-132 60v120c0 92 56 148 132 188 76-40 132-96 132-188V132s-54-8-132-60z"/>
+  <path fill="#7B3FA0" d="M232 228h48v112h-48zm0-72h48v48h-48z"/>
+</svg>
