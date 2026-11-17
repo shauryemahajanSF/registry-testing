@@ -246,5 +246,20 @@
             "provider": "custom"
         }
     ],
+    "fraud": [
+        {
+            "id": "mock-fraud",
+            "name": "Mock Fraud",
+            "description": "Sample fraud Commerce App for checkout orchestration. Logs every beforePayment instrument (method, type, last4, brand, wallet) including Salesforce Payments, and drives pre-auth from last4.",
+            "iconName": "mock-fraud.svg",
+            "companyName": "Salesforce",
+            "domain": "fraud",
+            "type": "app",
+            "provider": "thirdParty",
+            "version": "1.0.3",
+            "zip": "mock-fraud-v1.0.3.zip",
+            "sha256": "5e0951a112b82bde4e2680cdb09e6e1b5284f5dccf376046aa1be60afd9e73b0"
+        }
+    ],
     "additionalFeature": []
 }

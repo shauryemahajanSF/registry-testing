@@ -51,5 +51,9 @@
     "custom-translations": {
         "name": "Custom Translations",
         "description": "Configure a custom translations integration by providing your own APIs."
+    },
+    "mock-fraud": {
+        "name": "Mock Fraud",
+        "description": "Sample fraud Commerce App for checkout orchestration. Logs every beforePayment instrument (method, type, last4, brand, wallet) including Salesforce Payments."
     }
 }

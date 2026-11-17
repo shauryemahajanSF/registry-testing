@@ -34,5 +34,9 @@
     "custom-translations": {
         "name": "Traductions personnalisées",
         "description": "Configurez une intégration de traductions personnalisée en fournissant vos propres API."
+    },
+    "mock-fraud": {
+        "name": "Fraude fictive",
+        "description": "Sample fraud Commerce App for checkout orchestration. Logs every beforePayment instrument (method, type, last4, brand, wallet) including Salesforce Payments."
     }
 }
