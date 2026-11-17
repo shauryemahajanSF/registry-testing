@@ -34,5 +34,9 @@
     "custom-translations": {
         "name": "맞춤 번역",
         "description": "자체 API를 제공하여 맞춤 번역 통합을 구성합니다."
+    },
+    "mock-fraud": {
+        "name": "Mock Fraud",
+        "description": "Sample fraud Commerce App for checkout orchestration. Logs every beforePayment instrument (method, type, last4, brand, wallet) including Salesforce Payments."
     }
 }

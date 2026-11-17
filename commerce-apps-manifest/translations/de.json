@@ -34,5 +34,9 @@
     "custom-translations": {
         "name": "Benutzerdefinierte Übersetzungen",
         "description": "Konfigurieren Sie eine benutzerdefinierte Übersetzungsintegration mit Ihren eigenen APIs."
+    },
+    "mock-fraud": {
+        "name": "Mock-Betrugsschutz",
+        "description": "Sample fraud Commerce App for checkout orchestration. Logs every beforePayment instrument (method, type, last4, brand, wallet) including Salesforce Payments."
     }
 }
