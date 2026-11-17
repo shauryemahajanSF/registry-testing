@@ -99,7 +99,7 @@
     {
       "id": "sf-payments",
       "name": "Salesforce Payments",
-      "description": "Salesforce Payments integration for Storefront Next \u2014 checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK.",
+      "description": "Salesforce Payments integration for Storefront Next — checkout payment methods and express buttons (Apple Pay, Google Pay, PayPal) across Stripe, Adyen, and PayPal, powered by the sfp.js SDK.",
       "iconName": "salesforce.svg",
       "domain": "payment",
       "type": "app",
@@ -146,7 +146,7 @@
     {
       "id": "mock-fraud",
       "name": "Mock Fraud",
-      "description": "Sample fraud Commerce App for ECOM 26.10 checkout orchestration. paymentDetails.last4-driven pre-auth and post-auth decisions with a PENDING resolver job and no storefront UI.",
+      "description": "Sample fraud Commerce App for checkout orchestration. Logs every beforePayment instrument (method, type, last4, brand, wallet) including Salesforce Payments, and drives pre-auth from last4.",
       "iconName": "mock-fraud.svg",
       "companyName": "Salesforce",
       "domain": "fraud",
@@ -154,7 +154,7 @@
       "provider": "thirdParty",
       "version": "1.0.3",
       "zip": "mock-fraud-v1.0.3.zip",
-      "sha256": "14d7b9091cc102c40ab5f0967e39138077dcc3882b13126a3efadeb7c2b312be"
+      "sha256": "5e0951a112b82bde4e2680cdb09e6e1b5284f5dccf376046aa1be60afd9e73b0"
     }
   ],
   "address-verification": [
